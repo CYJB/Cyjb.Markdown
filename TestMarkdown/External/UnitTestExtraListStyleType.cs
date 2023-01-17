@@ -1,7 +1,7 @@
 using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.Custom;
+namespace TestMarkdown.External;
 
 /// <summary>
 /// 额外的列表样式的单元测试。

@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.Custom;
+namespace TestMarkdown.External;
 
 /// <summary>
 /// 链接定义的单元测试。

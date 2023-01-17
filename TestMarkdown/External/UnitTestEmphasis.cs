@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.Custom;
+namespace TestMarkdown.External;
 
 /// <summary>
 /// 强调的单元测试。
@@ -9,7 +9,7 @@ namespace TestMarkdown.Custom;
 public class UnitTestEmphasis : BaseTest
 {
 	/// <summary>
-	/// 起始 * 后跟空白，因此不是强调。
+	/// 测试分割中文。
 	/// </summary>
 	[TestMethod]
 	public void TestChinese()
@@ -24,6 +24,13 @@ public class UnitTestEmphasis : BaseTest
 					Literal(2..3, "文");
 				});
 				Literal(4..6, "测试");
+			});
+		});
+		AssertMarkdown("中_文_测试", () =>
+		{
+			Paragraph(0..6, () =>
+			{
+				Literal(0..6, "中_文_测试");
 			});
 		});
 	}

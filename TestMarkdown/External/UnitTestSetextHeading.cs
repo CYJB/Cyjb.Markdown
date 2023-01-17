@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.Custom;
+namespace TestMarkdown.External;
 
 /// <summary>
 /// Setext 标题的单元测试。
