@@ -1,0 +1,1 @@
+<#@ include file="$(PkgCyjb)\content\ResourcesTemplate.t4" #>
