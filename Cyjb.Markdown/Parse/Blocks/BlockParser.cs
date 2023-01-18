@@ -69,12 +69,12 @@ internal sealed class BlockParser
 	/// <summary>
 	/// 使用要解析的文本初始化 <see cref="BlockParser"/> 类的新实例。
 	/// </summary>
-	/// <param name="text">要解析的文本。</param>
+	/// <param name="text">要解析的文本读取器。</param>
 	/// <param name="options">解析的选项。</param>
-	public BlockParser(string text, ParseOptions? options)
+	public BlockParser(TextReader text, ParseOptions? options)
 	{
 		// 为了正确处理 Tab 的位置，解析块时需要对列定位。
-		reader = new SourceReader(new StringReader(text));
+		reader = new SourceReader(text);
 		reader.UseLineLocator();
 		locator = reader.Locator!;
 		tokenizer = BlockLexer.Factory.CreateTokenizer(reader);

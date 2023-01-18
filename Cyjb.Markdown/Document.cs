@@ -17,7 +17,18 @@ public sealed class Document : Node, INodeContainer<BlockNode>
 	/// <returns>解析得到的 Markdown 语法树。</returns>
 	public static Document Parse(string text, ParseOptions? options = null)
 	{
-		return new BlockParser(text, options).Parse();
+		return new BlockParser(new StringReader(text), options).Parse();
+	}
+
+	/// <summary>
+	/// 解析指定 Markdown 字符串，并返回解析后的语法树。
+	/// </summary>
+	/// <param name="textReader">要解析的文本读取器。</param>
+	/// <param name="options">解析的选项。</param>
+	/// <returns>解析得到的 Markdown 语法树。</returns>
+	public static Document Parse(TextReader textReader, ParseOptions? options = null)
+	{
+		return new BlockParser(textReader, options).Parse();
 	}
 
 	/// <summary>

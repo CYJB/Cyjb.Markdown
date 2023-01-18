@@ -52,7 +52,7 @@ public class UnitTestStrikethrough : BaseTest
 		});
 	}
 	/// <summary>
-	/// 三个或更多波浪号不会创建删除。
+	/// 不会识别三个或更多波浪号。
 	/// </summary>
 	/// <see href="https://github.github.com/gfm/#example-493"/>
 	[TestMethod]
@@ -63,6 +63,122 @@ public class UnitTestStrikethrough : BaseTest
 			Paragraph(0..29, () =>
 			{
 				Literal(0..27, "This will ~~~not~~~ strike.");
+			});
+		});
+	}
+	/// <summary>
+	/// 不会识别四个波浪号。
+	/// </summary>
+	[TestMethod]
+	public void TestFourTildes()
+	{
+		AssertMarkdown("foo ~~~~ bar\r\n", () =>
+		{
+			Paragraph(0..14, () =>
+			{
+				Literal(0..12, "foo ~~~~ bar");
+			});
+		});
+	}
+	/// <summary>
+	/// 不会识别不匹配的波浪号个数。
+	/// </summary>
+	[TestMethod]
+	public void TestUnmatchedTildes()
+	{
+		AssertMarkdown("~~foo~~~\r\n", () =>
+		{
+			Paragraph(0..10, () =>
+			{
+				Literal(0..8, "~~foo~~~");
+			});
+		});
+	}
+	/// <summary>
+	/// 嵌套的波浪号。
+	/// </summary>
+	[TestMethod]
+	public void TestNestedTildes_1()
+	{
+		AssertMarkdown("~~foo~bar~~\r\n", () =>
+		{
+			Paragraph(0..13, () =>
+			{
+				Strikethrough(0..11, () =>
+				{
+					Literal(2..9, "foo~bar");
+				});
+			});
+		});
+	}
+	[TestMethod]
+	public void TestNestedTildes_2()
+	{
+		AssertMarkdown("~~foo~~bar~~\r\n", () =>
+		{
+			Paragraph(0..14, () =>
+			{
+				Strikethrough(0..7, () =>
+				{
+					Literal(2..5, "foo");
+				});
+				Literal(7..12, "bar~~");
+			});
+		});
+	}
+	[TestMethod]
+	public void TestNestedTildes_3()
+	{
+		AssertMarkdown("~~foo~~~bar~~\r\n", () =>
+		{
+			Paragraph(0..15, () =>
+			{
+				Strikethrough(0..13, () =>
+				{
+					Literal(2..11, "foo~~~bar");
+				});
+			});
+		});
+	}
+	[TestMethod]
+	public void TestNestedTildes_4()
+	{
+		AssertMarkdown("~~foo~~~~bar~~\r\n", () =>
+		{
+			Paragraph(0..16, () =>
+			{
+				Strikethrough(0..14, () =>
+				{
+					Literal(2..12, "foo~~~~bar");
+				});
+			});
+		});
+	}
+	[TestMethod]
+	public void TestNestedTildes_5()
+	{
+		AssertMarkdown("~~foo~~~~~bar~~\r\n", () =>
+		{
+			Paragraph(0..17, () =>
+			{
+				Strikethrough(0..15, () =>
+				{
+					Literal(2..13, "foo~~~~~bar");
+				});
+			});
+		});
+	}
+	[TestMethod]
+	public void TestNestedTildes_6()
+	{
+		AssertMarkdown("~~foo~~~~~~bar~~\r\n", () =>
+		{
+			Paragraph(0..18, () =>
+			{
+				Strikethrough(0..16, () =>
+				{
+					Literal(2..14, "foo~~~~~~bar");
+				});
 			});
 		});
 	}
