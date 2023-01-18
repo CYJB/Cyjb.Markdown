@@ -128,7 +128,14 @@ internal sealed class BlockParser
 				processor.ParseInline(parser);
 			}
 		}
-		return document.GetDocument(end);
+		Document doc = document.GetDocument(end);
+		// 填充行定位器。
+		if (options.UseLineLocator)
+		{
+			LineLocatorWalker walker = new(locator);
+			doc.Accept(walker);
+		}
+		return doc;
 	}
 
 	/// <summary>

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Cyjb" Version="1.0.11">
+	<PackageReference Include="Cyjb" Version="1.0.12">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
 	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.8">

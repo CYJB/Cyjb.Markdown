@@ -3,7 +3,7 @@ namespace Cyjb.Markdown;
 /// <summary>
 /// Markdown 的解析选项。
 /// </summary>
-public sealed class ParseOptions
+public readonly struct ParseOptions
 {
 	/// <summary>
 	/// 默认的解析选项。
@@ -20,6 +20,17 @@ public sealed class ParseOptions
 		UseExtraListStyleType = false,
 	};
 
+	/// <summary>
+	/// 初始化 <see cref="ParseOptions"/> 结构的新实例。
+	/// </summary>
+	public ParseOptions() { }
+
+	/// <summary>
+	/// 是否填充节点的行定位器，默认为 <c>false</c>。
+	/// </summary>
+	/// <remarks>填充行定位器后，可以支持通过 <see cref="Node.LinePositionSpan"/>
+	/// 获取节点的行列位置。</remarks>
+	public bool UseLineLocator { get; init; } = false;
 	/// <summary>
 	/// 是否解析删除线，默认为 <c>true</c>。
 	/// </summary>
