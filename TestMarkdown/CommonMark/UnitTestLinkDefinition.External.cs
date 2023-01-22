@@ -1,12 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.External;
+namespace TestMarkdown.CommonMark;
 
-/// <summary>
-/// 链接定义的单元测试。
-/// </summary>
-[TestClass]
-public class UnitTestLinkDefinition : BaseTest
+public partial class UnitTestLinkDefinition
 {
 	/// <summary>
 	/// 链接定义会忽略前后的空格。

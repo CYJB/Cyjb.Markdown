@@ -25,7 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="CommonMark\commonmark.0.30.spec.json">
+    <None Update="Spec\CommonMark.0.30.spec.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Spec\ExtraListStyleType.spec.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Spec\GitHubFlavoredMarkdown.0.29.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -7,7 +7,7 @@ namespace TestMarkdown.CommonMark;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#emphasis-and-strong-emphasis"/>
 [TestClass]
-public class UnitTestEmphasis : BaseTest
+public partial class UnitTestEmphasis : BaseTest
 {
 	/// <summary>
 	/// 规则 1。

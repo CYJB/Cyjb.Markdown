@@ -1,12 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.External;
+namespace TestMarkdown.CommonMark;
 
-/// <summary>
-/// Setext 标题的单元测试。
-/// </summary>
-[TestClass]
-public class UnitTestSetextHeading : BaseTest
+public partial class UnitTestSetextHeading
 {
 	/// <summary>
 	/// 链接定义不被解释为 Setext 标题。

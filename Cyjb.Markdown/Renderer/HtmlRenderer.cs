@@ -210,7 +210,7 @@ public class HtmlRenderer : SyntaxWalker
 					attributes["type"] = "I";
 					break;
 				case ListStyleType.OrderedLowerGreek:
-					attributes["style"] = "list-style-type: lower-greek";
+					attributes["style"] = "list-style-type: lower-greek;";
 					break;
 			}
 			if (node.Start != 1)

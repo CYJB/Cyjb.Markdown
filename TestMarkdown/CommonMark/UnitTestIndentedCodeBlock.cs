@@ -7,7 +7,7 @@ namespace TestMarkdown.CommonMark;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#indented-code-blocks"/>
 [TestClass]
-public class UnitTestIndentedCodeBlock : BaseTest
+public partial class UnitTestIndentedCodeBlock : BaseTest
 {
 	/// <see href="https://spec.commonmark.org/0.30/#example-107"/>
 	[TestMethod]

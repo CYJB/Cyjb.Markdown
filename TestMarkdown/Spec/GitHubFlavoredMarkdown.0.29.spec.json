@@ -1,0 +1,17 @@
+[
+  {
+    "markdown": "~~Hi~~ Hello, ~there~ world!\n",
+    "html": "<p><del>Hi</del> Hello, <del>there</del> world!</p>\n",
+    "example": 491
+  },
+  {
+    "markdown": "This ~~has a\n\nnew paragraph~~.\n",
+    "html": "<p>This ~~has a</p>\n<p>new paragraph~~.</p>\n",
+    "example": 492
+  },
+  {
+    "markdown": "This will ~~~not~~~ strike.\n",
+    "html": "<p>This will ~~~not~~~ strike.</p>\n",
+    "example": 493
+  }
+]

@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.External;
+namespace TestMarkdown;
 
 /// <summary>
 /// 删除的单元测试。

@@ -1,17 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.External;
+namespace TestMarkdown.CommonMark;
 
-/// <summary>
-/// 缩进代码块的单元测试。
-/// </summary>
-[TestClass]
-public class UnitTestIndentedCodeBlock : BaseTest
+public partial class UnitTestIndentedCodeBlock
 {
 	/// <summary>
 	/// 缩进代码块前后的非缩进空行不会包含在内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-117"/>
 	[TestMethod]
 	public void TestBlankLine()
 	{
@@ -23,7 +18,6 @@ public class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 缩进代码块内部的非缩进空行会包含在内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-117"/>
 	[TestMethod]
 	public void TestInnerBlankLine()
 	{

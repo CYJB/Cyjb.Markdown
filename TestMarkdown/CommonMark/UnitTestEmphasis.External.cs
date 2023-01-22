@@ -1,12 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestMarkdown.External;
+namespace TestMarkdown.CommonMark;
 
-/// <summary>
-/// 强调的单元测试。
-/// </summary>
-[TestClass]
-public class UnitTestEmphasis : BaseTest
+public partial class UnitTestEmphasis
 {
 	/// <summary>
 	/// 测试分割中文。

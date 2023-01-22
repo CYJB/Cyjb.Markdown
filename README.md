@@ -32,7 +32,8 @@ Console.WriteLine(renderer);
 - 支持完整的 [CommonMark 0.30](https://spec.commonmark.org/0.30)，具体请参见[这里](https://commonmark.org/help/)。
 - 支持部分 [GitHub Flavored Markdown (GFM)](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)，具体包括：
 	- [删除线](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text)：`~~ ~~`。
-- 支持额外的列表样式，具体请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-type.md)。
+	- [任务列表](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#task-lists)：`- [ ] task`。
+- 支持额外的列表样式，具体请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md)。
 
 ### 其它的建议用法
 

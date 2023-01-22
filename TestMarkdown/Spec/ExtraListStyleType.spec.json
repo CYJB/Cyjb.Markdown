@@ -1,0 +1,37 @@
+[
+  {
+    "markdown": "a. foo\nb. bar\nA) baz\nB) boo\n",
+    "html": "<ol type=\"a\">\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol type=\"A\">\n<li>baz</li>\n<li>boo</li>\n</ol>\n",
+    "example": 1
+  },
+  {
+    "markdown": "aa. foo\n",
+    "html": "<p>aa. foo</p>\n",
+    "example": 2
+  },
+  {
+    "markdown": "i. foo\nii. bar\nI) baz\nII) boo\n",
+    "html": "<ol type=\"i\">\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol type=\"I\">\n<li>baz</li>\n<li>boo</li>\n</ol>\n",
+    "example": 3
+  },
+  {
+    "markdown": "v. foo\nix. bar\nx. baz\n",
+    "html": "<ol type=\"a\" start=\"22\">\n<li>foo</li>\n</ol>\n<ol type=\"i\" start=\"9\">\n<li>bar</li>\n<li>baz</li>\n</ol>\n",
+    "example": 4
+  },
+  {
+    "markdown": "VC. foo\n\nX. bar\n\niiii. baz\n\nmmmm. boo\n",
+    "html": "<p>VC. foo</p>\n<ol type=\"A\" start=\"24\">\n<li>bar</li>\n</ol>\n<p>iiii. baz</p>\n<p>mmmm. boo</p>\n",
+    "example": 5
+  },
+  {
+    "markdown": "α. foo\nβ. bar\n",
+    "html": "<ol style=\"list-style-type: lower-greek;\">\n<li>foo</li>\n<li>bar</li>\n</ol>\n",
+    "example": 6
+  },
+  {
+    "markdown": "αβ. foo\n",
+    "html": "<p>αβ. foo</p>\n",
+    "example": 7
+  }
+]
