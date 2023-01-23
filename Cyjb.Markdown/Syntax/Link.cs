@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -10,18 +11,22 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// <summary>
 	/// 子节点列表。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private readonly NodeList<InlineNode> children;
 	/// <summary>
 	/// 链接的 URL。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string url;
 	/// <summary>
 	/// 链接的标题。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string? title;
 	/// <summary>
 	/// 链接的定义。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private LinkDefinition? definition;
 
 	/// <summary>

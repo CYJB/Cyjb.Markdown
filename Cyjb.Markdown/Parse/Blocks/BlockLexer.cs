@@ -17,6 +17,7 @@ namespace Cyjb.Markdown.Parse.Blocks;
 [LexerSymbol(@"~{3,}.+$", Kind = BlockKind.CodeFenceStart)]
 [LexerSymbol(@"#{1,6}([ \t]+.*)?$", Kind = BlockKind.ATXHeading)]
 [LexerSymbol(@"=+[ \t]*$", Kind = BlockKind.SetextUnderline)]
+[LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
 internal partial class BlockLexer : LexerController<BlockKind>
 {
 	/// <summary>

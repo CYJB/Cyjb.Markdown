@@ -89,6 +89,11 @@ internal sealed class BlockParser
 	public BlockProcessor ActivatedProcessor => openedProcessors.Peek();
 
 	/// <summary>
+	/// 获取解析的选项。
+	/// </summary>
+	public ParseOptions Options => options;
+
+	/// <summary>
 	/// 解析当前文档。
 	/// </summary>
 	public Document Parse()
@@ -219,7 +224,7 @@ internal sealed class BlockParser
 			{
 				AddProcessor(newProcessor, lineStart);
 			}
-			tryBlockStarts = openedProcessors.Peek().IsContainer;
+			tryBlockStarts = openedProcessors.Peek().TryBlockStarts;
 			processor = openedProcessors.Peek();
 		}
 		// 检查延迟延伸。
@@ -241,7 +246,10 @@ internal sealed class BlockParser
 			processor = new ParagraphProcessor();
 			AddProcessor(processor, lineStart);
 			// 需要跳过段落的起始缩进。
-			line.SkipIndent();
+			if (line.ParagraphSkippable)
+			{
+				line.SkipIndent();
+			}
 			ActivatedProcessor.AddLine(line.Text);
 		}
 	}

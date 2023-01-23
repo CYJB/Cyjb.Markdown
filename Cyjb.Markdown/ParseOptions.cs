@@ -39,4 +39,8 @@ public readonly struct ParseOptions
 	/// 是否解析额外的列表样式类型（英文字母、罗马数字、希腊字母），默认为 <c>true</c>。
 	/// </summary>
 	public bool UseExtraListStyleType { get; init; } = true;
+	/// <summary>
+	/// 是否解析任务列表项，默认为 <c>true</c>。
+	/// </summary>
+	public bool UseTaskListItem { get; init; } = true;
 }

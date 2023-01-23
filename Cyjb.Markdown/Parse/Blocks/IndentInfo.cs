@@ -78,6 +78,10 @@ internal class IndentInfo
 	/// 获取当前缩进起始位置。
 	/// </summary>
 	public int Start => start;
+	/// <summary>
+	/// 是否是段落可以跳过的缩进。
+	/// </summary>
+	public bool ParagraphSkippable { get; set; } = true;
 
 	/// <summary>
 	/// 跳过指定个数的空白。
@@ -91,19 +95,26 @@ internal class IndentInfo
 			Skip();
 			return;
 		}
+		int column;
 		// 由于 Tab 可能对应多列，因此需要找到首个 index 使得 column(index)≤startColumn。
 		for (; start < end; start++)
 		{
-			int column = locator.GetPosition(start).Column;
+			column = locator.GetPosition(start).Column;
 			if (column == startColumn)
 			{
-				break;
+				return;
 			}
 			else if (column > startColumn)
 			{
 				start--;
-				break;
+				return;
 			}
+		}
+		// 避免 end 的列位置超出 startColumn
+		column = locator.GetPosition(start).Column;
+		if (column > startColumn)
+		{
+			start--;
 		}
 	}
 
@@ -127,7 +138,6 @@ internal class IndentInfo
 			// 所有缩进均已消费。
 			return string.Empty;
 		}
-		// 由于 Tab 可能对应多列，使用空格补齐 column(start) 到 startColumn 的位置。
 		int column = locator.GetPosition(start).Column;
 		if (column == startColumn)
 		{
@@ -135,6 +145,8 @@ internal class IndentInfo
 		}
 		else
 		{
+			// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
+			column = locator.GetPosition(start + 1).Column;
 			StringBuilder result = new();
 			result.Append(' ', column - startColumn);
 			int idx = start + 1 - originalStart;

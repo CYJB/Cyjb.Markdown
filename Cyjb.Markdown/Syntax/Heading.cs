@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -10,10 +11,12 @@ public sealed class Heading : BlockNode, INodeContainer<InlineNode>
 	/// <summary>
 	/// 子节点列表。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private readonly NodeList<InlineNode> children;
 	/// <summary>
 	/// 标题的深度。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private int depth;
 
 	/// <summary>

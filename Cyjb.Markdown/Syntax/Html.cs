@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
@@ -12,20 +13,24 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// <summary>
 	/// 提取 HTML 属性的正则表达式。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private static readonly Regex AttributeRegex = new(
 		@"([a-z_:][a-z0-9_.:-]*)\s*(?:=\s*([^ \t\r\n\""'=<>`']+|'[^']*'|\""[^""]*\""))?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 	/// <summary>
 	/// 当前节点的内容。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
 	/// <summary>
 	/// 当前节点的值。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string? value;
 	/// <summary>
 	/// 当前节点的 HTML 属性。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private HtmlAttribute[]? attributes;
 
 	/// <summary>

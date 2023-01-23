@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -10,6 +11,7 @@ public sealed class List : BlockNode, INodeContainer<ListItem>
 	/// <summary>
 	/// 列表项。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private readonly NodeList<ListItem> children;
 
 	/// <summary>

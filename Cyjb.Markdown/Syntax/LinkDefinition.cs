@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
@@ -11,14 +12,17 @@ public sealed class LinkDefinition : BlockNode
 	/// <summary>
 	/// 定义的标签。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string label;
 	/// <summary>
 	/// 定义的 URL。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string url;
 	/// <summary>
 	/// 定义的 ID。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string? identifier;
 
 	/// <summary>

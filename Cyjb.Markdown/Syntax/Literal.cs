@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -10,6 +11,7 @@ public sealed class Literal : InlineNode, IEquatable<Literal>
 	/// <summary>
 	/// 文本的内容。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
 
 	/// <summary>

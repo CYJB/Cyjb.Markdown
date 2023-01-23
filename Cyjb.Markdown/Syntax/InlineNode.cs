@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
@@ -8,10 +10,12 @@ public abstract class InlineNode : Node
 	/// <summary>
 	/// 前驱兄弟节点。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private InlineNode? prev;
 	/// <summary>
 	/// 后继兄弟节点。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private InlineNode? next;
 
 	/// <summary>

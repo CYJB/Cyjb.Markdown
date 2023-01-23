@@ -1,0 +1,67 @@
+[
+  {
+    "markdown": "- [ ] foo\n- [x] bar\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled>foo</li>\n<li><input type=\"checkbox\" disabled checked>bar</li>\n</ul>\n",
+    "example": 1
+  },
+  {
+    "markdown": "- [x] foo\n  - [ ] bar\n  - [x] baz\n- [ ] bim\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled checked>foo\n<ul>\n<li><input type=\"checkbox\" disabled>bar</li>\n<li><input type=\"checkbox\" disabled checked>baz</li>\n</ul>\n</li>\n<li><input type=\"checkbox\" disabled>bim</li>\n</ul>\n",
+    "example": 2
+  },
+  {
+    "markdown": "1. [ ] one\n2. [x] two\n3. [ ] three\n   - [ ] foo\n   * [X] bar\n     + [X] baz\n",
+    "html": "<ol>\n<li><input type=\"checkbox\" disabled>one</li>\n<li><input type=\"checkbox\" disabled checked>two</li>\n<li><input type=\"checkbox\" disabled>three\n<ul>\n<li><input type=\"checkbox\" disabled>foo</li>\n</ul>\n<ul>\n<li><input type=\"checkbox\" disabled checked>bar\n<ul>\n<li><input type=\"checkbox\" disabled checked>baz</li>\n</ul>\n</li>\n</ul>\n</li>\n</ol>\n",
+    "example": 3
+  },
+  {
+    "markdown": "[ ] foo\n[x] bar\n [ ] baz\n [X] bim\n",
+    "html": "<p>[ ] foo\n[x] bar\n[ ] baz\n[X] bim</p>\n",
+    "example": 4
+  },
+  {
+    "markdown": "- [ ]  foo\n-  [ ] bar\n-   [x] baz\n-    [ ] bim\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled> foo</li>\n<li><input type=\"checkbox\" disabled>bar</li>\n<li><input type=\"checkbox\" disabled checked>baz</li>\n<li><input type=\"checkbox\" disabled>bim</li>\n</ul>\n",
+    "example": 5
+  },
+  {
+    "markdown": "-     [ ] foo\n- bar [ ] baz\n",
+    "html": "<ul>\n<li>\n<pre><code>[ ] foo\n</code></pre>\n</li>\n<li>bar [ ] baz</li>\n</ul>\n",
+    "example": 6
+  },
+  {
+    "markdown": "- [x one\n- [[x two\n- x] three\n- x]] four\n- (x) five\n- {x} six\n- [[x]] seven\n",
+    "html": "<ul>\n<li>[x one</li>\n<li>[[x two</li>\n<li>x] three</li>\n<li>x]] four</li>\n<li>(x) five</li>\n<li>{x} six</li>\n<li>[[x]] seven</li>\n</ul>\n",
+    "example": 7
+  },
+  {
+    "markdown": "- [  ] foo\n-  [\t] bar\n- [　] baz\n- [] bim\n",
+    "html": "<ul>\n<li>[  ] foo</li>\n<li>[\t] bar</li>\n<li>[　] baz</li>\n<li>[] bim</li>\n</ul>\n",
+    "example": 8
+  },
+  {
+    "markdown": "- [\t] foo\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled>foo</li>\n</ul>\n",
+    "example": 9
+  },
+  {
+    "markdown": "- [x] foo\n- [X] bar\n- [x ] baz\n- [xx] bim\n- [o] boo\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled checked>foo</li>\n<li><input type=\"checkbox\" disabled checked>bar</li>\n<li>[x ] baz</li>\n<li>[xx] bim</li>\n<li>[o] boo</li>\n</ul>\n",
+    "example": 10
+  },
+  {
+    "markdown": "- [x]   foo\n- [ ]\tbar\n- [ ]baz\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled checked>  foo</li>\n<li><input type=\"checkbox\" disabled>  bar</li>\n<li>[ ]baz</li>\n</ul>\n",
+    "example": 11
+  },
+  {
+    "markdown": "- [ ]\n- [x]\n- [ ]\n- [X]\t\n",
+    "html": "<ul>\n<li>[ ]</li>\n<li>[x]</li>\n<li>[ ]</li>\n<li>[X]</li>\n</ul>\n",
+    "example": 12
+  },
+  {
+    "markdown": "- [ ] > foo\n- [x] - bar\n- [ ]     baz\n- [ ] [x] bim\n- [x] - [x] boo\n- [ ] one\n  [ ] two\n  > [ ] three\n",
+    "html": "<ul>\n<li><input type=\"checkbox\" disabled>&gt; foo</li>\n<li><input type=\"checkbox\" disabled checked>- bar</li>\n<li><input type=\"checkbox\" disabled>    baz</li>\n<li><input type=\"checkbox\" disabled>[x] bim</li>\n<li><input type=\"checkbox\" disabled checked>- [x] boo</li>\n<li><input type=\"checkbox\" disabled>one\n[ ] two\n<blockquote>\n<p>[ ] three</p>\n</blockquote>\n</li>\n</ul>\n",
+    "example": 13
+  }
+]

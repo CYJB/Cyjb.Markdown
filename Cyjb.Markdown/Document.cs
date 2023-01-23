@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Markdown.Parse.Blocks;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
@@ -34,6 +35,7 @@ public sealed class Document : Node, INodeContainer<BlockNode>
 	/// <summary>
 	/// 子节点列表。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private readonly NodeList<BlockNode> children;
 
 	/// <summary>

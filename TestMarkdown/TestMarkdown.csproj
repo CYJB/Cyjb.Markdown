@@ -34,6 +34,9 @@
     <None Update="Spec\GitHubFlavoredMarkdown.0.29.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Spec\TaskListItem.spec.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

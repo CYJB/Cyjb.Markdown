@@ -157,6 +157,23 @@ public abstract partial class BaseTest
 	}
 
 	/// <summary>
+	/// 验证是任务列表项。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="isChecked">任务列表项是否是选中的。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void TaskListItem(TextSpan span, bool isChecked, Action validator)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.ListItem, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		ListItem item = (node as ListItem)!;
+		Assert.AreEqual(isChecked, item.Checked);
+		AssertChildren(node, item.Children, validator);
+	}
+
+	/// <summary>
 	/// 验证是可选中的列表项。
 	/// </summary>
 	/// <param name="span">节点的文本范围。</param>

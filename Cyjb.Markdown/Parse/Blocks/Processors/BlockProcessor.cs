@@ -48,6 +48,11 @@ internal abstract class BlockProcessor
 	public virtual bool NeedParseInlines => false;
 
 	/// <summary>
+	/// 获取是否允许尝试开始新的块。
+	/// </summary>
+	public virtual bool TryBlockStarts => IsContainer;
+
+	/// <summary>
 	/// 获取或设置当前处理器是否需要被替换。
 	/// </summary>
 	internal bool IsNeedReplaced { get; set; }

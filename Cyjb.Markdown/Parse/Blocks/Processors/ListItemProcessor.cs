@@ -49,6 +49,24 @@ internal sealed class ListItemProcessor : BlockProcessor
 	public override bool IsContainer => true;
 
 	/// <summary>
+	/// 获取是否允许尝试开始新的块。
+	/// </summary>
+	/// <remarks>如果是空的任务列表项，必须后跟段落，不能尝试开始新的块。
+	/// 其它情况都可以尝试开始新的块。</remarks>
+	public override bool TryBlockStarts => !item.Checked.HasValue || item.Children.Count > 0;
+
+	/// <summary>
+	/// 获取或设置列表项的选中状态。
+	/// </summary>
+	/// <value>使用 <c>null</c> 表示不能选中（普通列表项）；<c>true</c> 表示已选中，
+	/// <c>false</c> 表示未选中。</value>
+	public bool? Checked
+	{
+		get => item.Checked;
+		set => item.Checked = value;
+	}
+
+	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>

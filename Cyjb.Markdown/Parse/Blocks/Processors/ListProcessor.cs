@@ -227,7 +227,13 @@ internal sealed class ListProcessor : BlockProcessor
 				listProcessor = new ListProcessor(token.Text[^1], list);
 				yield return listProcessor;
 			}
-			yield return new ListItemProcessor(listProcessor, itemStart, contentIndent);
+			ListItemProcessor itemProcessor = new(listProcessor, itemStart, contentIndent);
+			// 检查任务列表项。
+			if (line.Options.UseTaskListItem)
+			{
+				itemProcessor.Checked = CheckTaskListItem(line);
+			}
+			yield return itemProcessor;
 		}
 
 		/// <summary>
@@ -290,6 +296,45 @@ internal sealed class ListProcessor : BlockProcessor
 				}
 			}
 			return result;
+		}
+
+		/// <summary>
+		/// 检查当前行是否包含任务列表项。
+		/// </summary>
+		/// <param name="line">要检查的行。</param>
+		/// <returns>如果当前行包含任务列表项，根据是否勾选返回 <c>true</c> 或 <c>false</c>；
+		/// 如果不包含任务列表项，返回 <c>null</c>。</returns>
+		private static bool? CheckTaskListItem(LineInfo line)
+		{
+			// 检查包含任务列表项标志
+			if (line.Indent >= 4 || line.IsBlank)
+			{
+				return null;
+			}
+			Token<BlockKind> token = line.Peek();
+			if (token.Kind != BlockKind.TaskListItemMarker)
+			{
+				return null;
+			}
+			// 检查任务列表项宽度为 3（处理方括号内为 Tab，但宽度为 3 的场景）。
+			LinePositionSpan span = token.LinePositionSpan;
+			if (span.End.Column - span.Start.Column != 3)
+			{
+				return null;
+			}
+			// 右方括号后面至少包含一个空白，也包含内容。
+			if (line.Tokens.Count <= 2 || line.Tokens[1].Kind != BlockKind.Indent ||
+				!line.Tokens.Skip(2).Any(LineInfo.HasContent))
+			{
+				return null;
+			}
+			// 消费掉任务列表项标志。
+			line.Read();
+			// 消费掉任务列表项标志后的一个空白。
+			line.SkipIndent(1);
+			// 后续的段落不要跳过这里的空白。
+			line.ParagraphSkippable = false;
+			return token.Text[1] is 'x' or 'X';
 		}
 	}
 }

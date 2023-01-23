@@ -30,6 +30,10 @@ internal enum BlockKind
 	/// </summary>
 	OrderedListMarker,
 	/// <summary>
+	/// 任务列表项标志。
+	/// </summary>
+	TaskListItemMarker,
+	/// <summary>
 	/// 代码分隔符的起始。
 	/// </summary>
 	CodeFenceStart,

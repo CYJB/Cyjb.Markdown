@@ -59,6 +59,17 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试任务列表项规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/task-list-item.md"/>
+	[TestMethod]
+	public void TestTaskListItem()
+	{
+		SpecItem[] items = ReadSpec("TaskListItem.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>

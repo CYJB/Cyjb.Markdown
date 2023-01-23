@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -10,6 +11,7 @@ public sealed class HtmlBlock : BlockNode, IEquatable<HtmlBlock>
 	/// <summary>
 	/// HTML 的内容。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
 
 	/// <summary>

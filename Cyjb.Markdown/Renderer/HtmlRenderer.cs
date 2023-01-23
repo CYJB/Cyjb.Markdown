@@ -37,6 +37,14 @@ public class HtmlRenderer : SyntaxWalker
 	/// 获取或设置软换行的字符，默认为 <c>\n</c>。
 	/// </summary>
 	public string SoftBreak { get; set; } = "\n";
+	/// <summary>
+	/// 获取或设置未选中状态的任务列表项 HTML。
+	/// </summary>
+	public string UncheckedTaskListItem { get; set; } = "<input type=\"checkbox\" disabled>";
+	/// <summary>
+	/// 获取或设置选中状态的任务列表项 HTML。
+	/// </summary>
+	public string CheckedTaskListItem { get; set; } = "<input type=\"checkbox\" disabled checked>";
 
 	/// <summary>
 	/// 添加指定的 HTML 属性修改器。
@@ -175,6 +183,17 @@ public class HtmlRenderer : SyntaxWalker
 	public override void VisitListItem(ListItem node)
 	{
 		WriteStartTag(node, "li");
+		if (node.Checked.HasValue)
+		{
+			if (node.Checked.Value)
+			{
+				WriteRaw(CheckedTaskListItem);
+			}
+			else
+			{
+				WriteRaw(UncheckedTaskListItem);
+			}
+		}
 		DefaultVisit(node);
 		WriteEndTag("li");
 		WriteLine();

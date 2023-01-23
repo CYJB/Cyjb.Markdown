@@ -69,6 +69,14 @@ internal sealed class LineInfo
 	/// </summary>
 	public int Indent => GetIndent().Width;
 	/// <summary>
+	/// 是否是段落可以跳过的缩进。
+	/// </summary>
+	public bool ParagraphSkippable
+	{
+		get => GetIndent().ParagraphSkippable;
+		set => GetIndent().ParagraphSkippable = value;
+	}
+	/// <summary>
 	/// 获取是否是代码缩进。
 	/// </summary>
 	public bool IsCodeIndent => GetIndent().Width >= CodeIndent;
@@ -84,6 +92,10 @@ internal sealed class LineInfo
 	/// 获取行的结束位置。
 	/// </summary>
 	public int End => end;
+	/// <summary>
+	/// 获取解析的选项。
+	/// </summary>
+	public ParseOptions Options => parser.Options;
 
 	/// <summary>
 	/// 获取当前行的文本。

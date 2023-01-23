@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
@@ -8,10 +10,12 @@ public abstract class BlockNode : Node
 	/// <summary>
 	/// 前驱兄弟节点。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private BlockNode? prev;
 	/// <summary>
 	/// 后继兄弟节点。
 	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private BlockNode? next;
 
 	/// <summary>
