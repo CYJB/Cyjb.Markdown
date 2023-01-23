@@ -18,6 +18,7 @@ public readonly struct ParseOptions
 	{
 		UseStrikethrough = false,
 		UseExtraListStyleType = false,
+		UseTaskListItem = false,
 	};
 
 	/// <summary>

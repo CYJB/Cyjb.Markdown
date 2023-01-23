@@ -549,5 +549,32 @@ public class UnitTestTaskListItem : BaseTest
 			});
 		});
 	}
+	/// <summary>
+	/// 测试 CommonMark 不支持任务列表项。
+	/// </summary>
+	[TestMethod]
+	public void TestCommonMark()
+	{
+		AssertCommonMark("- [ ] foo\r\n- [x] bar\r\n", () =>
+		{
+			UnorderedList(0..22, false, () =>
+			{
+				ListItem(0..11, () =>
+				{
+					Paragraph(2..11, () =>
+					{
+						Literal(2..9, "[ ] foo");
+					});
+				});
+				ListItem(11..22, () =>
+				{
+					Paragraph(13..22, () =>
+					{
+						Literal(13..20, "[x] bar");
+					});
+				});
+			});
+		});
+	}
 }
 

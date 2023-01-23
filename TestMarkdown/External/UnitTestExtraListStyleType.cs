@@ -234,7 +234,7 @@ public class UnitTestExtraListStyleType : BaseTest
 	/// 测试 CommonMark 不支持扩展列表样式。
 	/// </summary>
 	[TestMethod]
-	public void TestCommonMarkNoExtraStyle()
+	public void TestCommonMark()
 	{
 		AssertCommonMark("a. foo\r\n\r\nB. bar\r\n\r\ni. baz\r\n\r\nIV. boo\r\n\r\nα. bom\r\n", () =>
 		{

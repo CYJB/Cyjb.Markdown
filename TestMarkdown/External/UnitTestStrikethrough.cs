@@ -210,7 +210,7 @@ public class UnitTestStrikethrough : BaseTest
 	/// 测试 CommonMark 不支持删除线样式。
 	/// </summary>
 	[TestMethod]
-	public void TestCommonMarkNoStrikethrough()
+	public void TestCommonMark()
 	{
 		AssertCommonMark("~~Hi~~\r\n", () =>
 		{
