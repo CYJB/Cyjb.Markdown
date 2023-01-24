@@ -108,8 +108,8 @@ internal class HtmlBlockProcessor : BlockProcessor
 				yield break;
 			}
 			HtmlInfo info = (HtmlInfo)line.Peek().Value!;
-			if (!info.CanInterruptParagraph && (matchedProcessor.Kind == MarkdownKind.Paragraph ||
-				matchedProcessor.CanLazyContinuation))
+			if (!info.CanInterruptParagraph && (line.ActivatedProcessor.Kind == MarkdownKind.Paragraph ||
+				line.ActivatedProcessor.CanLazyContinuation))
 			{
 				// 不中断段落。
 				yield break;
