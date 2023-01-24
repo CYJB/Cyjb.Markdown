@@ -44,17 +44,36 @@ internal static partial class ParseUtil
 	public static bool TryParseLinkDestination(ref ReadOnlySpan<char> text,
 		[MaybeNullWhen(false)] out string destination)
 	{
+		destination = null;
 		int idx;
 		if (text[0] == '<')
 		{
-			// <..> 形式
-			idx = text.IndexOfUnescaped('>');
-			destination = text[1..idx].Trim().Unescape();
-			text = text[(idx + 1)..];
-			return true;
+			// <..> 形式，不能出现未转义的 < 和 >。
+			for (idx = 1; idx < text.Length; idx++)
+			{
+				char ch = text[idx];
+				switch (ch)
+				{
+					case '\\':
+						if (IsEscapable(ch))
+						{
+							idx++;
+						}
+						break;
+					case '\r':
+					case '\n':
+					case '<':
+						return false;
+					case '>':
+						destination = text[1..idx].Trim().Unescape();
+						text = text[(idx + 1)..];
+						return true;
+				}
+			}
+			// 未找到未转义的 >。
+			return false;
 		}
 		// 普通形式
-		destination = null;
 		// 需要确保括号是成对的。
 		int openParens = 0;
 		for (idx = 0; idx < text.Length; idx++)
