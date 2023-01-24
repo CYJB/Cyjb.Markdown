@@ -30,12 +30,12 @@
 	<PackageReference Include="Cyjb" Version="1.0.12">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.8">
+	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.10">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.9" />
+	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.10" />
   </ItemGroup>
 
   <ItemGroup>

@@ -234,7 +234,7 @@ public class UnitTestCommonMarkJS : BaseTest
 		});
 	}
 	/// <summary>
-	/// Issue #517 - meta tags in inline contexts
+	/// Issue commonamrk#517 - script, pre, style close tag without opener.
 	/// </summary>
 	/// <see href="https://github.com/commonmark/commonmark-spec/issues/517"/>
 	[TestMethod]
@@ -250,6 +250,7 @@ public class UnitTestCommonMarkJS : BaseTest
 	/// <summary>
 	/// Issue #289.
 	/// </summary>
+	/// <see href="https://github.com/commonmark/commonmark-spec/issues/289"/>
 	[TestMethod]
 	public void Test15()
 	{

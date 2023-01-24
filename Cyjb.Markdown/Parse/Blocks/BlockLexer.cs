@@ -9,7 +9,7 @@ namespace Cyjb.Markdown.Parse.Blocks;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/"/>
 [LexerRejectable]
-[LexerSymbol(@"\r?\n", Kind = BlockKind.NewLine)]
+[LexerSymbol(@"\r|\r?\n", Kind = BlockKind.NewLine)]
 [LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
 [LexerSymbol(@"`{3,}[ \t]*$", Kind = BlockKind.CodeFence)]
 [LexerSymbol(@"~{3,}[ \t]*$", Kind = BlockKind.CodeFence)]
