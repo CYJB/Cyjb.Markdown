@@ -15,8 +15,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM198()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| foo | bar |\r\n| --- | --- |\r\n| baz | bim |\r\n", () =>
 		{
 			Table(0..45, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -53,8 +51,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM199()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | defghi |\r\n:-: | -----------:\r\nbar | baz\r\n", () =>
 		{
 			Table(0..49, new TableAlign[] { TableAlign.Center, TableAlign.Right }, () =>
@@ -91,8 +87,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM200()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| f\\|oo  |\r\n| ------ |\r\n| b `\\|` az |\r\n| b **\\|** im |\r\n", () =>
 		{
 			Table(0..56, new TableAlign[] { TableAlign.None }, () =>
@@ -135,8 +129,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM201()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | def |\r\n| --- | --- |\r\n| bar | baz |\r\n> bar\r\n", () =>
 		{
 			Table(0..45, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -177,8 +169,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM202()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | def |\r\n| --- | --- |\r\n| bar | baz |\r\nbar\r\n\r\nbar\r\n", () =>
 		{
 			Table(0..50, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -226,8 +216,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM203()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | def |\r\n| --- |\r\n| bar |\r\n", () =>
 		{
 			Paragraph(0..33, () =>
@@ -247,8 +235,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM204()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | def |\r\n| --- | --- |\r\n| bar |\r\n| bar | baz | boo |\r\n", () =>
 		{
 			Table(0..60, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -296,8 +282,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestGFM205()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("| abc | def |\r\n| --- | --- |\r\n", () =>
 		{
 			Table(0..30, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -322,8 +306,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestHeadingLeadingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown(" abc\r\n|-\r\n", () =>
 		{
 			Table(1..10, new TableAlign[] { TableAlign.None }, () =>
@@ -379,8 +361,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestHeadingTrailingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc    \r\n|-\r\n", () =>
 		{
 			Table(0..13, new TableAlign[] { TableAlign.None }, () =>
@@ -394,8 +374,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc |   \r\n|-\r\n", () =>
 		{
 			Table(0..14, new TableAlign[] { TableAlign.None }, () =>
@@ -416,8 +394,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestHeadingMustBeOneLine()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|def\r\n-|-\r\n", () =>
 		{
 			Paragraph(0..16, () =>
@@ -436,8 +412,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestHeadingCellCanEmpty()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("|\r\n|-\r\n", () =>
 		{
 			Table(0..7, new TableAlign[] { TableAlign.None }, () =>
@@ -458,8 +432,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("||\r\n|-\r\n", () =>
 		{
 			Table(0..8, new TableAlign[] { TableAlign.None }, () =>
@@ -480,8 +452,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("|||\r\n-|-\r\n", () =>
 		{
 			Table(0..10, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -493,8 +463,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("||center header||\r\n-|-------------|-\r\n1|      2      |3\r\n", () =>
 		{
 			Table(0..57, new TableAlign[] { TableAlign.None, TableAlign.None, TableAlign.None }, () =>
@@ -532,8 +500,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestHeadingPipes()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n", () =>
 		{
 			Table(0..9, new TableAlign[] { TableAlign.None }, () =>
@@ -631,8 +597,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowMustOneOrMore()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def\r\n-|-\r\n", () =>
 		{
 			Table(0..14, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -650,8 +614,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def\r\n--|--\r\n", () =>
 		{
 			Table(0..16, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -676,8 +638,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowCanNotContainInvalidChars()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def\r\n-a|-\r\n", () =>
 		{
 			Paragraph(0..15, () =>
@@ -785,8 +745,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowLeadingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n |-\r\n", () =>
 		{
 			Table(0..10, new TableAlign[] { TableAlign.None }, () =>
@@ -800,8 +758,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n  |-\r\n", () =>
 		{
 			Table(0..11, new TableAlign[] { TableAlign.None }, () =>
@@ -815,8 +771,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n   |-\r\n", () =>
 		{
 			Table(0..12, new TableAlign[] { TableAlign.None }, () =>
@@ -847,8 +801,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowTrailingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-   \r\n", () =>
 		{
 			Table(0..12, new TableAlign[] { TableAlign.None }, () =>
@@ -882,8 +834,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowNeedsPipes()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def\r\n-- -\r\n", () =>
 		{
 			Paragraph(0..9, () =>
@@ -899,8 +849,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestDelimiterRowCanNotHaveAdjacentPipes()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def\r\n-||-\r\n", () =>
 		{
 			Paragraph(0..15, () =>
@@ -910,8 +858,6 @@ public class UnitTestTable : BaseTest
 				Literal(9..13, "-||-");
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc|def|ghi\r\n-||-\r\n", () =>
 		{
 			Paragraph(0..19, () =>
@@ -974,8 +920,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestBodyLeadingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n def\r\n", () =>
 		{
 			Table(0..15, new TableAlign[] { TableAlign.None }, () =>
@@ -996,8 +940,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n  def\r\n", () =>
 		{
 			Table(0..16, new TableAlign[] { TableAlign.None }, () =>
@@ -1018,8 +960,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n   def\r\n", () =>
 		{
 			Table(0..17, new TableAlign[] { TableAlign.None }, () =>
@@ -1041,8 +981,6 @@ public class UnitTestTable : BaseTest
 			});
 		});
 		// 四个就太多了
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n    def\r\n", () =>
 		{
 			Table(0..9, new TableAlign[] { TableAlign.None }, () =>
@@ -1064,8 +1002,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestBodyTrailingSpace()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\ndef    \r\n", () =>
 		{
 			Table(0..18, new TableAlign[] { TableAlign.None }, () =>
@@ -1113,8 +1049,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestBodyPipes()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\ndef\r\n", () =>
 		{
 			Table(0..14, new TableAlign[] { TableAlign.None }, () =>
@@ -1135,8 +1069,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n|def\r\n", () =>
 		{
 			Table(0..15, new TableAlign[] { TableAlign.None }, () =>
@@ -1157,8 +1089,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\ndef|\r\n", () =>
 		{
 			Table(0..15, new TableAlign[] { TableAlign.None }, () =>
@@ -1179,8 +1109,6 @@ public class UnitTestTable : BaseTest
 				});
 			});
 		});
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n|def|\r\n", () =>
 		{
 			Table(0..16, new TableAlign[] { TableAlign.None }, () =>
@@ -1208,8 +1136,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestBodyCellCanEmpty()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n|\r\n", () =>
 		{
 			Table(0..12, new TableAlign[] { TableAlign.None }, () =>
@@ -1285,8 +1211,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestEscaped()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("abc\r\n|-\r\n1\\`2`\r\n", () =>
 		{
 			Table(0..16, new TableAlign[] { TableAlign.None }, () =>
@@ -1318,8 +1242,6 @@ public class UnitTestTable : BaseTest
 		// 但根据 GFM，由于会先解析表格，此时会先将 `\|` 解析为被转义的竖划线，因此只有一个单元格。
 		// 考虑到前一种用法更符合通常的 Markdown 转义用法（总是从左至右解析），因此选择了前一种实现。
 		// 很多其它 Markdown 库也都采用了前一种实现。
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("a|b\r\n-|-\r\n1\\\\|2\r\n", () =>
 		{
 			Table(0..17, new TableAlign[] { TableAlign.None, TableAlign.None }, () =>
@@ -1391,8 +1313,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestAlign()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("a|b|c|d|e\r\n:-| :---| -:|:-:|:----:  |   \r\n", () =>
 		{
 			Table(0..42, new TableAlign[] {
@@ -1435,8 +1355,6 @@ public class UnitTestTable : BaseTest
 	[TestMethod]
 	public void TestInsideQueue()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("> abc\r\n> |-\r\n> def\r\nghi\r\n", () =>
 		{
 			Quote(0..25, () =>

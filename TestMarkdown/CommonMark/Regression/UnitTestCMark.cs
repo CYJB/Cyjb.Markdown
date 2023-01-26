@@ -17,8 +17,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test1()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("line1\r\r\nline2\r\n", () =>
 		{
 			Paragraph(0..6, () =>
@@ -39,8 +37,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test2()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("By taking it apart\r\n\r\n- alternative solutions\r\n\t\r\nRepeatedly solving\r\n\t\r\n- how techniques\r\n", () =>
 		{
 			Paragraph(0..20, () =>
@@ -135,8 +131,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test6()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("[a]\r\n\r\n[a]: <te<st>\r\n", () =>
 		{
 			Paragraph(0..5, () =>
@@ -157,8 +151,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test7()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("[a](te\\ st)\r\n", () =>
 		{
 			Paragraph(0..13, () =>
@@ -195,8 +187,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test9()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("[a](\\ b)\r\n\r\n[a](<<b)\r\n\r\n[a](<b\r\n)\r\n", () =>
 		{
 			Paragraph(0..10, () =>
@@ -222,8 +212,6 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test10()
 	{
-		//              0         1         2         3         4         5         6         7
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("[link](url ((title))\r\n", () =>
 		{
 			Paragraph(0..22, () =>
