@@ -9,14 +9,17 @@ namespace Cyjb.Markdown.Parse.Blocks;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/"/>
 [LexerRejectable]
+[LexerRegex("WS", "[ \t]")]
+[LexerRegex("WS_O", "{WS}*")]
+[LexerRegex("WS_P", "{WS}+")]
 [LexerSymbol(@"\r|\r?\n", Kind = BlockKind.NewLine)]
 [LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
-[LexerSymbol(@"`{3,}[ \t]*$", Kind = BlockKind.CodeFence)]
-[LexerSymbol(@"~{3,}[ \t]*$", Kind = BlockKind.CodeFence)]
+[LexerSymbol(@"`{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
+[LexerSymbol(@"~{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
 [LexerSymbol(@"`{3,}[^`\r\n]+$", Kind = BlockKind.CodeFenceStart)]
 [LexerSymbol(@"~{3,}.+$", Kind = BlockKind.CodeFenceStart)]
-[LexerSymbol(@"#{1,6}([ \t]+.*)?$", Kind = BlockKind.ATXHeading)]
-[LexerSymbol(@"=+[ \t]*$", Kind = BlockKind.SetextUnderline)]
+[LexerSymbol(@"#{1,6}({WS_P}.*)?$", Kind = BlockKind.ATXHeading)]
+[LexerSymbol(@"=+{WS_O}$", Kind = BlockKind.SetextUnderline)]
 [LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
 internal partial class BlockLexer : LexerController<BlockKind>
 {
@@ -28,8 +31,8 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 缩进的动作。
 	/// </summary>
-	[LexerSymbol(@"[ \t]+$", Kind = BlockKind.Indent, UseShortest = true)]
-	[LexerSymbol(@"[ \t]+/[^ \t]", Kind = BlockKind.Indent, UseShortest = true)]
+	[LexerSymbol(@"{WS_P}$", Kind = BlockKind.Indent, UseShortest = true)]
+	[LexerSymbol(@"{WS_P}/[^ \t]", Kind = BlockKind.Indent, UseShortest = true)]
 	private void IndentAction()
 	{
 		Accept(new IndentInfo(Span, Source.Locator!, Text));
@@ -37,7 +40,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 无序列表标志的动作。
 	/// </summary>
-	[LexerSymbol(@"(-|\+|\*)/[ \t]", Kind = BlockKind.UnorderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"(-|\+|\*)/{WS}", Kind = BlockKind.UnorderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"(-|\+|\*)$", Kind = BlockKind.UnorderedListMarker)]
 	private void UnorderedListMarkerAction()
 	{
@@ -47,7 +50,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 有序数字列表标志的动作。
 	/// </summary>
-	[LexerSymbol(@"[0-9]{1,9}(\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"[0-9]{1,9}(\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"[0-9]{1,9}(\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedListMarkerAction()
 	{
@@ -57,7 +60,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 有序小写字母列表标志的动作。
 	/// </summary>
-	[LexerSymbol(@"[a-z](\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"[a-z](\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"[a-z](\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedLowerAlphaListMarkerAction()
 	{
@@ -74,7 +77,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 有序大写字母列表标志的动作。
 	/// </summary>
-	[LexerSymbol(@"[A-Z](\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"[A-Z](\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"[A-Z](\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedUpperAlphaListMarkerAction()
 	{
@@ -92,7 +95,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 有序小写罗马数字列表标志的动作。
 	/// </summary>
 	[LexerRegex("roman", "m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})")]
-	[LexerSymbol(@"{roman}(\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"{roman}(\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"{roman}(\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedLowerRomanListMarkerAction()
 	{
@@ -110,7 +113,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 有序大写罗马数字列表标志的动作。
 	/// </summary>
 	[LexerRegex("Roman", "M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")]
-	[LexerSymbol(@"{Roman}(\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"{Roman}(\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"{Roman}(\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedUpperRomanListMarkerAction()
 	{
@@ -127,7 +130,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 有序小写希腊字母列表标志的动作。
 	/// </summary>
-	[LexerSymbol(@"[α-ω](\.|\))/[ \t]", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
+	[LexerSymbol(@"[α-ω](\.|\))/{WS}", Kind = BlockKind.OrderedListMarker, UseShortest = true)]
 	[LexerSymbol(@"[α-ω](\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedLowerGreekListMarkerAction()
 	{
@@ -145,8 +148,8 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 分割线的动作。
 	/// </summary>
 	/// <remarks>优先级低于 <see cref="BlockKind.UnorderedListMarker"/>。</remarks>
-	[LexerSymbol(@"-+[ \t]*$", Kind = BlockKind.DashLine)]
-	[LexerSymbol(@"(\*[ \t]*){3,}|(-[ \t]*){3,}|(_[ \t]*){3,}$", Kind = BlockKind.ThematicBreak)]
+	[LexerSymbol(@"-+{WS_O}$", Kind = BlockKind.DashLine)]
+	[LexerSymbol(@"(\*{WS_O}){3,}|(-{WS_O}){3,}|(_{WS_O}){3,}$", Kind = BlockKind.ThematicBreak)]
 	private void ThematicBreakAction()
 	{
 		Accept();
@@ -225,15 +228,32 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 其它标签的动作。
 	/// </summary>
-	[LexerRegex("WS", @"[ \t]*")]
 	[LexerRegex("TagName", @"[a-z][a-z0-9-]*", RegexOptions.IgnoreCase)]
 	[LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
 	[LexerRegex("AttrValue", @"[^ \t\r\n""'=<>`']+|'[^'\r\n]*'|\""[^""\r\n]*\""", RegexOptions.IgnoreCase)]
-	[LexerSymbol(@"[<]{TagName}([ \t]+{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>[ \t]*$", Kind = BlockKind.HtmlStart)]
-	[LexerSymbol(@"[<]\/{TagName}{WS}>[ \t]*$", Kind = BlockKind.HtmlStart)]
+	[LexerSymbol(@"[<]{TagName}({WS_P}{AttrName}({WS_O}={WS_O}{AttrValue})?)*{WS_O}\/?>{WS_O}$", Kind = BlockKind.HtmlStart)]
+	[LexerSymbol(@"[<]\/{TagName}{WS_O}>{WS_O}$", Kind = BlockKind.HtmlStart)]
 	private void HtmlOtherAction()
 	{
 		Accept(HtmlInfo.HtmlOther);
+	}
+
+	/// <summary>
+	/// 表格分割行的动作。
+	/// </summary>
+	[LexerRegex("TableDelim", "{WS_O}:?-+:?{WS_O}")]
+	[LexerSymbol(@"\|?{TableDelim}(\|{TableDelim})*\|?{WS_O}$", Kind = BlockKind.TableDelimiterRow)]
+	private void TableDelimiterRowAction()
+	{
+		// 要求必须包含至少一个竖划线。
+		if (Options.UseTable && Text.Contains('|'))
+		{
+			Accept();
+		}
+		else
+		{
+			Reject();
+		}
 	}
 
 	/// <summary>

@@ -20,6 +20,10 @@ internal sealed class MappedText
 	/// 源码映射表。
 	/// </summary>
 	private Tuple<int, int>[] map;
+	/// <summary>
+	/// 位置映射器。
+	/// </summary>
+	private LocationMap? locMap;
 
 	/// <summary>
 	/// 使用指定的文本和映射信息初始化 <see cref="MappedText"/> 类的新实例。
@@ -67,6 +71,17 @@ internal sealed class MappedText
 	public char this[int index] => text[index];
 
 	/// <summary>
+	/// 返回指定字符索引在映射后的索引。
+	/// </summary>
+	/// <param name="index">要检查的字符索引。</param>
+	/// <returns><paramref name="index"/> 在映射后的索引。</returns>
+	public int GetMappedIndex(int index)
+	{
+		locMap ??= new LocationMap(map);
+		return locMap.MapLocation(index);
+	}
+
+	/// <summary>
 	/// 移除起始空白。
 	/// </summary>
 	/// <returns>如果移除了任何起始空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
@@ -82,6 +97,7 @@ internal sealed class MappedText
 		span = new TextSpan(span.Start + diff, span.End);
 		// 映射关系也需要调整
 		map = GetMap(diff);
+		locMap = null;
 		return true;
 	}
 
@@ -99,6 +115,16 @@ internal sealed class MappedText
 		text = text[0..textSpan.Length];
 		span = new TextSpan(span.Start, span.Start + text.Length);
 		return true;
+	}
+
+	/// <summary>
+	/// 返回当前文本中是否包含指定字符。
+	/// </summary>
+	/// <param name="ch">要检查的字符。</param>
+	/// <returns>如果当前文本中包含指定字符，返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public bool Contains(char ch)
+	{
+		return text.Contains(ch);
 	}
 
 	/// <summary>

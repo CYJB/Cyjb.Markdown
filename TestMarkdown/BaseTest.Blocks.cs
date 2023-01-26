@@ -255,4 +255,58 @@ public abstract partial class BaseTest
 		Assert.AreEqual(start, list.Start);
 		AssertChildren(node, list.Children, validator);
 	}
+
+	/// <summary>
+	/// 验证是表格。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="aligns">表格的对齐。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void Table(TextSpan span, TableAlign[] aligns, Action validator)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.Table, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		Table table = (node as Table)!;
+		CollectionAssert.AreEqual(aligns, table.Aligns);
+		AssertChildren(node, table.Children, validator);
+	}
+
+	/// <summary>
+	/// 验证是表格行。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void TableRow(TextSpan span, Action validator)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.TableRow, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		TableRow row = (node as TableRow)!;
+		AssertChildren(node, row.Children, validator);
+	}
+
+	/// <summary>
+	/// 验证是表格的单元格。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void TableCell(TextSpan span, Action? validator = null)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.TableCell, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		TableCell cell = (node as TableCell)!;
+		if (validator == null)
+		{
+			Assert.AreEqual(0, cell.Children.Count);
+		}
+		else
+		{
+			AssertChildren(node, cell.Children, validator);
+		}
+	}
 }

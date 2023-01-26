@@ -25,12 +25,13 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	private readonly IList<MappedText> text;
 
 	/// <summary>
-	/// 使用Setext 标题的起始位置和文本初始化 <see cref="SetextHeadingProcessor"/> 类的新实例。
+	/// 使用 Setext 标题的起始位置和文本初始化 <see cref="SetextHeadingProcessor"/> 类的新实例。
 	/// </summary>
 	/// <param name="start">Setext 标题的起始位置。</param>
 	/// <param name="depth">Setext 标题的深度。</param>
 	/// <param name="text">Setext 标题的文本。</param>
-	private SetextHeadingProcessor(int start, int depth, IList<MappedText> text) : base(MarkdownKind.Heading)
+	private SetextHeadingProcessor(int start, int depth, IList<MappedText> text)
+		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
 		this.text = text;

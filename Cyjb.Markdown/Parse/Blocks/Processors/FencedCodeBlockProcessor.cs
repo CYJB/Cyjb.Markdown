@@ -151,8 +151,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 			if (token.Kind == BlockKind.CodeFenceStart)
 			{
 				ReadOnlySpan<char> text = token.Text.AsSpan()[fenceLength..];
-				MarkdownUtil.TrimStart(ref text);
-				MarkdownUtil.TrimEnd(ref text);
+				MarkdownUtil.Trim(ref text);
 				info = text.Unescape();
 			}
 			// 标记当前行已处理完毕。

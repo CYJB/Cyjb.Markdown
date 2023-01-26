@@ -139,6 +139,36 @@ public abstract class SyntaxVisitor<TResult>
 		return DefaultVisit(node);
 	}
 
+	/// <summary>
+	/// 访问指定的表格单元格。
+	/// </summary>
+	/// <param name="node">要访问的表格单元格节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitTableCell(TableCell node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的表格行。
+	/// </summary>
+	/// <param name="node">要访问的表格行节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitTableRow(TableRow node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的表格。
+	/// </summary>
+	/// <param name="node">要访问的表格节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitTable(Table node)
+	{
+		return DefaultVisit(node);
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点

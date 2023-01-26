@@ -44,6 +44,12 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	public override bool CanLazyContinuation => true;
 
 	/// <summary>
+	/// 获取是否允许尝试开始新的块。
+	/// </summary>
+	/// <remarks>段落允许被其它块节点中断。</remarks>
+	public override bool TryBlockStarts => true;
+
+	/// <summary>
 	/// 获取当前块是否需要解析行内节点。
 	/// </summary>
 	public override bool NeedParseInlines => true;

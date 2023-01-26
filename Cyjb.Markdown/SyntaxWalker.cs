@@ -13,33 +13,35 @@ public abstract class SyntaxWalker : SyntaxVisitor
 	/// <param name="node">要访问的节点。</param>
 	public override void DefaultVisit(Node node)
 	{
+		IReadOnlyList<Node> nodes;
 		if (node is INodeContainer<BlockNode> blockContainer)
 		{
-			NodeList<BlockNode> nodes = blockContainer.Children;
-			int count = nodes.Count;
-			for (int i = 0; i < count; i++)
-			{
-				nodes[i].Accept(this);
-			}
+			nodes = blockContainer.Children;
 		}
 		else if (node is INodeContainer<InlineNode> inlineContainer)
 		{
-			NodeList<InlineNode> nodes = inlineContainer.Children;
-			int count = nodes.Count;
-			for (int i = 0; i < count; i++)
-			{
-				nodes[i].Accept(this);
-			}
+			nodes = inlineContainer.Children;
 		}
 		else if (node is INodeContainer<ListItem> listContainer)
 		{
-			NodeList<ListItem> nodes = listContainer.Children;
-			int count = nodes.Count;
-			for (int i = 0; i < count; i++)
-			{
-				nodes[i].Accept(this);
-			}
+			nodes = listContainer.Children;
+		}
+		else if (node is INodeContainer<TableRow> tableRowContainer)
+		{
+			nodes = tableRowContainer.Children;
+		}
+		else if (node is INodeContainer<TableCell> tableCellContainer)
+		{
+			nodes = tableCellContainer.Children;
+		}
+		else
+		{
+			return;
+		}
+		int count = nodes.Count;
+		for (int i = 0; i < count; i++)
+		{
+			nodes[i].Accept(this);
 		}
 	}
-
 }

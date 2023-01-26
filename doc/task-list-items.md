@@ -1,6 +1,6 @@
 # 任务列表项
 
-[GitHub Flavored Markdown Spec](https://github.github.com/gfm/#task-list-items-extension-) 并未给出详细的任务列表项定义，根据一些测试和对比，这里采用以下的详细定义。
+[GitHub Flavored Markdown Spec](https://github.github.com/gfm/#task-list-items-extension-) 并未给出详细的任务列表项定义，根据一些测试和对比，这里采用以下的规范。
 
 任务列表项是一个列表项，它的首个内容块是以*任务列表项标记*开头的段落，并且与之后的内容间至少存在一个空格或 Tab。
 

@@ -121,6 +121,10 @@
     <value>链接标签不能为空或仅由空白字符组成。</value>
     <comment>链接标签不能为空字符串或仅由空白字符组成。</comment>
   </data>
+  <data name="ExcludedNodeTypes" xml:space="preserve">
+    <value>不能将“{0}”添加到当前节点。</value>
+    <comment>不能添加指定类型的节点。</comment>
+  </data>
   <data name="InvalidKind_Html" xml:space="preserve">
     <value>无效的类型，应为“HtmlStartTag”、“HtmlEndTag”、“HtmlComment”、“HtmlCData”、“HtmlDeclaration”或“HtmlProcessing”之一。</value>
     <comment>无效的 HTML 类型。</comment>
@@ -128,5 +132,13 @@
   <data name="InvalidKind_InlineGroup" xml:space="preserve">
     <value>无效的类型，应为“Emphasis”、“Strong”或“Strikethrough”之一。</value>
     <comment>无效的行内组类型。</comment>
+  </data>
+  <data name="RowMustHaveCell" xml:space="preserve">
+    <value>TableRow 至少需要包含一个 TableCell。</value>
+    <comment>表格行至少需要包含一个单元格。</comment>
+  </data>
+  <data name="TableMustHaveHeading" xml:space="preserve">
+    <value>Table 至少需要包含一个 TableRow 作为标题行。</value>
+    <comment>表格至少需要包含标题行。</comment>
   </data>
 </root>

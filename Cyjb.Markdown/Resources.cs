@@ -66,6 +66,14 @@ internal partial class Resources
 	internal static string EmptyLinkLabel => ResourceManager.GetString("EmptyLinkLabel", resourceCulture)!;
 	
 	/// <summary>
+	/// 返回类似 <c>Can not add '{0}' to current node.</c> 的本地化字符串。
+	/// </summary>
+	internal static string ExcludedNodeTypes(object? arg0)
+	{
+		return string.Format(resourceCulture, ResourceManager.GetString("ExcludedNodeTypes", resourceCulture)!, Format(arg0));
+	}
+	
+	/// <summary>
 	/// 返回类似 <c>Invalid kind, expect one of 'HtmlStartTag', 'HtmlEndTag', 'HtmlComment', 'HtmlCData', 'HtmlDeclaration' or 'HtmlProcessing'.</c> 的本地化字符串。
 	/// </summary>
 	internal static string InvalidKindHtml => ResourceManager.GetString("InvalidKind_Html", resourceCulture)!;
@@ -74,6 +82,16 @@ internal partial class Resources
 	/// 返回类似 <c>Invalid kind, expect one of 'Emphasis', 'Strong' or 'Strikethrough'.</c> 的本地化字符串。
 	/// </summary>
 	internal static string InvalidKindInlineGroup => ResourceManager.GetString("InvalidKind_InlineGroup", resourceCulture)!;
+	
+	/// <summary>
+	/// 返回类似 <c>TableRow must have at least one TableCell.</c> 的本地化字符串。
+	/// </summary>
+	internal static string RowMustHaveCell => ResourceManager.GetString("RowMustHaveCell", resourceCulture)!;
+	
+	/// <summary>
+	/// 返回类似 <c>Table must have at least one TableRow as heading.</c> 的本地化字符串。
+	/// </summary>
+	internal static string TableMustHaveHeading => ResourceManager.GetString("TableMustHaveHeading", resourceCulture)!;
 	
 	/// <summary>
 	/// 将指定对象格式化为字符串。

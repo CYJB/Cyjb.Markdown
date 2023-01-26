@@ -19,6 +19,7 @@ public readonly struct ParseOptions
 		UseStrikethrough = false,
 		UseExtraListStyleType = false,
 		UseTaskListItem = false,
+		UseTable = false,
 	};
 
 	/// <summary>
@@ -44,4 +45,8 @@ public readonly struct ParseOptions
 	/// 是否解析任务列表项，默认为 <c>true</c>。
 	/// </summary>
 	public bool UseTaskListItem { get; init; } = true;
+	/// <summary>
+	/// 是否解析表格，默认为 <c>true</c>。
+	/// </summary>
+	public bool UseTable { get; init; } = true;
 }

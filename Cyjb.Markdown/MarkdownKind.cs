@@ -46,6 +46,18 @@ public enum MarkdownKind
 	/// 列表项。
 	/// </summary>
 	ListItem,
+	/// <summary>
+	/// 表格。
+	/// </summary>
+	Table,
+	/// <summary>
+	/// 表格的行。
+	/// </summary>
+	TableRow,
+	/// <summary>
+	/// 表格的单元格。
+	/// </summary>
+	TableCell,
 
 	/// <summary>
 	/// 行内代码段。

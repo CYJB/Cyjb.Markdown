@@ -15,7 +15,7 @@ public sealed class Quote : BlockNode, INodeContainer<BlockNode>
 	private readonly NodeList<BlockNode> children;
 
 	/// <summary>
-	/// 使用指定的文本范围初始化 <see cref="Document"/> 类的新实例。
+	/// 使用指定的文本范围初始化 <see cref="Quote"/> 类的新实例。
 	/// </summary>
 	/// <param name="span">文本范围。</param>
 	public Quote(TextSpan span = default) : base(MarkdownKind.Quote)

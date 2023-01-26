@@ -12,7 +12,7 @@ namespace TestMarkdown.Syntax;
 public class UnitTestHtml
 {
 	/// <summary>
-	/// 测试 Html 类。
+	/// 测试 <see cref="Html"/> 类。
 	/// </summary>
 	[TestMethod]
 	public void TestHtml()

@@ -53,6 +53,10 @@ internal enum BlockKind
 	/// Setext 标题的下划线。
 	/// </summary>
 	SetextUnderline,
+	/// <summary>
+	/// 表格的分割行。
+	/// </summary>
+	TableDelimiterRow,
 
 	/// <summary>
 	/// 块级节点。

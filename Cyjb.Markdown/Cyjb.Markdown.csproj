@@ -18,6 +18,8 @@
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<TransformOnBuild>true</TransformOnBuild>
 	<Authors>CYJB</Authors>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Cyjb" Version="1.0.12">
+	<PackageReference Include="Cyjb" Version="1.0.13">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
 	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.10">

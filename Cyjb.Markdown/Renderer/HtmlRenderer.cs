@@ -27,6 +27,14 @@ public class HtmlRenderer : SyntaxWalker
 	/// Alt 文本的渲染器。
 	/// </summary>
 	private AltTextRenderer? altTextRenderer;
+	/// <summary>
+	/// 当前是否正在输出表格标题。
+	/// </summary>
+	private bool isTableHeading = false;
+	/// <summary>
+	/// 当前表格对齐。
+	/// </summary>
+	private TableAlign tableAlign = TableAlign.None;
 
 	/// <summary>
 	/// 初始化 <see cref="HtmlRenderer"/> 类的新实例。
@@ -37,6 +45,12 @@ public class HtmlRenderer : SyntaxWalker
 	/// 获取或设置软换行的字符，默认为 <c>\n</c>。
 	/// </summary>
 	public string SoftBreak { get; set; } = "\n";
+	/// <summary>
+	/// 是否输出空的表格标题，默认为 <c>false</c>。
+	/// </summary>
+	/// <remarks>如果表格标题的单元格全部是空的，那么若设置为 <c>false</c>，
+	/// 不会输出 <c>&lt;thead&gt;</c>；若设置为 <c>true</c>，则会输出 <c>&lt;thead&gt;</c>。</remarks>
+	public bool OutputEmptyTableHeading { get; set; } = false;
 	/// <summary>
 	/// 获取或设置未选中状态的任务列表项 HTML。
 	/// </summary>
@@ -243,6 +257,121 @@ public class HtmlRenderer : SyntaxWalker
 		DefaultVisit(node);
 		WriteLine();
 		WriteEndTag(tagName);
+		WriteLine();
+	}
+
+
+	/// <summary>
+	/// 访问指定的表格单元格。
+	/// </summary>
+	/// <param name="node">要访问的表格单元格节点。</param>
+	public override void VisitTableCell(TableCell node)
+	{
+		string tagName;
+		if (isTableHeading)
+		{
+			tagName = "th";
+		}
+		else
+		{
+			tagName = "td";
+		}
+		Dictionary<string, string> attributes = new();
+		if (tableAlign != TableAlign.None)
+		{
+			// 添加对齐的样式。
+			switch (tableAlign)
+			{
+				case TableAlign.Left:
+					attributes.Add("style", "text-align: left;");
+					break;
+				case TableAlign.Center:
+					attributes.Add("style", "text-align: center;");
+					break;
+				case TableAlign.Right:
+					attributes.Add("style", "text-align: right;");
+					break;
+			}
+		}
+		WriteStartTag(node, tagName, attributes);
+		DefaultVisit(node);
+		WriteEndTag(tagName);
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 访问指定的表格行。
+	/// </summary>
+	/// <param name="node">要访问的表格行节点。</param>
+	public override void VisitTableRow(TableRow node)
+	{
+		WriteStartTag(node, "tr");
+		WriteLine();
+		Table? table = node.Parent;
+		if (table == null)
+		{
+			// 不存在父表格，直接依次输出。
+			DefaultVisit(node);
+		}
+		else
+		{
+			// 存在父表格，设置每列的对齐，并确保每行的列数一致。
+			int columnCount = table.ColumnCount;
+			int len = Math.Min(node.Children.Count, columnCount);
+			for (int i = 0; i < len; i++)
+			{
+				tableAlign = table.Aligns[i];
+				node.Children[i].Accept(this);
+			}
+			tableAlign = TableAlign.None;
+			for (int i = len; i < columnCount; i++)
+			{
+				WriteStartTag(node, "td");
+				WriteEndTag("td");
+				WriteLine();
+			}
+		}
+		WriteEndTag("tr");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 访问指定的表格。
+	/// </summary>
+	/// <param name="node">要访问的表格节点。</param>
+	public override void VisitTable(Table node)
+	{
+		WriteStartTag(node, "table");
+		WriteLine();
+		// 输出 thead
+		bool hasHeading = true;
+		if (!OutputEmptyTableHeading)
+		{
+			hasHeading = node.Children[0].Children.Any(cell => cell.Children.Count > 0);
+		}
+		if (hasHeading)
+		{
+			WriteStartTag(node, "thead");
+			WriteLine();
+			isTableHeading = true;
+			node.Children[0].Accept(this);
+			isTableHeading = false;
+			WriteEndTag("thead");
+			WriteLine();
+		}
+		// 输出 tbody
+		if (node.Children.Count > 1)
+		{
+			WriteStartTag(node, "tbody");
+			WriteLine();
+			foreach (TableRow row in node.Children.Skip(1))
+			{
+				row.Accept(this);
+			}
+			WriteEndTag("tbody");
+			WriteLine();
+		}
+		WriteEndTag("table");
 		WriteLine();
 	}
 

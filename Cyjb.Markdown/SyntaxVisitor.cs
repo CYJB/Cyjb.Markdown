@@ -123,6 +123,33 @@ public abstract class SyntaxVisitor
 		DefaultVisit(node);
 	}
 
+	/// <summary>
+	/// 访问指定的表格单元格。
+	/// </summary>
+	/// <param name="node">要访问的表格单元格节点。</param>
+	public virtual void VisitTableCell(TableCell node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的表格行。
+	/// </summary>
+	/// <param name="node">要访问的表格行节点。</param>
+	public virtual void VisitTableRow(TableRow node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的表格。
+	/// </summary>
+	/// <param name="node">要访问的表格节点。</param>
+	public virtual void VisitTable(Table node)
+	{
+		DefaultVisit(node);
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点

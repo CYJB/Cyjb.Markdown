@@ -1,53 +1,46 @@
-using System.Diagnostics;
 using Cyjb.Text;
+using System.Diagnostics;
 
 namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
-/// 表示 Markdown 的列表项。
+/// 表示 Markdown 表格的单元格。
 /// </summary>
-public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
+public sealed class TableCell : BlockNode, INodeContainer<InlineNode>
 {
 	/// <summary>
 	/// 子节点列表。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private readonly NodeList<BlockNode> children;
+	private readonly NodeList<InlineNode> children;
 
 	/// <summary>
-	/// 使用指定的文本范围初始化 <see cref="ListItem"/> 类的新实例。
+	/// 使用指定的文本范围初始化 <see cref="TableCell"/> 类的新实例。
 	/// </summary>
 	/// <param name="span">文本范围。</param>
-	public ListItem(TextSpan span = default) : base(MarkdownKind.ListItem)
+	public TableCell(TextSpan span = default) : base(MarkdownKind.TableCell)
 	{
-		children = new NodeList<BlockNode>(this);
+		children = new NodeList<InlineNode>(this);
 		Span = span;
 	}
 
 	/// <summary>
-	/// 获取所属列表。
+	/// 获取所属行。
 	/// </summary>
-	public new List? Parent => base.Parent as List;
+	public new TableRow? Parent => base.Parent as TableRow;
 	/// <summary>
 	/// 获取子节点列表。
 	/// </summary>
-	public NodeList<BlockNode> Children => children;
-
-	/// <summary>
-	/// 获取或设置列表项的选中状态。
-	/// </summary>
-	/// <value>使用 <c>null</c> 表示不能选中（普通列表项）；<c>true</c> 表示已选中，
-	/// <c>false</c> 表示未选中。</value>
-	public bool? Checked { get; set; }
+	public NodeList<InlineNode> Children => children;
 
 	/// <summary>
 	/// 获取第一个子节点，如果不存在则返回 <c>null</c>。
 	/// </summary>
-	public override BlockNode? FirstChild => children.FirstOrDefault();
+	public override InlineNode? FirstChild => children.FirstOrDefault();
 	/// <summary>
 	/// 获取最后一个子节点，如果不存在则返回 <c>null</c>。
 	/// </summary>
-	public override BlockNode? LastChild => children.LastOrDefault();
+	public override InlineNode? LastChild => children.LastOrDefault();
 
 	/// <summary>
 	/// 应用指定的访问器。
@@ -55,7 +48,7 @@ public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
 	/// <param name="visitor">节点访问器。</param>
 	public override void Accept(SyntaxVisitor visitor)
 	{
-		visitor.VisitListItem(this);
+		visitor.VisitTableCell(this);
 	}
 
 	/// <summary>
@@ -66,6 +59,6 @@ public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
 	/// <typeparam name="TResult">返回结果的类型。</typeparam>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
-		return visitor.VisitListItem(this)!;
+		return visitor.VisitTableCell(this)!;
 	}
 }

@@ -15,7 +15,7 @@ public sealed class List : BlockNode, INodeContainer<ListItem>
 	private readonly NodeList<ListItem> children;
 
 	/// <summary>
-	/// 使用指定的列表样式类型和文本范围初始化 <see cref="Document"/> 类的新实例。
+	/// 使用指定的列表样式类型和文本范围初始化 <see cref="List"/> 类的新实例。
 	/// </summary>
 	/// <param name="styleType">列表的样式类型。</param>
 	/// <param name="span">文本范围。</param>

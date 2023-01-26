@@ -11,7 +11,7 @@ namespace TestMarkdown.Syntax;
 public class UnitTestLink
 {
 	/// <summary>
-	/// 测试 Link 类。
+	/// 测试 <see cref="Link"/> 类。
 	/// </summary>
 	[TestMethod]
 	public void TestLink()

@@ -1,3 +1,4 @@
+using Cyjb.Collections;
 using Cyjb.Collections.ObjectModel;
 using Cyjb.Markdown.Syntax;
 
@@ -10,6 +11,24 @@ namespace Cyjb.Markdown;
 public sealed class NodeList<T> : ListBase<T>
 	where T : Node
 {
+	/// <summary>
+	/// 需要被排除的节点类型。
+	/// </summary>
+	private static readonly IReadOnlySet<Type> ExcludedNodeTypes =
+		// NodeList<BlockNode> 不允许添加 ListItem、TableCell 和 TableRow，
+		// 避免构造非法的 Markdown 语法树。
+		typeof(T) == typeof(BlockNode) ? new HashSet<Type>() {
+			typeof(ListItem), typeof(TableCell), typeof(TableRow)
+		} : SetUtil.Empty<Type>();
+	/// <summary>
+	/// 是否是 <see cref="TableRow"/> 列表。
+	/// </summary>
+	private static readonly bool IsTableRow = typeof(T) == typeof(TableRow);
+	/// <summary>
+	/// 是否是 <see cref="TableCell"/> 列表。
+	/// </summary>
+	private static readonly bool IsTableCell = typeof(T) == typeof(TableCell);
+
 	/// <summary>
 	/// 当前列表所属的节点。
 	/// </summary>
@@ -48,6 +67,7 @@ public sealed class NodeList<T> : ListBase<T>
 	/// <param name="item">要插入的对象。</param>
 	protected override void InsertItem(int index, T item)
 	{
+		CheckExcludedNodeTypes(item);
 		item.Unlink();
 		item.Parent = owner;
 		if (index > 0)
@@ -70,6 +90,10 @@ public sealed class NodeList<T> : ListBase<T>
 	/// <param name="index">要移除的元素的从零开始的索引。</param>
 	protected override void RemoveItem(int index)
 	{
+		if (nodes.Count == 1)
+		{
+			ThrowCanNotEmpty();
+		}
 		nodes[index].Unlink();
 		nodes.RemoveAt(index);
 	}
@@ -91,6 +115,7 @@ public sealed class NodeList<T> : ListBase<T>
 	/// <param name="item">位于指定索引处的元素的新值。</param>
 	protected override void SetItemAt(int index, T item)
 	{
+		CheckExcludedNodeTypes(item);
 		item.Unlink();
 		item.Parent = owner;
 		if (index > 0)
@@ -122,6 +147,7 @@ public sealed class NodeList<T> : ListBase<T>
 	/// </summary>
 	public override void Clear()
 	{
+		ThrowCanNotEmpty();
 		foreach (T node in nodes)
 		{
 			// 所有兄弟节点都在同一个列表内，不需要额外修复链接。
@@ -155,6 +181,7 @@ public sealed class NodeList<T> : ListBase<T>
 		{
 			return;
 		}
+		CheckExcludedNodeTypes(start);
 		int index = nodes.Count;
 		NodeList<T>? oldContainer = (start.Parent as INodeContainer<T>)?.Children;
 		if (oldContainer == null)
@@ -189,7 +216,7 @@ public sealed class NodeList<T> : ListBase<T>
 				}
 			}
 			nodes.AddRange(oldContainer.Skip(startIdx).Take(endIdx - startIdx));
-			oldContainer.RemoveRange(startIdx, endIdx - startIdx);
+			oldContainer.RemoveRangeUnchecked(startIdx, endIdx - startIdx);
 		}
 		// 修复关联关系
 		FixLink(index);
@@ -206,7 +233,37 @@ public sealed class NodeList<T> : ListBase<T>
 	/// </summary>
 	/// <param name="index">要移除的节点起始索引。</param>
 	/// <param name="count">要移除的节点个数。</param>
-	private void RemoveRange(int index, int count)
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于零或大于等于节点个数。</exception>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> + <paramref name="count"/>
+	/// 不表示子节点列表中的有效范围。</exception>
+	public void RemoveRange(int index, int count)
+	{
+		if (index < 0 || index >= nodes.Count)
+		{
+			throw CommonExceptions.ArgumentIndexOutOfRange(index);
+		}
+		if (count < 0 || index + count > nodes.Count)
+		{
+			throw CommonExceptions.ArgumentCountOutOfRange(count);
+		}
+		if (count == nodes.Count)
+		{
+			ThrowCanNotEmpty();
+		}
+		// 先移除父节点关系
+		for (int i = 0, j = index; i < count; i++, j++)
+		{
+			nodes[j].Parent = null;
+		}
+		RemoveRangeUnchecked(index, count);
+	}
+
+	/// <summary>
+	/// 移除指定范围的子节点。
+	/// </summary>
+	/// <param name="index">要移除的节点起始索引。</param>
+	/// <param name="count">要移除的节点个数。</param>
+	private void RemoveRangeUnchecked(int index, int count)
 	{
 		nodes.RemoveRange(index, count);
 		FixLink(index);
@@ -222,5 +279,34 @@ public sealed class NodeList<T> : ListBase<T>
 		Node? next = nodes.Count > index ? nodes[index] : null;
 		prev?.SetNext(next);
 		next?.SetPrev(prev);
+	}
+
+	/// <summary>
+	/// 检查是否是被排除的节点类型。
+	/// </summary>
+	/// <param name="node">要检查的节点。</param>
+	/// <exception cref="ArgumentException">指定节点不能添加到当前节点。</exception>
+	private static void CheckExcludedNodeTypes(T node)
+	{
+		Type type = node.GetType();
+		if (ExcludedNodeTypes.Contains(type))
+		{
+			throw new ArgumentException(Resources.ExcludedNodeTypes(type));
+		}
+	}
+
+	/// <summary>
+	/// 抛出列表不能为空的异常。
+	/// </summary>
+	private static void ThrowCanNotEmpty()
+	{
+		if (IsTableRow)
+		{
+			throw new InvalidOperationException(Resources.TableMustHaveHeading);
+		}
+		else if (IsTableCell)
+		{
+			throw new InvalidOperationException(Resources.RowMustHaveCell);
+		}
 	}
 }

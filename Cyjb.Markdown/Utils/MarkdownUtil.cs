@@ -46,6 +46,36 @@ internal static class MarkdownUtil
 	}
 
 	/// <summary>
+	/// 移除指定文本的起始和尾随空白。
+	/// </summary>
+	/// <param name="text">要移除起始和尾随空白的文本。</param>
+	/// <returns>如果移除了任何起始和尾随空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool Trim(ref ReadOnlySpan<char> text)
+	{
+		int len = text.Length;
+		text = text.TrimStart(Whitespace).TrimEnd(Whitespace);
+		return text.Length < len;
+	}
+
+	/// <summary>
+	/// 移除指定文本的起始和尾随空白。
+	/// </summary>
+	/// <param name="text">要移除起始和尾随空白的文本。</param>
+	/// <returns>移除了起始和尾随空白后的文本。</returns>
+	public static string Trim(string text)
+	{
+		ReadOnlySpan<char> span = text;
+		if (Trim(ref span))
+		{
+			return span.ToString();
+		}
+		else
+		{
+			return text;
+		}
+	}
+
+	/// <summary>
 	/// 获取当前文本是否是空白的（只包含空格、Tab、\r 或 \n）。
 	/// </summary>
 	/// <param name="text">要检查的文本。</param>

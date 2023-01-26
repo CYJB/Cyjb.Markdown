@@ -30,6 +30,7 @@ internal sealed class BlockParser
 		{ BlockKind.DashLine, new IBlockFactory[] {
 			// 中划线行可能存在歧义，需要都做检测。
 			SetextHeadingProcessor.Factory, ThematicBreakProcessor.Factory } },
+		{ BlockKind.TableDelimiterRow, new IBlockFactory[] { TableProcessor.Factory } },
 	};
 
 	/// <summary>
@@ -172,7 +173,7 @@ internal sealed class BlockParser
 
 		BlockProcessor processor = openedProcessors[^matches];
 		bool startedNewBlock = false;
-		bool tryBlockStarts = processor.IsContainer || processor.Kind == MarkdownKind.Paragraph;
+		bool tryBlockStarts = processor.TryBlockStarts;
 		Token<BlockKind> token;
 		while (tryBlockStarts)
 		{
@@ -237,7 +238,11 @@ internal sealed class BlockParser
 		CloseProcessor(processor, lineStart);
 		if (!processor.IsContainer)
 		{
-			ActivatedProcessor.AddLine(line.Text);
+			// 只有行非空或者并不是由于开始新块而清空的，才添加到处理器。
+			if (!line.IsEmpty || !startedNewBlock)
+			{
+				ActivatedProcessor.AddLine(line.Text);
+			}
 			return;
 		}
 		if (!line.IsBlank)

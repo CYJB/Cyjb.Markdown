@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Cyjb.Markdown;
 using Cyjb.Markdown.Renderer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,6 +45,16 @@ public class UnitTestRender
 	public void TestGFM()
 	{
 		SpecItem[] items = ReadSpec("GitHubFlavoredMarkdown.0.29.spec.json");
+		Regex alignRegex = new(@"align=""(\w+)""");
+		// 渲染结果会与 GFM 略有差异。
+		foreach (SpecItem item in items)
+		{
+			// 表格对齐时不使用已过期的 align 属性，而是改为 text-align 样式。
+			item.Html = alignRegex.Replace(item.Html, (Match match) =>
+			{
+				return $"style=\"text-align: {match.Groups[1]};\"";
+			});
+		}
 		TestRender(items);
 	}
 
