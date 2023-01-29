@@ -218,6 +218,15 @@ public abstract class SyntaxVisitor
 	}
 
 	/// <summary>
+	/// 访问指定的表情符号节点。
+	/// </summary>
+	/// <param name="node">要访问的表情符号节点。</param>
+	public virtual void VisitEmoji(Emoji node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
 	/// 访问指定的文本节点。
 	/// </summary>
 	/// <param name="node">要访问的文本节点。</param>

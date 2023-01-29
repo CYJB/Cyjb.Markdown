@@ -20,6 +20,10 @@ internal sealed class InlineParser
 	/// </summary>
 	private readonly IReadOnlyDictionary<string, LinkDefinition> linkDefines;
 	/// <summary>
+	/// 解析选项。
+	/// </summary>
+	private readonly ParseOptions options;
+	/// <summary>
 	/// 分隔符的处理器列表。
 	/// </summary>
 	private readonly Dictionary<char, DelimiterProcessor> processors = new()
@@ -83,6 +87,7 @@ internal sealed class InlineParser
 		ParseOptions options)
 	{
 		this.linkDefines = linkDefines;
+		this.options = options;
 		if (options.UseStrikethrough)
 		{
 			processors['~'] = new StrikethroughProcessor();
@@ -95,6 +100,10 @@ internal sealed class InlineParser
 	/// 获取或设置行级词法分析器的控制器。
 	/// </summary>
 	internal InlineLexer? Controller { get; set; }
+	/// <summary>
+	/// 获取解析选项。
+	/// </summary>
+	public ParseOptions Options => options;
 
 	/// <summary>
 	/// 从指定文本解析行级节点。
@@ -158,6 +167,12 @@ internal sealed class InlineParser
 					var (start, end) = token.Span;
 					link.Children[0].Span = new TextSpan(start + 1, end - 1);
 					children.Add(link);
+					break;
+				case InlineKind.Emoji:
+					AddCurTextNode();
+					Emoji emoji = (Emoji)token.Value!;
+					emoji.Span = token.Span;
+					children.Add(emoji);
 					break;
 			}
 		}

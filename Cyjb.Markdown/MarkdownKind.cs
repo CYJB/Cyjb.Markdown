@@ -116,6 +116,10 @@ public enum MarkdownKind
 	/// </summary>
 	SoftBreak,
 	/// <summary>
+	/// 表情符号。
+	/// </summary>
+	Emoji,
+	/// <summary>
 	/// 文本。
 	/// </summary>
 	Literal,

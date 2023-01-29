@@ -244,6 +244,16 @@ public abstract class SyntaxVisitor<TResult>
 	}
 
 	/// <summary>
+	/// 访问指定的表情符号节点。
+	/// </summary>
+	/// <param name="node">要访问的表情符号节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitEmoji(Emoji node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
 	/// 访问指定的文本节点。
 	/// </summary>
 	/// <param name="node">要访问的文本节点。</param>

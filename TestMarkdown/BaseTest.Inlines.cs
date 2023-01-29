@@ -246,4 +246,19 @@ public abstract partial class BaseTest
 
 		AssertChildren(node, ((Strikethrough)node).Children, validator);
 	}
+
+	/// <summary>
+	/// 验证是表情符号。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="code">表情符号代码。</param>
+	protected void Emoji(TextSpan span, string code)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.Emoji, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		Emoji emoji = (Emoji)node!;
+		Assert.AreEqual(code, emoji.Code);
+	}
 }

@@ -34,6 +34,8 @@ Console.WriteLine(renderer);
 	- [删除线](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text)：`~~ ~~`。
 	- [任务列表](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#task-lists)：`- [ ] task`。
 	- [表格](https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables)。
+	- [表情符号](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7)：`:EMOJICODE:`。  
+	  有关可用表情符号和代码的完整列表，请查看 [Emoji-Cheat-Sheet](https://github.com/ikatyang/emoji-cheat-sheet/)。
 - 支持额外的列表样式，具体请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md)。
 
 ### 其它的建议用法

@@ -483,6 +483,26 @@ public class HtmlRenderer : SyntaxWalker
 	}
 
 	/// <summary>
+	/// 访问指定的表情符号节点。
+	/// </summary>
+	/// <param name="node">要访问的表情符号节点。</param>
+	public override void VisitEmoji(Emoji node)
+	{
+		if (node.IsUnicode)
+		{
+			// Unicode Emoji 直接输出。
+			Write(node.Text);
+		}
+		else
+		{
+			// GitHub 自定义 Emoji 转换为 img。
+			Dictionary<string, string> attrs = new();
+			attrs["src"] = node.GitHubFallbackUrl;
+			WriteStartTag(node, "img", attrs, true);
+		}
+	}
+
+	/// <summary>
 	/// 访问指定的文本节点。
 	/// </summary>
 	/// <param name="node">要访问的文本节点。</param>

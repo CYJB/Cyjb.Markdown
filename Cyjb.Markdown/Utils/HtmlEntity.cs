@@ -1,4 +1,4 @@
-namespace Cyjb.Markdown.Parse;
+namespace Cyjb.Markdown.Utils;
 
 /// <summary>
 /// 提供适用于 Markdown 的 HTML 的实体信息。

@@ -20,6 +20,7 @@ public readonly struct ParseOptions
 		UseExtraListStyleType = false,
 		UseTaskListItem = false,
 		UseTable = false,
+		UseEmoji = false,
 	};
 
 	/// <summary>
@@ -49,4 +50,8 @@ public readonly struct ParseOptions
 	/// 是否解析表格，默认为 <c>true</c>。
 	/// </summary>
 	public bool UseTable { get; init; } = true;
+	/// <summary>
+	/// 是否解析表情符号，默认为 <c>true</c>。
+	/// </summary>
+	public bool UseEmoji { get; init; } = true;
 }

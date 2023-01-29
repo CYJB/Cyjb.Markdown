@@ -26,6 +26,10 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// 链接上下文的名称。
 	/// </summary>
 	public const string LinkContext = "Link";
+	/// <summary>
+	/// 解析选项。
+	/// </summary>
+	private ParseOptions options;
 
 	/// <summary>
 	/// 硬换行的动作。
@@ -254,6 +258,26 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 表情符号的动作。
+	/// </summary>
+	/// <remarks>目前最长的 emoji 名称长度为 36。</remarks>
+	[LexerSymbol(@":.{1,36}:", UseShortest = true, Kind = InlineKind.Emoji)]
+	private void EmojiAction()
+	{
+		if (options.UseEmoji)
+		{
+			// 比较时忽略前后的 :。
+			Emoji? emoji = Emoji.GetEmoji(Text[1..^1]);
+			if (emoji != null)
+			{
+				Accept(emoji);
+				return;
+			}
+		}
+		Reject();
+	}
+
+	/// <summary>
 	/// 普通字符的动作。
 	/// </summary>
 	/// <remarks>需要放在最后，确保优先级最低。</remarks>
@@ -313,7 +337,9 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		set
 		{
 			base.SharedContext = value;
-			((InlineParser)value!).Controller = this;
+			InlineParser parser = (InlineParser)value!;
+			options = parser.Options;
+			parser.Controller = this;
 		}
 	}
 }

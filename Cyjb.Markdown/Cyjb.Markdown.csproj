@@ -23,6 +23,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Parse\ParseUtil.Emoji.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<None Include="..\.editorconfig" Link=".editorconfig" />
 	<None Include="..\README.md" Pack="True" PackagePath="" />
 	<None Include="LICENSE.txt" Pack="true" PackagePath="" />
@@ -32,18 +36,22 @@
 	<PackageReference Include="Cyjb" Version="1.0.13">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.10">
+	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.12">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.10" />
+	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.12" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Parse\Blocks\BlockLexer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BlockLexer.designed.cs</LastGenOutput>
+    </None>
+    <None Update="Utils\Emojis.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Emojis.cs</LastGenOutput>
     </None>
     <None Update="Parse\Inlines\InlineLexer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -64,6 +72,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BlockLexer.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Utils\Emojis.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Emojis.tt</DependentUpon>
     </Compile>
     <Compile Update="Parse\Inlines\InlineLexer.designed.cs">
       <DesignTime>True</DesignTime>
