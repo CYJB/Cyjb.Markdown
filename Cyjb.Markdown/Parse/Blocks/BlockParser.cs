@@ -24,6 +24,8 @@ internal sealed class BlockParser
 			ThematicBreakProcessor.Factory, ListProcessor.Factory } },
 		{ BlockKind.OrderedListMarker, new IBlockFactory[] { ListProcessor.Factory } },
 		{ BlockKind.CodeFence, new IBlockFactory[] { FencedCodeBlockProcessor.Factory } },
+		{ BlockKind.MathFence, new IBlockFactory[] { MathBlockProcessor.Factory } },
+		{ BlockKind.MathFenceStart, new IBlockFactory[] { MathBlockProcessor.Factory } },
 		{ BlockKind.HtmlStart, new IBlockFactory[] { HtmlBlockProcessor.Factory } },
 		{ BlockKind.CodeFenceStart, new IBlockFactory[] { FencedCodeBlockProcessor.Factory } },
 		{ BlockKind.SetextUnderline, new IBlockFactory[] { SetextHeadingProcessor.Factory } },

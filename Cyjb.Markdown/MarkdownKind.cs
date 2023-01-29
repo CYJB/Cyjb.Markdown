@@ -23,6 +23,10 @@ public enum MarkdownKind
 	/// </summary>
 	CodeBlock,
 	/// <summary>
+	/// 数学公式块
+	/// </summary>
+	MathBlock,
+	/// <summary>
 	/// HTML 块。
 	/// </summary>
 	HtmlBlock,
@@ -119,6 +123,10 @@ public enum MarkdownKind
 	/// 表情符号。
 	/// </summary>
 	Emoji,
+	/// <summary>
+	/// 行内数学公式。
+	/// </summary>
+	MathSpan,
 	/// <summary>
 	/// 文本。
 	/// </summary>

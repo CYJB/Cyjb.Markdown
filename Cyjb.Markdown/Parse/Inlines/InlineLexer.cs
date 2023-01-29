@@ -66,16 +66,16 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	{
 		// 检查是否是代码段的起始，需要能够找到对应的结束标志。
 		int backtickCount = Text.Length;
-		int idx = GetCodeSpansEnd(backtickCount);
+		int idx = GetSpansEnd('`', backtickCount);
 		if (idx >= 0)
 		{
 			Source.Drop();
 			Source.Index = idx;
 			string content = Source.ReadedText().ReplacePattern("[\r\n]+", " ");
 			// 如果代码两边都有一个空格（注意不是空白），那么可以移除前后各一的空格。
-			// 不要移除多个空格，也不要修改只有空格组成的代码。
+			// 不要移除多个空格，也不要修改只由空格组成的代码。
 			if (content.Length >= 2 && content[0] == ' ' && content[^1] == ' ' &&
-				content.Any(ch => ch != ' '))
+				content.Any(ch => !MarkdownUtil.IsWhitespace(ch)))
 			{
 				content = content[1..^1];
 			}
@@ -261,7 +261,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// 表情符号的动作。
 	/// </summary>
 	/// <remarks>目前最长的 emoji 名称长度为 36。</remarks>
-	[LexerSymbol(@":.{1,36}:", UseShortest = true, Kind = InlineKind.Emoji)]
+	[LexerSymbol(@":.{1,36}:", UseShortest = true, Kind = InlineKind.Node)]
 	private void EmojiAction()
 	{
 		if (options.UseEmoji)
@@ -278,6 +278,79 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 数学公式段的动作。
+	/// </summary>
+	[LexerSymbol("$+", Kind = InlineKind.Node)]
+	private void MathSpanAction()
+	{
+		int dollarCount = Text.Length;
+		int idx = -1;
+		if (options.UseMath)
+		{
+			// 检查是否是数学公式段的起始，需要能够找到对应的结束标志。
+			if (dollarCount == 1)
+			{
+				// 使用一个 $ 时，起始 $ 右边必须有一个非空白（非空格、Tab 或换行）字符。
+				char ch = Source.Peek();
+				if (!MarkdownUtil.IsWhitespace(Source.Peek()))
+				{
+					idx = GetSpansEnd('$', 1);
+					// 结束 `$` 的左边同样必须非空白字符，且后面不能紧跟数字。
+					if (idx >= 0 &&
+						(MarkdownUtil.IsWhitespace(Source.Peek(idx - Source.Index - 1)) ||
+						char.IsDigit(Source.Peek(idx - Source.Index + 1)))
+						)
+					{
+						idx = -1;
+					}
+				}
+			}
+			else
+			{
+				idx = GetSpansEnd('$', dollarCount);
+			}
+		}
+		if (idx >= 0)
+		{
+			Source.Drop();
+			Source.Index = idx;
+			string content = Source.ReadedText();
+			// 如果内容两边都有一个空格（或换行），那么可以移除前后各一的空格（或换行）。
+			// 不要移除多个空格，也不要修改只由空格组成的代码。
+			if (content.Length >= 2 && content.Any(ch => !MarkdownUtil.IsWhitespace(ch)))
+			{
+				if (content[0] == ' ' && content[^1] == ' ')
+				{
+					content = content[1..^1];
+				}
+				else if ((content[0] == '\r' || content[0] == '\n') &&
+					(content[^1] == '\r' || content[^1] == '\n'))
+				{
+					int start = 1;
+					int end = 1;
+					if (content[0] == '\r' && content[1] == '\n')
+					{
+						start++;
+					}
+					if (content[^1] == '\n' && content[^2] == '\r')
+					{
+						end++;
+					}
+					content = content[start..^end];
+				}
+			}
+			// 跳过结束标志。
+			Source.Index += dollarCount;
+			Accept(new MathSpan(content));
+		}
+		else
+		{
+			// 否则按照文本返回
+			Accept(InlineKind.Literal, Text);
+		}
+	}
+
+	/// <summary>
 	/// 普通字符的动作。
 	/// </summary>
 	/// <remarks>需要放在最后，确保优先级最低。</remarks>
@@ -288,11 +361,12 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
-	/// 检查是否包含指定长度的代码段结束标志，并返回结束标志的位置。
+	/// 检查是否包含指定长度的段结束标志，并返回结束标志的位置。
 	/// </summary>
-	/// <param name="len">代码段开始标志的长度。</param>
-	/// <returns>代码段结束标志的位置，使用 <c>-1</c> 表示不存在。</returns>
-	private int GetCodeSpansEnd(int len)
+	/// <param name="delim">要查找的段结束字符。</param>
+	/// <param name="len">要查找的段结束标志的长度。</param>
+	/// <returns>段结束标志的位置，使用 <c>-1</c> 表示不存在。</returns>
+	private int GetSpansEnd(char delim, int len)
 	{
 		char ch;
 		int closeStart = -1;
@@ -300,7 +374,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		for (int i = 0; ; i++)
 		{
 			ch = Source.Peek(i);
-			if (ch == '`')
+			if (ch == delim)
 			{
 				if (closeStart == -1)
 				{
@@ -324,6 +398,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			else
 			{
 				closeStart = -1;
+				closeEnd = -1;
 			}
 		}
 	}

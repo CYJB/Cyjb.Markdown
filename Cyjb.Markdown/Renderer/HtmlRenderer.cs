@@ -179,7 +179,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// 访问指定的引用节点。
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
-	public override void VisitQuote(Blockquote node)
+	public override void VisitBlockquote(Blockquote node)
 	{
 		WriteLine();
 		WriteStartTag(node, "blockquote");
@@ -375,6 +375,22 @@ public class HtmlRenderer : SyntaxWalker
 		WriteLine();
 	}
 
+	/// <summary>
+	/// 访问指定的数学公式块节点。
+	/// </summary>
+	/// <param name="node">要访问的数学公式块节点。</param>
+	public override void VisitMathBlock(MathBlock node)
+	{
+		Dictionary<string, string> attributes = new();
+		attributes["class"] = "math";
+		WriteStartTag(node, "div", attributes);
+		Write("\\[");
+		Write(node.Content);
+		Write("\\]");
+		WriteEndTag("div");
+		WriteLine();
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点
@@ -500,6 +516,21 @@ public class HtmlRenderer : SyntaxWalker
 			attrs["src"] = node.GitHubFallbackUrl;
 			WriteStartTag(node, "img", attrs, true);
 		}
+	}
+
+	/// <summary>
+	/// 访问指定的行内数学公式节点。
+	/// </summary>
+	/// <param name="node">要访问的行内数学公式节点。</param>
+	public override void VisitMathSpan(MathSpan node)
+	{
+		Dictionary<string, string> attributes = new();
+		attributes["class"] = "math";
+		WriteStartTag(node, "span", attributes);
+		Write("\\(");
+		Write(node.Content);
+		Write("\\)");
+		WriteEndTag("span");
 	}
 
 	/// <summary>

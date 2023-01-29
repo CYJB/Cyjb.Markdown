@@ -261,4 +261,19 @@ public abstract partial class BaseTest
 		Emoji emoji = (Emoji)node!;
 		Assert.AreEqual(code, emoji.Code);
 	}
+
+	/// <summary>
+	/// 验证是行内数学公式。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="content">预期的数学公式内容。</param>
+	protected void MathSpan(TextSpan span, string content)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.MathSpan, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		MathSpan mathSnap = (MathSpan)node!;
+		Assert.AreEqual(content, mathSnap.Content);
+	}
 }

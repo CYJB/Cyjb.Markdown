@@ -81,6 +81,17 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试数学公式规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md"/>
+	[TestMethod]
+	public void TestMathematics()
+	{
+		SpecItem[] items = ReadSpec("Mathematics.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>

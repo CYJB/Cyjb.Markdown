@@ -4,34 +4,29 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
-/// 表示 Markdown 的代码块。
+/// 表示 Markdown 的行内数学公式。
 /// </summary>
-public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
+public sealed class MathSpan : InlineNode, IEquatable<MathSpan>
 {
 	/// <summary>
-	/// 代码的内容。
+	/// 数学公式的内容。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
 
 	/// <summary>
-	/// 使用指定的代码内容和文本范围初始化 <see cref="CodeBlock"/> 类的新实例。
+	/// 使用指定的数学公式内容和文本范围初始化 <see cref="MathSpan"/> 类的新实例。
 	/// </summary>
-	/// <param name="content">代码的内容。</param>
+	/// <param name="content">数学公式的内容。</param>
 	/// <param name="span">文本的范围。</param>
-	public CodeBlock(string content, TextSpan span = default) : base(MarkdownKind.CodeBlock)
+	public MathSpan(string content, TextSpan span = default) : base(MarkdownKind.MathSpan)
 	{
 		this.content = content ?? string.Empty;
 		Span = span;
 	}
 
 	/// <summary>
-	/// 获取或设置代码的额外信息。
-	/// </summary>
-	public string? Info { get; set; }
-
-	/// <summary>
-	/// 获取或设置代码的内容。
+	/// 获取或设置数学公式的内容。
 	/// </summary>
 	public string Content
 	{
@@ -45,7 +40,7 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	/// <param name="visitor">节点访问器。</param>
 	public override void Accept(SyntaxVisitor visitor)
 	{
-		visitor.VisitCodeBlock(this);
+		visitor.VisitMathSpan(this);
 	}
 
 	/// <summary>
@@ -56,7 +51,7 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	/// <typeparam name="TResult">返回结果的类型。</typeparam>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
-		return visitor.VisitCodeBlock(this)!;
+		return visitor.VisitMathSpan(this)!;
 	}
 
 	/// <summary>
@@ -65,24 +60,17 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	/// <returns>当前对象的字符串表示形式。</returns>
 	public override string ToString()
 	{
-		if (Info == null)
-		{
-			return base.ToString();
-		}
-		else
-		{
-			return $"{{CodeBlock {Info} {Span}}}";
-		}
+		return $"{{MathSpan \"{Content}\" {Span}}}";
 	}
 
-	#region IEquatable<CodeBlock> 成员
+	#region IEquatable<MathSpan> 成员
 
 	/// <summary>
 	/// 返回当前对象是否等于同一类型的另一对象。
 	/// </summary>
 	/// <param name="other">要比较的对象。</param>
 	/// <returns>如果当前对象等于 <paramref name="other"/>，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	public bool Equals(CodeBlock? other)
+	public bool Equals(MathSpan? other)
 	{
 		if (other is null)
 		{
@@ -98,7 +86,7 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	/// <returns>如果当前对象等于 <paramref name="obj"/>，则为 true；否则为 false。</returns>
 	public override bool Equals(object? obj)
 	{
-		if (obj is CodeBlock other)
+		if (obj is MathSpan other)
 		{
 			return Equals(other);
 		}
@@ -115,12 +103,12 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	}
 
 	/// <summary>
-	/// 返回指定的 <see cref="CodeBlock"/> 是否相等。
+	/// 返回指定的 <see cref="MathSpan"/> 是否相等。
 	/// </summary>
 	/// <param name="left">要比较的第一个对象。</param>
 	/// <param name="right">要比较的第二个对象。</param>
 	/// <returns>如果 <paramref name="left"/> 等于 <paramref name="right"/>，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	public static bool operator ==(CodeBlock? left, CodeBlock? right)
+	public static bool operator ==(MathSpan? left, MathSpan? right)
 	{
 		if (ReferenceEquals(left, right))
 		{
@@ -134,12 +122,12 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	}
 
 	/// <summary>
-	/// 返回指定的 <see cref="CodeBlock"/> 是否不相等。
+	/// 返回指定的 <see cref="MathSpan"/> 是否不相等。
 	/// </summary>
 	/// <param name="left">要比较的第一个对象。</param>
 	/// <param name="right">要比较的第二个对象。</param>
 	/// <returns>如果 <paramref name="left"/> 等于 <paramref name="right"/>，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	public static bool operator !=(CodeBlock? left, CodeBlock? right)
+	public static bool operator !=(MathSpan? left, MathSpan? right)
 	{
 		if (ReferenceEquals(left, right))
 		{
@@ -152,6 +140,6 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 		return !left.Equals(right);
 	}
 
-	#endregion // IEquatable<CodeBlock> 成员
+	#endregion // IEquatable<MathSpan> 成员
 
 }

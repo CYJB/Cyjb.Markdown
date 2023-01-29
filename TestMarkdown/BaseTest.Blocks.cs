@@ -309,4 +309,21 @@ public abstract partial class BaseTest
 			AssertChildren(node, cell.Children, validator);
 		}
 	}
+
+	/// <summary>
+	/// 验证是数学公式块。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="content">数学公式块的内容。</param>
+	/// <param name="info">数学公式块的其它信息。</param>
+	protected void MathBlock(TextSpan span, string content, string? info = null)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.MathBlock, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		MathBlock math = (MathBlock)node!;
+		Assert.AreEqual(content, math.Content);
+		Assert.AreEqual(info, math.Info);
+	}
 }

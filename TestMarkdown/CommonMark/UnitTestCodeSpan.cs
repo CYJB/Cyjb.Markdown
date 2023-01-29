@@ -7,7 +7,7 @@ namespace TestMarkdown.CommonMark;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#backslash-escapes"/>
 [TestClass]
-public class UnitTestCodeSpan : BaseTest
+public partial class UnitTestCodeSpan : BaseTest
 {
 	/// <see href="https://spec.commonmark.org/0.30/#example-327"/>
 	[TestMethod]
@@ -212,7 +212,7 @@ public class UnitTestCodeSpan : BaseTest
 		});
 	}
 	/// <summary>
-	/// 使用不同的反斜杠个数。
+	/// 使用不同的 <c>`</c> 个数。
 	/// </summary>
 	/// <see href="https://spec.commonmark.org/0.30/#example-339"/>
 	[TestMethod]

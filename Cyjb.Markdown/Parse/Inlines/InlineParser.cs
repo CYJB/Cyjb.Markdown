@@ -168,12 +168,6 @@ internal sealed class InlineParser
 					link.Children[0].Span = new TextSpan(start + 1, end - 1);
 					children.Add(link);
 					break;
-				case InlineKind.Emoji:
-					AddCurTextNode();
-					Emoji emoji = (Emoji)token.Value!;
-					emoji.Span = token.Span;
-					children.Add(emoji);
-					break;
 			}
 		}
 		ProcessDelimiter(null);

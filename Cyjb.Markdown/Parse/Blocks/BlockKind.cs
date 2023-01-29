@@ -18,6 +18,10 @@ internal enum BlockKind
 	/// </summary>
 	CodeFence,
 	/// <summary>
+	/// 数学公式分隔符。
+	/// </summary>
+	MathFence,
+	/// <summary>
 	/// HTML 块的起始。
 	/// </summary>
 	HtmlStart,
@@ -37,6 +41,10 @@ internal enum BlockKind
 	/// 代码分隔符的起始。
 	/// </summary>
 	CodeFenceStart,
+	/// <summary>
+	/// 数学公式分隔符的起始。
+	/// </summary>
+	MathFenceStart,
 	/// <summary>
 	/// 由一个或多个 -，后跟空白组成的行。
 	/// </summary>

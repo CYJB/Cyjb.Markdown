@@ -100,7 +100,7 @@ public abstract class SyntaxVisitor
 	/// 访问指定的引用节点。
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
-	public virtual void VisitQuote(Blockquote node)
+	public virtual void VisitBlockquote(Blockquote node)
 	{
 		DefaultVisit(node);
 	}
@@ -146,6 +146,15 @@ public abstract class SyntaxVisitor
 	/// </summary>
 	/// <param name="node">要访问的表格节点。</param>
 	public virtual void VisitTable(Table node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的数学公式块节点。
+	/// </summary>
+	/// <param name="node">要访问的数学公式块节点。</param>
+	public virtual void VisitMathBlock(MathBlock node)
 	{
 		DefaultVisit(node);
 	}
@@ -222,6 +231,15 @@ public abstract class SyntaxVisitor
 	/// </summary>
 	/// <param name="node">要访问的表情符号节点。</param>
 	public virtual void VisitEmoji(Emoji node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的行内数学公式节点。
+	/// </summary>
+	/// <param name="node">要访问的行内数学公式节点。</param>
+	public virtual void VisitMathSpan(MathSpan node)
 	{
 		DefaultVisit(node);
 	}

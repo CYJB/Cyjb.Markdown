@@ -257,6 +257,23 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	}
 
 	/// <summary>
+	/// 数学公式分隔符的动作。
+	/// </summary>
+	[LexerSymbol(@"\${2,}{WS_O}$", Kind = BlockKind.MathFence)]
+	[LexerSymbol(@"\${2,}[^$\r\n]+$", Kind = BlockKind.MathFenceStart)]
+	private void MathFenceAction()
+	{
+		if (Options.UseMath)
+		{
+			Accept();
+		}
+		else
+		{
+			Reject();
+		}
+	}
+
+	/// <summary>
 	/// 文本行。
 	/// </summary>
 	[LexerSymbol(@".+$", Kind = BlockKind.TextLine)]

@@ -44,7 +44,7 @@ public sealed class Blockquote : BlockNode, INodeContainer<BlockNode>
 	/// <param name="visitor">节点访问器。</param>
 	public override void Accept(SyntaxVisitor visitor)
 	{
-		visitor.VisitQuote(this);
+		visitor.VisitBlockquote(this);
 	}
 
 	/// <summary>
@@ -55,6 +55,6 @@ public sealed class Blockquote : BlockNode, INodeContainer<BlockNode>
 	/// <typeparam name="TResult">返回结果的类型。</typeparam>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
-		return visitor.VisitQuote(this)!;
+		return visitor.VisitBlockquote(this)!;
 	}
 }

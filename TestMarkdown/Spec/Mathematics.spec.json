@@ -1,0 +1,260 @@
+[
+  {
+    "markdown": "$foo$\n",
+    "html": "<p><span class=\"math\">\\(foo\\)</span></p>\n",
+    "example": 1,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ foo $ bar $$\n",
+    "html": "<p><span class=\"math\">\\(foo $ bar\\)</span></p>\n",
+    "example": 2,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$ $$ $\n",
+    "html": "<p>$ $$ $</p>\n",
+    "example": 3,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$20,000 and $30,000\n",
+    "html": "<p>$20,000 and $30,000</p>\n",
+    "example": 4,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$ $$ $$$\n",
+    "html": "<p><span class=\"math\">\\($$\\)</span></p>\n",
+    "example": 5,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$  $$  $$$\n",
+    "html": "<p><span class=\"math\">\\( $$ \\)</span></p>\n",
+    "example": 6,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$ a$$$\n",
+    "html": "<p><span class=\"math\">\\( a\\)</span></p>\n",
+    "example": 7,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$　a　$\n",
+    "html": "<p><span class=\"math\">\\(　a　\\)</span></p>\n",
+    "example": 8,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ $$\n$$  $$\n",
+    "html": "<p><span class=\"math\">\\( \\)</span>\n<span class=\"math\">\\(  \\)</span></p>\n",
+    "example": 9,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "a $$\nfoo  bar\nbaz  \nbim\n$$ $\n",
+    "html": "<p>a <span class=\"math\">\\(foo  bar\nbaz  \nbim\\)</span> $</p>\n",
+    "example": 10,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$foo\\$bar$\n",
+    "html": "<p><span class=\"math\">\\(foo\\\\)</span>bar$</p>\n",
+    "example": 11,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$foo$bar$$\n",
+    "html": "<p><span class=\"math\">\\(foo$bar\\)</span></p>\n",
+    "example": 12,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$ foo $$ bar $$$\n",
+    "html": "<p><span class=\"math\">\\(foo $$ bar\\)</span></p>\n",
+    "example": 13,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "*foo$*$\n",
+    "html": "<p>*foo<span class=\"math\">\\(*\\)</span></p>\n",
+    "example": 14,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "[not a $link](/foo$)\n",
+    "html": "<p>[not a <span class=\"math\">\\(link](/foo\\)</span>)</p>\n",
+    "example": 15,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "`code$foo$`\n$math`code`$\n",
+    "html": "<p><code>code$foo$</code>\n<span class=\"math\">\\(math`code`\\)</span></p>\n",
+    "example": 16,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "<a href=\"$\">$\n$<a href=\"$\">$\n",
+    "html": "<p><a href=\"$\">$\n<span class=\"math\">\\(&lt;a href=&quot;\\)</span>&quot;&gt;$</p>\n",
+    "example": 17,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "<http://foo.bar.$baz>$\n$<http://foo.bar.$baz>$\n",
+    "html": "<p><a href=\"http://foo.bar.$baz\">http://foo.bar.$baz</a>$\n<span class=\"math\">\\(&lt;http://foo.bar.\\)</span>baz&gt;$</p>\n",
+    "example": 18,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$foo$$\n",
+    "html": "<p>$$$foo$$</p>\n",
+    "example": 19,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$foo\n",
+    "html": "<p>$foo</p>\n",
+    "example": 20,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$foo$$bar$$\n",
+    "html": "<p>$foo<span class=\"math\">\\(bar\\)</span></p>\n",
+    "example": 21,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\n<\n >\n$$\n",
+    "html": "<div class=\"math\">\\[&lt;\n &gt;\n\\]</div>\n",
+    "example": 22,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$\nfoo\n$\n",
+    "html": "<p>$\nfoo\n$</p>\n",
+    "example": 23,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$$\nfoo\n$$$\n$$$$$$\n",
+    "html": "<div class=\"math\">\\[foo\n$$$\n\\]</div>\n",
+    "example": 24,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\n",
+    "html": "<div class=\"math\">\\[\\]</div>\n",
+    "example": 25,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$$$\n\n$$\naaa\n",
+    "html": "<div class=\"math\">\\[\n$$\naaa\n\\]</div>\n",
+    "example": 26,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "> $$\n> aaa\n\nbbb\n",
+    "html": "<blockquote>\n<div class=\"math\">\\[aaa\n\\]</div>\n</blockquote>\n<p>bbb</p>\n",
+    "example": 27,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\n\n  \n$$\n",
+    "html": "<div class=\"math\">\\[\n  \n\\]</div>\n",
+    "example": 28,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\n$$\n",
+    "html": "<div class=\"math\">\\[\\]</div>\n",
+    "example": 29,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": " $$\n aaa\naaa\n$$\n",
+    "html": "<div class=\"math\">\\[aaa\naaa\n\\]</div>\n",
+    "example": 30,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "  $$\naaa\n  aaa\naaa\n  $$\n",
+    "html": "<div class=\"math\">\\[aaa\naaa\naaa\n\\]</div>\n",
+    "example": 31,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "   $$\n   aaa\n    aaa\n  aaa\n   $$\n",
+    "html": "<div class=\"math\">\\[aaa\n aaa\naaa\n\\]</div>\n",
+    "example": 32,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "    $$\n    aaa\n    $$\n",
+    "html": "<pre><code>$$\naaa\n$$\n</code></pre>\n",
+    "example": 33,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\naaa\n  $$\n",
+    "html": "<div class=\"math\">\\[aaa\n\\]</div>\n",
+    "example": 34,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "   $$\naaa\n  $$\n",
+    "html": "<div class=\"math\">\\[aaa\n\\]</div>\n",
+    "example": 35,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\naaa\n    $$\n",
+    "html": "<div class=\"math\">\\[aaa\n    $$\n\\]</div>\n",
+    "example": 36,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ $$\naaa\n",
+    "html": "<p><span class=\"math\">\\( \\)</span>\naaa</p>\n",
+    "example": 37,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$$$$$\naaa\n$$$ $$\n",
+    "html": "<div class=\"math\">\\[aaa\n$$$ $$\n\\]</div>\n",
+    "example": 38,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "foo\n$$\nbar\n$$\nbaz\n",
+    "html": "<p>foo</p>\n<div class=\"math\">\\[bar\n\\]</div>\n<p>baz</p>\n",
+    "example": 39,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "foo\n---\n$$\nbar\n$$\n# baz\n",
+    "html": "<h2>foo</h2>\n<div class=\"math\">\\[bar\n\\]</div>\n<h1>baz</h1>\n",
+    "example": 40,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ info startline=3 `%@#~\n1 + 1\n$$\n",
+    "html": "<div class=\"math\">\\[1 + 1\n\\]</div>\n",
+    "example": 41,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ info $$\nfoo\n",
+    "html": "<p><span class=\"math\">\\(info\\)</span>\nfoo</p>\n",
+    "example": 42,
+    "section": "Mathematics"
+  },
+  {
+    "markdown": "$$\n$$ aaa\n$$\n",
+    "html": "<div class=\"math\">\\[$$ aaa\n\\]</div>\n",
+    "example": 43,
+    "section": "Mathematics"
+  }
+]

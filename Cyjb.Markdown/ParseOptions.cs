@@ -21,6 +21,7 @@ public readonly struct ParseOptions
 		UseTaskListItem = false,
 		UseTable = false,
 		UseEmoji = false,
+		UseMath = false,
 	};
 
 	/// <summary>
@@ -54,4 +55,8 @@ public readonly struct ParseOptions
 	/// 是否解析表情符号，默认为 <c>true</c>。
 	/// </summary>
 	public bool UseEmoji { get; init; } = true;
+	/// <summary>
+	/// 是否解析数学公式，默认为 <c>true</c>。
+	/// </summary>
+	public bool UseMath { get; init; } = true;
 }

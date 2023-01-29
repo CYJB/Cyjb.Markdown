@@ -29,8 +29,4 @@ internal enum InlineKind
 	/// 自动链接。
 	/// </summary>
 	Autolink,
-	/// <summary>
-	/// 表情符号。
-	/// </summary>
-	Emoji,
 }

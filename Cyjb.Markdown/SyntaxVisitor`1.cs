@@ -114,7 +114,7 @@ public abstract class SyntaxVisitor<TResult>
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
 	/// <returns>返回的结果。</returns>
-	public virtual TResult? VisitQuote(Blockquote node)
+	public virtual TResult? VisitBlockquote(Blockquote node)
 	{
 		return DefaultVisit(node);
 	}
@@ -165,6 +165,16 @@ public abstract class SyntaxVisitor<TResult>
 	/// <param name="node">要访问的表格节点。</param>
 	/// <returns>返回的结果。</returns>
 	public virtual TResult? VisitTable(Table node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的数学公式块节点。
+	/// </summary>
+	/// <param name="node">要访问的数学公式块节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitMathBlock(MathBlock node)
 	{
 		return DefaultVisit(node);
 	}
@@ -249,6 +259,16 @@ public abstract class SyntaxVisitor<TResult>
 	/// <param name="node">要访问的表情符号节点。</param>
 	/// <returns>返回的结果。</returns>
 	public virtual TResult? VisitEmoji(Emoji node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的行内数学公式节点。
+	/// </summary>
+	/// <param name="node">要访问的行内数学公式节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitMathSpan(MathSpan node)
 	{
 		return DefaultVisit(node);
 	}
