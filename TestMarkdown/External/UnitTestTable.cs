@@ -156,7 +156,7 @@ public class UnitTestTable : BaseTest
 					});
 				});
 			});
-			Quote(45..52, () =>
+			Blockquote(45..52, () =>
 			{
 				Paragraph(47..52, () =>
 				{
@@ -1357,7 +1357,7 @@ public class UnitTestTable : BaseTest
 	{
 		AssertMarkdown("> abc\r\n> |-\r\n> def\r\nghi\r\n", () =>
 		{
-			Quote(0..25, () =>
+			Blockquote(0..25, () =>
 			{
 				Table(2..25, new TableAlign[] { TableAlign.None, }, () =>
 				{

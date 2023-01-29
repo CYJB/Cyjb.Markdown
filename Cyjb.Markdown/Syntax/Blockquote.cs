@@ -4,9 +4,9 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
-/// 表示 Markdown 的引用块。
+/// 表示 Markdown 的块引用。
 /// </summary>
-public sealed class Quote : BlockNode, INodeContainer<BlockNode>
+public sealed class Blockquote : BlockNode, INodeContainer<BlockNode>
 {
 	/// <summary>
 	/// 子节点列表。
@@ -15,10 +15,10 @@ public sealed class Quote : BlockNode, INodeContainer<BlockNode>
 	private readonly NodeList<BlockNode> children;
 
 	/// <summary>
-	/// 使用指定的文本范围初始化 <see cref="Quote"/> 类的新实例。
+	/// 使用指定的文本范围初始化 <see cref="Blockquote"/> 类的新实例。
 	/// </summary>
 	/// <param name="span">文本范围。</param>
-	public Quote(TextSpan span = default) : base(MarkdownKind.Quote)
+	public Blockquote(TextSpan span = default) : base(MarkdownKind.Blockquote)
 	{
 		children = new NodeList<BlockNode>(this);
 		Span = span;

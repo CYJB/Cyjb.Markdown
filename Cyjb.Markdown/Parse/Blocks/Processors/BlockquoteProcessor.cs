@@ -4,9 +4,9 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.Parse.Blocks;
 
 /// <summary>
-/// 引用块的解析器。
+/// 块引用的解析器。
 /// </summary>
-internal sealed class QuoteProcessor : BlockProcessor
+internal sealed class BlockquoteProcessor : BlockProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -14,17 +14,17 @@ internal sealed class QuoteProcessor : BlockProcessor
 	public static readonly IBlockFactory Factory = new BlockFactory();
 
 	/// <summary>
-	/// 引用块节点。
+	/// 块引用节点。
 	/// </summary>
-	private readonly Quote quote;
+	private readonly Blockquote blockquote;
 
 	/// <summary>
-	/// 使用引用块的起始位置初始化 <see cref="QuoteProcessor"/> 类的新实例。
+	/// 使用块引用的起始位置初始化 <see cref="BlockquoteProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">引用块的起始位置。</param>
-	private QuoteProcessor(int start) : base(MarkdownKind.Quote)
+	/// <param name="start">块引用的起始位置。</param>
+	private BlockquoteProcessor(int start) : base(MarkdownKind.Blockquote)
 	{
-		quote = new Quote(new TextSpan(start, start));
+		blockquote = new Blockquote(new TextSpan(start, start));
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ internal sealed class QuoteProcessor : BlockProcessor
 	/// <param name="node">要添加的节点。</param>
 	public override void AddNode(BlockNode node)
 	{
-		quote.Children.Add(node);
+		blockquote.Children.Add(node);
 	}
 
 	/// <summary>
@@ -68,18 +68,18 @@ internal sealed class QuoteProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override BlockNode? CloseNode(int end)
 	{
-		quote.Span = quote.Span with
+		blockquote.Span = blockquote.Span with
 		{
 			End = end,
 		};
-		return quote;
+		return blockquote;
 	}
 
 	/// <summary>
-	/// 检查引用起始标记。
+	/// 检查块引用起始标记。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
-	/// <returns>如果找到了引用起始标记，则为 <c>true</c>；否则为 <c>false</c>。</returns>
+	/// <returns>如果找到了块引用起始标记，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 	private static bool CheckQuoteStart(LineInfo line)
 	{
 		if (line.IsCodeIndent || line.Peek().Kind != BlockKind.QuoteStart)
@@ -111,7 +111,7 @@ internal sealed class QuoteProcessor : BlockProcessor
 			int start = line.Peek().Span.Start;
 			if (CheckQuoteStart(line))
 			{
-				yield return new QuoteProcessor(start);
+				yield return new BlockquoteProcessor(start);
 			}
 		}
 	}

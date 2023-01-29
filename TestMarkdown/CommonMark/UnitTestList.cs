@@ -705,7 +705,7 @@ public class UnitTestList : BaseTest
 					{
 						Literal(2..3, "a");
 					});
-					Quote(7..17, () =>
+					Blockquote(7..17, () =>
 					{
 						Paragraph(9..12, () =>
 						{
@@ -740,7 +740,7 @@ public class UnitTestList : BaseTest
 					{
 						Literal(2..3, "a");
 					});
-					Quote(7..12, () =>
+					Blockquote(7..12, () =>
 					{
 						Paragraph(9..12, () =>
 						{

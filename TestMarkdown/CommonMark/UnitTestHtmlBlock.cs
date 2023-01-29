@@ -361,7 +361,7 @@ public class UnitTestHtmlBlock : BaseTest
 	{
 		AssertMarkdown("> <div>\r\n> foo\r\n\r\nbar\r\n", () =>
 		{
-			Quote(0..16, () =>
+			Blockquote(0..16, () =>
 			{
 				HtmlBlock(2..16, "<div>\r\nfoo\r\n");
 			});

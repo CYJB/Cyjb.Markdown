@@ -405,7 +405,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 				});
 			});
 			LinkDefinition(9..22, "foo", "/url");
-			Quote(22..29, () =>
+			Blockquote(22..29, () =>
 			{
 				Paragraph(24..29, () =>
 				{
@@ -501,7 +501,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 					Literal(1..4, "foo");
 				});
 			});
-			Quote(9..24, () =>
+			Blockquote(9..24, () =>
 			{
 				LinkDefinition(11..24, "foo", "/url");
 			});

@@ -35,9 +35,9 @@ public enum MarkdownKind
 	/// </summary>
 	Paragraph,
 	/// <summary>
-	/// 引用。
+	/// 块引用。
 	/// </summary>
-	Quote,
+	Blockquote,
 	/// <summary>
 	/// 列表。
 	/// </summary>

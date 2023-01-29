@@ -18,7 +18,7 @@ internal sealed class BlockParser
 	{
 		{ BlockKind.ThematicBreak, new IBlockFactory[] { ThematicBreakProcessor.Factory } },
 		{ BlockKind.ATXHeading, new IBlockFactory[] { ATXHeadingProcessor.Factory } },
-		{ BlockKind.QuoteStart, new IBlockFactory[] { QuoteProcessor.Factory } },
+		{ BlockKind.QuoteStart, new IBlockFactory[] { BlockquoteProcessor.Factory } },
 		{ BlockKind.UnorderedListMarker, new IBlockFactory[] {
 			// 如果即可能是列表项有可能是分割线，优先选择分割线。
 			ThematicBreakProcessor.Factory, ListProcessor.Factory } },

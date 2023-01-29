@@ -100,7 +100,7 @@ public abstract class SyntaxVisitor
 	/// 访问指定的引用节点。
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
-	public virtual void VisitQuote(Quote node)
+	public virtual void VisitQuote(Blockquote node)
 	{
 		DefaultVisit(node);
 	}

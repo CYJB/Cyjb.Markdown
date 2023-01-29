@@ -15,7 +15,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> # Foo\r\n> bar\r\n> baz\r\n", () =>
 		{
-			Quote(0..23, () =>
+			Blockquote(0..23, () =>
 			{
 				Heading(2..9, 1, () =>
 				{
@@ -39,7 +39,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("># Foo\r\n>bar\r\n> baz\r\n", () =>
 		{
-			Quote(0..21, () =>
+			Blockquote(0..21, () =>
 			{
 				Heading(1..8, 1, () =>
 				{
@@ -63,7 +63,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("   > # Foo\r\n   > bar\r\n > baz\r\n", () =>
 		{
-			Quote(3..30, () =>
+			Blockquote(3..30, () =>
 			{
 				Heading(5..12, 1, () =>
 				{
@@ -99,7 +99,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> # Foo\r\n> bar\r\nbaz\r\n", () =>
 		{
-			Quote(0..21, () =>
+			Blockquote(0..21, () =>
 			{
 				Heading(2..9, 1, () =>
 				{
@@ -123,7 +123,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> bar\r\nbaz\r\n> foo\r\n", () =>
 		{
-			Quote(0..19, () =>
+			Blockquote(0..19, () =>
 			{
 				Paragraph(2..19, () =>
 				{
@@ -145,7 +145,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n> ---\r\n", () =>
 		{
-			Quote(0..14, () =>
+			Blockquote(0..14, () =>
 			{
 				Heading(2..14, 2, () =>
 				{
@@ -159,7 +159,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n---\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -174,7 +174,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> - foo\r\n> - bar\r\n", () =>
 		{
-			Quote(0..18, () =>
+			Blockquote(0..18, () =>
 			{
 				UnorderedList(2..18, false, () =>
 				{
@@ -201,7 +201,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> - foo\r\n- bar\r\n", () =>
 		{
-			Quote(0..9, () =>
+			Blockquote(0..9, () =>
 			{
 				UnorderedList(2..9, false, () =>
 				{
@@ -235,7 +235,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">     foo\r\n    bar\r\n", () =>
 		{
-			Quote(0..11, () =>
+			Blockquote(0..11, () =>
 			{
 				CodeBlock(2..11, "foo\r\n");
 			});
@@ -248,7 +248,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> ```\r\nfoo\r\n```\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				CodeBlock(2..7, "");
 			});
@@ -268,7 +268,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n    - bar\r\n", () =>
 		{
-			Quote(0..18, () =>
+			Blockquote(0..18, () =>
 			{
 				Paragraph(2..18, () =>
 				{
@@ -284,7 +284,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n>     - bar\r\n", () =>
 		{
-			Quote(0..20, () =>
+			Blockquote(0..20, () =>
 			{
 				Paragraph(2..20, () =>
 				{
@@ -304,7 +304,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">\r\n", () =>
 		{
-			Quote(0..3);
+			Blockquote(0..3);
 		});
 	}
 	[TestMethod]
@@ -312,7 +312,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">", () =>
 		{
-			Quote(0..1);
+			Blockquote(0..1);
 		});
 	}
 	/// <see href="https://spec.commonmark.org/0.30/#example-240"/>
@@ -321,7 +321,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">\r\n>  \r\n> \r\n", () =>
 		{
-			Quote(0..12);
+			Blockquote(0..12);
 		});
 	}
 	[TestMethod]
@@ -329,7 +329,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">\r\n>  \r\n> ", () =>
 		{
-			Quote(0..10);
+			Blockquote(0..10);
 		});
 	}
 	/// <summary>
@@ -341,7 +341,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">\r\n> foo\r\n>  \r\n", () =>
 		{
-			Quote(0..15, () =>
+			Blockquote(0..15, () =>
 			{
 				Paragraph(5..10, () =>
 				{
@@ -359,14 +359,14 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n\r\n> bar\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{
 					Literal(2..5, "foo");
 				});
 			});
-			Quote(9..16, () =>
+			Blockquote(9..16, () =>
 			{
 				Paragraph(11..16, () =>
 				{
@@ -384,7 +384,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n> bar\r\n", () =>
 		{
-			Quote(0..14, () =>
+			Blockquote(0..14, () =>
 			{
 				Paragraph(2..14, () =>
 				{
@@ -404,7 +404,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> foo\r\n>\r\n> bar\r\n", () =>
 		{
-			Quote(0..17, () =>
+			Blockquote(0..17, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -430,7 +430,7 @@ public class UnitTestQuote : BaseTest
 			{
 				Literal(0..3, "foo");
 			});
-			Quote(5..12, () =>
+			Blockquote(5..12, () =>
 			{
 				Paragraph(7..12, () =>
 				{
@@ -448,7 +448,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> aaa\r\n***\r\n> bbb\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -456,7 +456,7 @@ public class UnitTestQuote : BaseTest
 				});
 			});
 			ThematicBreak(7..12);
-			Quote(12..19, () =>
+			Blockquote(12..19, () =>
 			{
 				Paragraph(14..19, () =>
 				{
@@ -474,7 +474,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> bar\r\nbaz\r\n", () =>
 		{
-			Quote(0..12, () =>
+			Blockquote(0..12, () =>
 			{
 				Paragraph(2..12, () =>
 				{
@@ -491,7 +491,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> bar\r\n\r\nbaz\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -510,7 +510,7 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> bar\r\n>\r\nbaz\r\n", () =>
 		{
-			Quote(0..10, () =>
+			Blockquote(0..10, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -532,11 +532,11 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown("> > > foo\r\nbar\r\n", () =>
 		{
-			Quote(0..16, () =>
+			Blockquote(0..16, () =>
 			{
-				Quote(2..16, () =>
+				Blockquote(2..16, () =>
 				{
-					Quote(4..16, () =>
+					Blockquote(4..16, () =>
 					{
 						Paragraph(6..16, () =>
 						{
@@ -555,11 +555,11 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">>> foo\r\n> bar\r\n>>baz\r\n", () =>
 		{
-			Quote(0..23, () =>
+			Blockquote(0..23, () =>
 			{
-				Quote(1..23, () =>
+				Blockquote(1..23, () =>
 				{
-					Quote(2..23, () =>
+					Blockquote(2..23, () =>
 					{
 						Paragraph(4..23, () =>
 						{
@@ -584,11 +584,11 @@ public class UnitTestQuote : BaseTest
 	{
 		AssertMarkdown(">     code\r\n\r\n>    not code\r\n", () =>
 		{
-			Quote(0..12, () =>
+			Blockquote(0..12, () =>
 			{
 				CodeBlock(2..12, "code\r\n");
 			});
-			Quote(14..29, () =>
+			Blockquote(14..29, () =>
 			{
 				Paragraph(19..29, () =>
 				{

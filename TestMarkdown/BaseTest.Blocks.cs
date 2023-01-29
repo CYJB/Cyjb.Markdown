@@ -12,24 +12,24 @@ namespace TestMarkdown;
 public abstract partial class BaseTest
 {
 	/// <summary>
-	/// 验证是引用。
+	/// 验证是块引用。
 	/// </summary>
 	/// <param name="span">预期的文本范围。</param>
 	/// <param name="validator">子节点验证器。</param>
-	protected void Quote(TextSpan span, Action? validator = null)
+	protected void Blockquote(TextSpan span, Action? validator = null)
 	{
 		Node node = Next();
-		Assert.AreEqual(MarkdownKind.Quote, node.Kind);
+		Assert.AreEqual(MarkdownKind.Blockquote, node.Kind);
 		Assert.AreEqual(span, node.Span);
 
-		Quote quote = (Quote)node!;
+		Blockquote blockquote = (Blockquote)node!;
 		if (validator == null)
 		{
-			Assert.AreEqual(0, quote.Children.Count);
+			Assert.AreEqual(0, blockquote.Children.Count);
 		}
 		else
 		{
-			AssertChildren(node, quote.Children, validator);
+			AssertChildren(node, blockquote.Children, validator);
 		}
 	}
 

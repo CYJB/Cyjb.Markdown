@@ -22,7 +22,7 @@ public class UnitTestListItem : BaseTest
 				Literal(13..28, "with two lines.");
 			});
 			CodeBlock(32..51, "indented code\r\n");
-			Quote(53..71, () =>
+			Blockquote(53..71, () =>
 			{
 				Paragraph(55..71, () =>
 				{
@@ -48,7 +48,7 @@ public class UnitTestListItem : BaseTest
 						Literal(21..36, "with two lines.");
 					});
 					CodeBlock(44..63, "indented code\r\n");
-					Quote(69..87, () =>
+					Blockquote(69..87, () =>
 					{
 						Paragraph(71..87, () =>
 						{
@@ -156,9 +156,9 @@ public class UnitTestListItem : BaseTest
 	{
 		AssertMarkdown("   > > 1.  one\r\n>>\r\n>>     two\r\n", () =>
 		{
-			Quote(3..32, () =>
+			Blockquote(3..32, () =>
 			{
-				Quote(5..32, () =>
+				Blockquote(5..32, () =>
 				{
 					OrderedNumberList(7..32, true, 1, () =>
 					{
@@ -184,9 +184,9 @@ public class UnitTestListItem : BaseTest
 	{
 		AssertMarkdown(">>- one\r\n>>\r\n  >  > two\r\n", () =>
 		{
-			Quote(0..25, () =>
+			Blockquote(0..25, () =>
 			{
-				Quote(1..25, () =>
+				Blockquote(1..25, () =>
 				{
 					UnorderedList(2..9, false, () =>
 					{
@@ -272,7 +272,7 @@ public class UnitTestListItem : BaseTest
 					{
 						Literal(44..47, "baz");
 					});
-					Quote(55..62, () =>
+					Blockquote(55..62, () =>
 					{
 						Paragraph(57..62, () =>
 						{
@@ -773,7 +773,7 @@ public class UnitTestListItem : BaseTest
 						Literal(23..38, "with two lines.");
 					});
 					CodeBlock(47..66, "indented code\r\n");
-					Quote(73..91, () =>
+					Blockquote(73..91, () =>
 					{
 						Paragraph(75..91, () =>
 						{
@@ -804,7 +804,7 @@ public class UnitTestListItem : BaseTest
 						Literal(25..40, "with two lines.");
 					});
 					CodeBlock(50..69, "indented code\r\n");
-					Quote(77..95, () =>
+					Blockquote(77..95, () =>
 					{
 						Paragraph(79..95, () =>
 						{
@@ -835,7 +835,7 @@ public class UnitTestListItem : BaseTest
 						Literal(27..42, "with two lines.");
 					});
 					CodeBlock(53..72, "indented code\r\n");
-					Quote(81..99, () =>
+					Blockquote(81..99, () =>
 					{
 						Paragraph(83..99, () =>
 						{
@@ -878,7 +878,7 @@ public class UnitTestListItem : BaseTest
 						Literal(19..34, "with two lines.");
 					});
 					CodeBlock(44..63, "indented code\r\n");
-					Quote(71..89, () =>
+					Blockquote(71..89, () =>
 					{
 						Paragraph(73..89, () =>
 						{
@@ -918,13 +918,13 @@ public class UnitTestListItem : BaseTest
 	{
 		AssertMarkdown("> 1. > Blockquote\r\ncontinued here.\r\n", () =>
 		{
-			Quote(0..36, () =>
+			Blockquote(0..36, () =>
 			{
 				OrderedNumberList(2..36, false, 1, () =>
 				{
 					ListItem(2..36, () =>
 					{
-						Quote(5..36, () =>
+						Blockquote(5..36, () =>
 						{
 							Paragraph(7..36, () =>
 							{
@@ -944,13 +944,13 @@ public class UnitTestListItem : BaseTest
 	{
 		AssertMarkdown("> 1. > Blockquote\r\n> continued here.\r\n", () =>
 		{
-			Quote(0..38, () =>
+			Blockquote(0..38, () =>
 			{
 				OrderedNumberList(2..38, false, 1, () =>
 				{
 					ListItem(2..38, () =>
 					{
-						Quote(5..38, () =>
+						Blockquote(5..38, () =>
 						{
 							Paragraph(7..38, () =>
 							{

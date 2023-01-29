@@ -114,7 +114,7 @@ public abstract class SyntaxVisitor<TResult>
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
 	/// <returns>返回的结果。</returns>
-	public virtual TResult? VisitQuote(Quote node)
+	public virtual TResult? VisitQuote(Blockquote node)
 	{
 		return DefaultVisit(node);
 	}

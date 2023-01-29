@@ -92,7 +92,7 @@ public class UnitTestTabs : BaseTest
 	{
 		AssertMarkdown(">\t\tfoo\r\n", () =>
 		{
-			Quote(0..8, () =>
+			Blockquote(0..8, () =>
 			{
 				CodeBlock(1..8, "  foo\r\n");
 			});

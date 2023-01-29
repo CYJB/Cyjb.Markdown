@@ -21,8 +21,8 @@ public class UnitTestListItem
 		list.Children.Add(item);
 		Assert.AreEqual(list, item.Parent);
 
-		Quote quote = new();
-		Assert.ThrowsException<ArgumentException>(() => quote.Children.Add(item));
+		Blockquote blockquote = new();
+		Assert.ThrowsException<ArgumentException>(() => blockquote.Children.Add(item));
 	}
 }
 

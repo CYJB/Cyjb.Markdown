@@ -179,7 +179,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// 访问指定的引用节点。
 	/// </summary>
 	/// <param name="node">要访问的引用节点。</param>
-	public override void VisitQuote(Quote node)
+	public override void VisitQuote(Blockquote node)
 	{
 		WriteLine();
 		WriteStartTag(node, "blockquote");

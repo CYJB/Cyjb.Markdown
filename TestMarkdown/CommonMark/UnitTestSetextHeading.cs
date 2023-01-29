@@ -250,7 +250,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	{
 		AssertMarkdown("> Foo\r\n---\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{
@@ -266,7 +266,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	{
 		AssertMarkdown("> foo\r\nbar\r\n===\r\n", () =>
 		{
-			Quote(0..17, () =>
+			Blockquote(0..17, () =>
 			{
 				Paragraph(2..17, () =>
 				{
@@ -402,7 +402,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	{
 		AssertMarkdown("> foo\r\n-----\r\n", () =>
 		{
-			Quote(0..7, () =>
+			Blockquote(0..7, () =>
 			{
 				Paragraph(2..7, () =>
 				{

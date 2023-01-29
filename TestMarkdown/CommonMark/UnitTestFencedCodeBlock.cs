@@ -150,7 +150,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	{
 		AssertMarkdown("> ```\r\n> aaa\r\n\r\nbbb\r\n", () =>
 		{
-			Quote(0..14, () =>
+			Blockquote(0..14, () =>
 			{
 				CodeBlock(2..14, "aaa\r\n");
 			});
