@@ -55,7 +55,7 @@ internal static class Emojis
 	/// <summary>
 	/// emoji 信息字典。
 	/// </summary>
-	public static readonly Dictionary<string, EmojiInfo> Infos = new()
+	public static readonly Dictionary<string, IEmojiInfo> Infos = new()
 	{
 <#
 	if (emojis != null)
@@ -79,12 +79,12 @@ internal static class Emojis
 				} else {
 					text = url;
 				}
-				WriteLine($"\t\t{{ \"{pair.Key}\", new EmojiInfo(\"\\U{text.PadLeft(8, '0')}\", \"{url}\") }},");
+				WriteLine($"\t\t{{ \"{pair.Key}\", new GitHubEmojiInfo(\"\\U{text.PadLeft(8, '0')}\", \"{url}\") }},");
 			}
 			else if (url.StartsWith(Prefix))
 			{
 				url = url.Substring(Prefix.Length);
-				WriteLine($"\t\t{{ \"{pair.Key}\", new EmojiInfo(\"{url}\") }},");
+				WriteLine($"\t\t{{ \"{pair.Key}\", new GitHubEmojiInfo(\"{url}\") }},");
 			}
 			else
 			{

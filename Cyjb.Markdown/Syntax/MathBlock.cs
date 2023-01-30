@@ -59,22 +59,6 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 		return visitor.VisitMathBlock(this)!;
 	}
 
-	/// <summary>
-	/// 返回当前对象的字符串表示形式。
-	/// </summary>
-	/// <returns>当前对象的字符串表示形式。</returns>
-	public override string ToString()
-	{
-		if (Info == null)
-		{
-			return base.ToString();
-		}
-		else
-		{
-			return $"{{MathBlock {Info} {Span}}}";
-		}
-	}
-
 	#region IEquatable<MathBlock> 成员
 
 	/// <summary>

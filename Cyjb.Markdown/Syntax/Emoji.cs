@@ -20,7 +20,7 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 	/// <see href="https://github.com/ikatyang/emoji-cheat-sheet/"/>
 	public static Emoji? GetEmoji(string code, TextSpan span = default)
 	{
-		if (Emojis.Infos.TryGetValue(code, out EmojiInfo info))
+		if (Emojis.Infos.TryGetValue(code, out EmojiInfo? info))
 		{
 			return new Emoji(code, info, span);
 		}
@@ -28,6 +28,45 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 		{
 			return null;
 		}
+	}
+
+	/// <summary>
+	/// 注册指定的 Unicode 表情符号。
+	/// </summary>
+	/// <param name="name">表情符号的名称。</param>
+	/// <param name="text">表情符号的 Unicode 文本。</param>
+	/// <param name="fallbackUrl">后备链接。</param>
+	/// <exception cref="ArgumentNullException"><paramref name="name"/> 或 <paramref name="text"/>
+	/// 为 <c>null</c>。</exception>
+	/// <exception cref="ArgumentException"><paramref name="name"/> 包含 <c>:</c>。</exception>
+	public static void RegisterUnicodeEmoji(string name, string text, string? fallbackUrl = null)
+	{
+		ArgumentNullException.ThrowIfNull(name);
+		ArgumentNullException.ThrowIfNull(text);
+		if (name.Contains(':'))
+		{
+			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(name));
+		}
+		Emojis.Infos[name] = new EmojiInfo(true, text, fallbackUrl);
+	}
+
+	/// <summary>
+	/// 注册指定的自定义表情符号。
+	/// </summary>
+	/// <param name="name">表情符号的名称。</param>
+	/// <param name="url">表情符号的链接。</param>
+	/// <exception cref="ArgumentNullException"><paramref name="name"/> 或 <paramref name="url"/>
+	/// 为 <c>null</c>。</exception>
+	/// <exception cref="ArgumentException"><paramref name="name"/> 包含 <c>:</c>。</exception>
+	public static void RegisterCustomEmoji(string name, string url)
+	{
+		ArgumentNullException.ThrowIfNull(name);
+		ArgumentNullException.ThrowIfNull(url);
+		if (name.Contains(':'))
+		{
+			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(name));
+		}
+		Emojis.Infos[name] = new EmojiInfo(false, null, url);
 	}
 
 	/// <summary>
@@ -65,9 +104,10 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 	public string? Text => info.Text;
 
 	/// <summary>
-	/// 获取 GitHub 的后备链接。
+	/// 获取后备链接。
 	/// </summary>
-	public string GitHubFallbackUrl => info.GitHubFallbackUrl;
+	/// <remarks>用于非 Unicode emoji，或本地环境不支持特定 Unicode emoji 的场景降级到图片。</remarks>
+	public string? FallbackUrl => info.FallbackUrl;
 
 	/// <summary>
 	/// 应用指定的访问器。

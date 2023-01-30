@@ -36,10 +36,7 @@ internal partial class Resources
 	{
 		get
 		{
-			if (resourceManager is null)
-			{
-				resourceManager = new ResourceManager("Cyjb.Markdown.Resources", typeof(Resources).Assembly);
-			}
+			resourceManager ??= new ResourceManager("Cyjb.Markdown.Resources", typeof(Resources).Assembly);
 			return resourceManager;
 		}
 	}
@@ -59,6 +56,11 @@ internal partial class Resources
 			resourceCulture = value;
 		}
 	}
+	
+	/// <summary>
+	/// 返回类似 <c>Emoji name can not contains colon.</c> 的本地化字符串。
+	/// </summary>
+	internal static string EmojiNameCanNotContainsColon => ResourceManager.GetString("EmojiNameCanNotContainsColon", resourceCulture)!;
 	
 	/// <summary>
 	/// 返回类似 <c>Link label can not be empty or consists only of white-space characters.</c> 的本地化字符串。

@@ -113,7 +113,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的代码块节点。</param>
 	public override void VisitCodeBlock(CodeBlock node)
 	{
-		Dictionary<string, string> attributes = new();
+		Dictionary<string, string> attrs = new();
 		string? info = node.Info;
 		if (!info.IsNullOrEmpty())
 		{
@@ -127,11 +127,11 @@ public class HtmlRenderer : SyntaxWalker
 			{
 				lang = info[0..idx];
 			}
-			attributes["class"] = $"language-{lang}";
+			attrs["class"] = $"language-{lang}";
 		}
 		WriteLine();
 		WriteStartTag(node, "pre");
-		WriteStartTag(node, "code", attributes);
+		WriteStartTag(node, "code", attrs);
 		Write(node.Content);
 		WriteEndTag("code");
 		WriteEndTag("pre");
@@ -220,7 +220,7 @@ public class HtmlRenderer : SyntaxWalker
 	public override void VisitList(List node)
 	{
 		string tagName;
-		Dictionary<string, string> attributes = new();
+		Dictionary<string, string> attrs = new();
 		if (node.StyleType == ListStyleType.Unordered)
 		{
 			tagName = "ul";
@@ -231,28 +231,28 @@ public class HtmlRenderer : SyntaxWalker
 			switch (node.StyleType)
 			{
 				case ListStyleType.OrderedLowerAlpha:
-					attributes["type"] = "a";
+					attrs["type"] = "a";
 					break;
 				case ListStyleType.OrderedUpperAlpha:
-					attributes["type"] = "A";
+					attrs["type"] = "A";
 					break;
 				case ListStyleType.OrderedLowerRoman:
-					attributes["type"] = "i";
+					attrs["type"] = "i";
 					break;
 				case ListStyleType.OrderedUpperRoman:
-					attributes["type"] = "I";
+					attrs["type"] = "I";
 					break;
 				case ListStyleType.OrderedLowerGreek:
-					attributes["style"] = "list-style-type: lower-greek;";
+					attrs["style"] = "list-style-type: lower-greek;";
 					break;
 			}
 			if (node.Start != 1)
 			{
-				attributes["start"] = node.Start.ToString();
+				attrs["start"] = node.Start.ToString();
 			}
 		}
 		WriteLine();
-		WriteStartTag(node, tagName, attributes);
+		WriteStartTag(node, tagName, attrs);
 		WriteLine();
 		DefaultVisit(node);
 		WriteLine();
@@ -276,24 +276,24 @@ public class HtmlRenderer : SyntaxWalker
 		{
 			tagName = "td";
 		}
-		Dictionary<string, string> attributes = new();
+		Dictionary<string, string> attrs = new();
 		if (tableAlign != TableAlign.None)
 		{
 			// 添加对齐的样式。
 			switch (tableAlign)
 			{
 				case TableAlign.Left:
-					attributes.Add("style", "text-align: left;");
+					attrs.Add("style", "text-align: left;");
 					break;
 				case TableAlign.Center:
-					attributes.Add("style", "text-align: center;");
+					attrs.Add("style", "text-align: center;");
 					break;
 				case TableAlign.Right:
-					attributes.Add("style", "text-align: right;");
+					attrs.Add("style", "text-align: right;");
 					break;
 			}
 		}
-		WriteStartTag(node, tagName, attributes);
+		WriteStartTag(node, tagName, attrs);
 		DefaultVisit(node);
 		WriteEndTag(tagName);
 		WriteLine();
@@ -381,9 +381,11 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的数学公式块节点。</param>
 	public override void VisitMathBlock(MathBlock node)
 	{
-		Dictionary<string, string> attributes = new();
-		attributes["class"] = "math";
-		WriteStartTag(node, "div", attributes);
+		Dictionary<string, string> attrs = new()
+		{
+			["class"] = "math"
+		};
+		WriteStartTag(node, "div", attrs);
 		Write("\\[");
 		Write(node.Content);
 		Write("\\]");
@@ -445,15 +447,15 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的链接节点。</param>
 	public override void VisitLink(Link node)
 	{
-		Dictionary<string, string> attributes = new();
+		Dictionary<string, string> attrs = new();
 		if (node.Kind == MarkdownKind.Link)
 		{
-			attributes["href"] = LinkUtil.EncodeURL(node.URL);
+			attrs["href"] = LinkUtil.EncodeURL(node.URL);
 			if (node.Title != null)
 			{
-				attributes["title"] = node.Title;
+				attrs["title"] = node.Title;
 			}
-			WriteStartTag(node, "a", attributes);
+			WriteStartTag(node, "a", attrs);
 			DefaultVisit(node);
 			WriteEndTag("a");
 		}
@@ -462,13 +464,13 @@ public class HtmlRenderer : SyntaxWalker
 			altTextRenderer ??= new AltTextRenderer();
 			altTextRenderer.Clear();
 			node.Accept(altTextRenderer);
-			attributes["src"] = LinkUtil.EncodeURL(node.URL);
-			attributes["alt"] = altTextRenderer.ToString();
+			attrs["src"] = LinkUtil.EncodeURL(node.URL);
+			attrs["alt"] = altTextRenderer.ToString();
 			if (node.Title != null)
 			{
-				attributes["title"] = node.Title;
+				attrs["title"] = node.Title;
 			}
-			WriteStartTag(node, "img", attributes, true);
+			WriteStartTag(node, "img", attrs, true);
 		}
 	}
 
@@ -509,11 +511,13 @@ public class HtmlRenderer : SyntaxWalker
 			// Unicode Emoji 直接输出。
 			Write(node.Text);
 		}
-		else
+		else if (node.FallbackUrl != null)
 		{
 			// GitHub 自定义 Emoji 转换为 img。
-			Dictionary<string, string> attrs = new();
-			attrs["src"] = node.GitHubFallbackUrl;
+			Dictionary<string, string> attrs = new()
+			{
+				["src"] = node.FallbackUrl
+			};
 			WriteStartTag(node, "img", attrs, true);
 		}
 	}
@@ -524,9 +528,11 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	public override void VisitMathSpan(MathSpan node)
 	{
-		Dictionary<string, string> attributes = new();
-		attributes["class"] = "math";
-		WriteStartTag(node, "span", attributes);
+		Dictionary<string, string> attrs = new()
+		{
+			["class"] = "math"
+		};
+		WriteStartTag(node, "span", attrs);
 		Write("\\(");
 		Write(node.Content);
 		Write("\\)");
@@ -607,19 +613,19 @@ public class HtmlRenderer : SyntaxWalker
 	/// </summary>
 	/// <param name="node">当前节点。</param>
 	/// <param name="tagName">标签名。</param>
-	/// <param name="attributes">标签的属性。</param>
+	/// <param name="attrs">标签的属性。</param>
 	/// <param name="closed">标签是否是闭合的。</param>
 	protected void WriteStartTag(Node node, string tagName,
-		Dictionary<string, string>? attributes = null, bool closed = false)
+		Dictionary<string, string>? attrs = null, bool closed = false)
 	{
 		text.Append('<');
 		text.Append(tagName);
-		attributes ??= new Dictionary<string, string>();
+		attrs ??= new Dictionary<string, string>();
 		foreach (IAttributeModifier modifier in attributeModifiers)
 		{
-			modifier.UpdateAttributes(node, tagName, attributes);
+			modifier.UpdateAttributes(node, tagName, attrs);
 		}
-		foreach (KeyValuePair<string, string> attr in attributes)
+		foreach (KeyValuePair<string, string> attr in attrs)
 		{
 			// 忽略非法的属性名。
 			if (!AttributeNameRegex.IsMatch(attr.Key))
