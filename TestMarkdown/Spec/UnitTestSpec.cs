@@ -34,7 +34,7 @@ public class UnitTestRender
 				item.Html = "<p><a href=\"http://foo.bar.baz/test?q=hello&id=22&boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n";
 			}
 		}
-		TestRender(items);
+		TestRender(items, true);
 	}
 
 	/// <summary>
@@ -92,6 +92,17 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试扩展自动链接规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/ext-autolink.md"/>
+	[TestMethod]
+	public void TestExtAutolink()
+	{
+		SpecItem[] items = ReadSpec("ExtAutolink.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>
@@ -110,12 +121,14 @@ public class UnitTestRender
 	/// 测试 HTML 渲染结果。
 	/// </summary>
 	/// <param name="items">规范的项。</param>
-	private static void TestRender(SpecItem[] items)
+	/// <param name="commonMark">是否使用 CommonMark 规范。</param>
+	private static void TestRender(SpecItem[] items, bool commonMark = false)
 	{
 		HtmlRenderer renderer = new();
+		ParseOptions options = commonMark ? ParseOptions.CommonMark : ParseOptions.Default;
 		foreach (SpecItem item in items)
 		{
-			Document doc = Document.Parse(item.Markdown);
+			Document doc = Document.Parse(item.Markdown, options);
 			renderer.Clear();
 			doc.Accept(renderer);
 			Assert.AreEqual(item.Html, renderer.ToString(), "{0}: Example {1}", item.Section, item.Example);

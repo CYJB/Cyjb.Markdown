@@ -32,10 +32,6 @@ internal sealed class BracketInfo
 	/// 分隔符信息。
 	/// </summary>
 	public DelimiterInfo? Delimiter;
-	/// <summary>
-	/// 源文件的结束标记。
-	/// </summary>
-	public SourceMark? EndMark;
 
 	/// <summary>
 	/// 使用指定的括号信息初始化 <see cref="BracketInfo"/> 类的新实例。

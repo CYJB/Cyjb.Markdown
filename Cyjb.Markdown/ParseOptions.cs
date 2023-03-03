@@ -22,6 +22,7 @@ public readonly struct ParseOptions
 		UseTable = false,
 		UseEmoji = false,
 		UseMath = false,
+		UseExtAutolink = false,
 	};
 
 	/// <summary>
@@ -59,4 +60,8 @@ public readonly struct ParseOptions
 	/// 是否解析数学公式，默认为 <c>true</c>。
 	/// </summary>
 	public bool UseMath { get; init; } = true;
+	/// <summary>
+	/// 是否支持扩展自动链接，默认为 <c>true</c>。
+	/// </summary>
+	public bool UseExtAutolink { get; init; } = true;
 }

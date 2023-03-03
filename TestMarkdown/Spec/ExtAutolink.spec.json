@@ -1,0 +1,104 @@
+[
+  {
+    "markdown": "http://www.commonmark.org\n\nhttps://www.commonmark.org foo\n\nwww.commonmark.org<bar\n\nVisit www.commonmark.org/help for more information.\n\nmy-http://www.commonmark.org\n",
+    "html": "<p><a href=\"http://www.commonmark.org\">http://www.commonmark.org</a></p>\n<p><a href=\"https://www.commonmark.org\">https://www.commonmark.org</a> foo</p>\n<p><a href=\"http://www.commonmark.org\">www.commonmark.org</a>&lt;bar</p>\n<p>Visit <a href=\"http://www.commonmark.org/help\">www.commonmark.org/help</a> for more information.</p>\n<p>my-http://www.commonmark.org</p>\n",
+    "example": 1,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "http://commonmark.org\n\nhttp://www.commonmark._org\n\nhttp://www\n",
+    "html": "<p><a href=\"http://commonmark.org\">http://commonmark.org</a></p>\n<p>http://www.commonmark._org</p>\n<p>http://www</p>\n",
+    "example": 2,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "Visit www.commonmark.org/help for more information.\n",
+    "html": "<p>Visit <a href=\"http://www.commonmark.org/help\">www.commonmark.org/help</a> for more information.</p>\n",
+    "example": 3,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "Visit www.commonmark.org.\n\nVisit www.commonmark.org/a.b.\n\n访问http://www.commonmark.org/?p=你好,世界。\n\nhttp://commonmark.org/`bar`\n",
+    "html": "<p>Visit <a href=\"http://www.commonmark.org\">www.commonmark.org</a>.</p>\n<p>Visit <a href=\"http://www.commonmark.org/a.b\">www.commonmark.org/a.b</a>.</p>\n<p>访问<a href=\"http://www.commonmark.org/?p=%E4%BD%A0%E5%A5%BD,%E4%B8%96%E7%95%8C\">http://www.commonmark.org/?p=你好,世界</a>。</p>\n<p><a href=\"http://commonmark.org/%60bar%60\">http://commonmark.org/`bar`</a></p>\n",
+    "example": 4,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "www.google.com/search?q=Markup+(business)\n\nwww.google.com/search?q=([Markup])+(business))]\n\n(www.google.com/search?q=Markup+(business))\n\n(www.google.com/search?q=Markup+(business)\n\nwww.google.com/search?q=Markup+[business]]\n\n（www.google.com/search?q=Markup+【business】）\n",
+    "html": "<p><a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a></p>\n<p><a href=\"http://www.google.com/search?q=(%5BMarkup%5D)+(business)\">www.google.com/search?q=([Markup])+(business)</a>)]</p>\n<p>(<a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a>)</p>\n<p>(<a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a></p>\n<p><a href=\"http://www.google.com/search?q=Markup+%5Bbusiness%5D\">www.google.com/search?q=Markup+[business]</a>]</p>\n<p>（<a href=\"http://www.google.com/search?q=Markup+%E3%80%90business%E3%80%91\">www.google.com/search?q=Markup+【business】</a>）</p>\n",
+    "example": 5,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "www.google.com/search?q=commonmark&hl=en\n\nwww.google.com/search?q=commonmark&hl;\n\nwww.google.com/search?q=commonmark&;\n",
+    "html": "<p><a href=\"http://www.google.com/search?q=commonmark&hl=en\">www.google.com/search?q=commonmark&amp;hl=en</a></p>\n<p><a href=\"http://www.google.com/search?q=commonmark\">www.google.com/search?q=commonmark</a>&amp;hl;</p>\n<p><a href=\"http://www.google.com/search?q=commonmark&;\">www.google.com/search?q=commonmark&amp;;</a></p>\n",
+    "example": 6,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "www.google.com/search?q=(business))+ok\n\nwww.google.com/search?q=Markup]+(business))\n",
+    "html": "<p><a href=\"http://www.google.com/search?q=(business))+ok\">www.google.com/search?q=(business))+ok</a></p>\n<p><a href=\"http://www.google.com/search?q=Markup%5D+(business)\">www.google.com/search?q=Markup]+(business)</a>)</p>\n",
+    "example": 7,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "Visit www.commonmark.org/a.b.,,\n\nwww.google.com/search?q=Markup+(business)])\n\nwww.google.com/search?q=Markup+[business]].)&amp;\n",
+    "html": "<p>Visit <a href=\"http://www.commonmark.org/a.b\">www.commonmark.org/a.b</a>.,,</p>\n<p><a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a>])</p>\n<p><a href=\"http://www.google.com/search?q=Markup+%5Bbusiness%5D\">www.google.com/search?q=Markup+[business]</a>].)&amp;</p>\n",
+    "example": 8,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "www.commonmark.org/he<lp\n",
+    "html": "<p><a href=\"http://www.commonmark.org/he\">www.commonmark.org/he</a>&lt;lp</p>\n",
+    "example": 9,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "*http://commonmark.org/*/*\n",
+    "html": "<p><em><a href=\"http://commonmark.org/*/\">http://commonmark.org/*/</a></em></p>\n",
+    "example": 10,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "<http://commonmark.org/>\n\n<a href=\"http://commonmark.org/\">\n\n[http://commonmark.org/](http://commonmark.org/)\n\n[foo http://commonmark.org/`bar`\n\n[foo http://commonmark.org/`bar`](http://commonmark.org/\n\n[foo [bar](/uri) http://commonmark.org/](/uri)\n",
+    "html": "<p><a href=\"http://commonmark.org/\">http://commonmark.org/</a></p>\n<a href=\"http://commonmark.org/\">\n<p><a href=\"http://commonmark.org/\">http://commonmark.org/</a></p>\n<p>[foo http://commonmark.org/<code>bar</code></p>\n<p>[foo http://commonmark.org/<code>bar</code>](<a href=\"http://commonmark.org/\">http://commonmark.org/</a></p>\n<p>[foo <a href=\"/uri\">bar</a> <a href=\"http://commonmark.org/%5D(/uri)\">http://commonmark.org/](/uri)</a></p>\n",
+    "example": 11,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "http://commonmark.org\n\n(Visit https://encrypted.google.com/search?q=Markup+(business))\n",
+    "html": "<p><a href=\"http://commonmark.org\">http://commonmark.org</a></p>\n<p>(Visit <a href=\"https://encrypted.google.com/search?q=Markup+(business)\">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>\n",
+    "example": 12,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "foo@bar.baz\n\nmailto:foo.bar@b-a-z.bim\n\nfoo@bar\n",
+    "html": "<p><a href=\"mailto:foo@bar.baz\">foo@bar.baz</a></p>\n<p><a href=\"mailto:foo.bar@b-a-z.bim\">mailto:foo.bar@b-a-z.bim</a></p>\n<p>foo@bar</p>\n",
+    "example": 13,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.\n",
+    "html": "<p>hello@mail+xyz.example isn't valid, but <a href=\"mailto:hello+xyz@mail.example\">hello+xyz@mail.example</a> is.</p>\n",
+    "example": 14,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "a.b-c_d@a.b\n\na.b-c_d@a.b.\n\na.b-c_d@a.b-\n\na.b-c_d@a.b_\n\na.b-c_d@a.b其它\n",
+    "html": "<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>.</p>\n<p>a.b-c_d@a.b-</p>\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>_</p>\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>其它</p>\n",
+    "example": 15,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "mailto:foo@bar.baz\n\nmailto:a.b-c_d@a.b\n\nmailto:a.b-c_d@a.b.\n\nmailto:a.b-c_d@a.b/\n\nmailto:a.b-c_d@a.b-\n\nmailto:a.b-c_d@a.b_\n\nxmpp:foo@bar.baz\n",
+    "html": "<p><a href=\"mailto:foo@bar.baz\">mailto:foo@bar.baz</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a>.</p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a>/</p>\n<p>mailto:a.b-c_d@a.b-</p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a>_</p>\n<p>xmpp:foo@bar.baz</p>\n",
+    "example": 16,
+    "section": "ExtAutolink"
+  },
+  {
+    "markdown": "<foo@bar.baz>\n\n<a href=\"mailto:foo@bar.baz\">\n\n[foo@bar.baz](mailto:biz@boo.bim)\n\n[foo foo@bar.baz`bar`\n\n[foo foo@bar.baz`bar`](mailto:biz@boo.bim\n\n[foo [bar](/uri) foo@bar.baz](/uri)\n",
+    "html": "<p><a href=\"mailto:foo@bar.baz\">foo@bar.baz</a></p>\n<a href=\"mailto:foo@bar.baz\">\n<p><a href=\"mailto:biz@boo.bim\">foo@bar.baz</a></p>\n<p>[foo foo@bar.baz<code>bar</code></p>\n<p>[foo foo@bar.baz<code>bar</code>](<a href=\"mailto:biz@boo.bim\">mailto:biz@boo.bim</a></p>\n<p>[foo <a href=\"/uri\">bar</a> <a href=\"mailto:foo@bar.baz\">foo@bar.baz</a>](/uri)</p>\n",
+    "example": 17,
+    "section": "ExtAutolink"
+  }
+]

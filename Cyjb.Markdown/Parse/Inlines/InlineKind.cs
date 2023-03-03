@@ -14,13 +14,13 @@ internal enum InlineKind
 	/// </summary>
 	Escaped,
 	/// <summary>
-	/// 链接标签。
+	/// 链接的起始。
 	/// </summary>
-	LinkLabel,
+	LinkStart,
 	/// <summary>
-	/// 链接体。
+	/// 链接的闭合。
 	/// </summary>
-	LinkBody,
+	LinkClose,
 	/// <summary>
 	/// 行级节点。
 	/// </summary>
@@ -29,4 +29,8 @@ internal enum InlineKind
 	/// 自动链接。
 	/// </summary>
 	Autolink,
+	/// <summary>
+	/// 扩展自动链接。
+	/// </summary>
+	ExtAutolink,
 }

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Cyjb.Collections;
 using Cyjb.Compilers.Lexers;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -11,7 +12,7 @@ namespace Cyjb.Markdown.Parse.Inlines;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#inlines"/>
 [LexerRejectable]
-[LexerInclusiveContext("Link")]
+[LexerInclusiveContext("LinkClose")]
 [LexerRegex("WS", @"[ \t]*\r?\n?[ \t]*")]
 [LexerRegex("WS_1", @"[ \t]+|[ \t]*\r?\n[ \t]*")]
 [LexerRegex("TagName", @"[a-z][a-z0-9-]*", RegexOptions.IgnoreCase)]
@@ -23,13 +24,17 @@ namespace Cyjb.Markdown.Parse.Inlines;
 internal partial class InlineLexer : LexerController<InlineKind>
 {
 	/// <summary>
-	/// 链接上下文的名称。
+	/// 识别链接闭合上下文的名称。
 	/// </summary>
-	public const string LinkContext = "Link";
+	public const string LinkCloseContext = "LinkClose";
 	/// <summary>
 	/// 解析选项。
 	/// </summary>
 	private ParseOptions options;
+	/// <summary>
+	/// 前一 Token 的最后一个字符。
+	/// </summary>
+	private char lastChar = '\0';
 
 	/// <summary>
 	/// 硬换行的动作。
@@ -93,7 +98,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 自动链接的动作。
 	/// </summary>
-	[LexerSymbol(@"[<][a-z][a-z0-9+.-]+:[^\0-\x1F\x7F <>]*>", RegexOptions.IgnoreCase, Kind = InlineKind.Autolink)]
+	[LexerSymbol(@"[<][a-z][a-z0-9+.-]+:[^\0-\x20\x7F<>]*>", RegexOptions.IgnoreCase, Kind = InlineKind.Autolink)]
 	private void AutolinkAction()
 	{
 		string url = Text[1..^1];
@@ -113,6 +118,76 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		Link link = new(false, "mailto:" + url);
 		link.Children.Add(new Literal(url));
 		Accept(link);
+	}
+
+	/// <summary>
+	/// 无效的扩展自动链接前置字符 <c>[a-zA-Z0-9+.-/:]</c>。
+	/// </summary>
+	private static readonly ReadOnlyCharSet InvalidExtAutolinkPreChar = ReadOnlyCharSet.FromRange("++-:AZaz");
+
+	/// <summary>
+	/// 扩展自动链接的动作。
+	/// </summary>
+	[LexerSymbol(@"(https?:\/\/|www\.).+/<|\s|{EOF}", RegexOptions.IgnoreCase,
+		Kind = InlineKind.ExtAutolink, UseShortest = true)]
+	private void ExtAutolinkAction()
+	{
+		// 在链接体里，不识别扩展自动链接。
+		if (options.UseExtAutolink && Context != LinkCloseContext &&
+			!InvalidExtAutolinkPreChar.Contains(lastChar))
+		{
+			string url = Text;
+			if (char.ToLower(Text[0]) == 'w')
+			{
+				url = "http://" + url;
+			}
+			int cnt = ParseUtil.TrimEndPunctuations(ref url);
+			if (ParseUtil.IsValidDomain(url))
+			{
+				Source.Index -= cnt;
+				Link link = new(false, url);
+				link.Children.Add(new Literal(Text));
+				Accept(link);
+				return;
+			}
+		}
+		Reject();
+	}
+
+	/// <summary>
+	/// 扩展邮件自动链接的动作。
+	/// </summary>
+	[LexerSymbol(@"(mailto:)?[a-z0-9.+_-]+@{MailPart}(\.{MailPart})+", RegexOptions.IgnoreCase,
+		Kind = InlineKind.ExtAutolink)]
+	private void ExtEmailAutolinkAction()
+	{
+		// 在链接体里，不识别扩展自动链接。
+		// 邮件链接后不能是 -
+		if (options.UseExtAutolink && Context != LinkCloseContext &&
+			!InvalidExtAutolinkPreChar.Contains(lastChar) && Source.Peek() != '-')
+		{
+			string url = Text;
+			if (!url.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
+			{
+				url = "mailto:" + url;
+			}
+			Link link = new(false, url);
+			link.Children.Add(new Literal(Text));
+			Accept(link);
+			return;
+		}
+		// _ 是特殊分隔符，因此只将之前部分作为字符串返回。
+		int idx = Text.IndexOf('-');
+		if (idx == 0)
+		{
+			// 要至少返回一个字符。
+			idx = 1;
+		}
+		if (idx > 0)
+		{
+			Source.Index -= Text.Length - idx;
+		}
+		Accept(InlineKind.Literal, Text);
 	}
 
 	/// <summary>
@@ -199,20 +274,20 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 链接标签的动作。
 	/// </summary>
-	[LexerSymbol(@"<Link>{LinkLabel}", Kind = InlineKind.LinkLabel)]
+	[LexerSymbol(@"<LinkClose>]{LinkLabel}", Kind = InlineKind.LinkClose)]
 	private void LinkLabelAction()
 	{
 		string? label;
 		InlineParser parser = (InlineParser)SharedContext!;
-		if (Text.Length == 2)
+		if (Text.Length == 3)
 		{
 			// 标签为空，将前面的文本作为标签使用。
-			label = parser.GetCurrentLinkText();
+			label = parser.GetCurrentLinkText(Start);
 		}
 		else
 		{
 			// 标签不为空，使用标签本身。
-			ReadOnlySpan<char> text = Text.AsSpan();
+			ReadOnlySpan<char> text = Text.AsSpan()[2..];
 			if (!ParseUtil.TryParseLinkLabel(ref text, out label))
 			{
 				Reject();
@@ -231,10 +306,10 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 链接体的动作。
 	/// </summary>
-	[LexerSymbol(@"<Link>\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\)", Kind = InlineKind.LinkBody)]
+	[LexerSymbol(@"<LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\)", Kind = InlineKind.LinkClose)]
 	private void LinkBodyAction()
 	{
-		ReadOnlySpan<char> text = Text.AsSpan()[1..^1].Trim();
+		ReadOnlySpan<char> text = Text.AsSpan()[2..^1].Trim();
 		if (text.Length == 0)
 		{
 			// 没有链接目标和标题
@@ -351,6 +426,27 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 链接起始的动作。
+	/// </summary>
+	[LexerSymbol(@"\[", Kind = InlineKind.LinkStart)]
+	[LexerSymbol(@"!\[", Kind = InlineKind.LinkStart)]
+	private void LinkStartAction()
+	{
+		Accept(Text.Length > 1);
+	}
+
+	/// <summary>
+	/// 链接结束的动作。
+	/// </summary>
+	/// <remarks>这里需要负责闭合非活动状态的左中括号，因此不能限定在 LinkClose 上下文。</remarks>
+	[LexerSymbol(@"]", Kind = InlineKind.LinkClose)]
+	private void LinkCloseAction()
+	{
+		// value 为 null，与之前的 LinkBody、LinkLabel 区分。
+		Accept();
+	}
+
+	/// <summary>
 	/// 普通字符的动作。
 	/// </summary>
 	/// <remarks>需要放在最后，确保优先级最低。</remarks>
@@ -416,5 +512,18 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			options = parser.Options;
 			parser.Controller = this;
 		}
+	}
+
+	/// <summary>
+	/// 根据当前词法分析接受结果创建 <see cref="Token{InlineKind}"/> 的新实例。
+	/// </summary>
+	/// <returns><see cref="Token{InlineKind}"/> 的新实例。</returns>
+	protected override Token<InlineKind> CreateToken()
+	{
+		if (Text.Length > 0)
+		{
+			lastChar = Text[^1];
+		}
+		return base.CreateToken();
 	}
 }

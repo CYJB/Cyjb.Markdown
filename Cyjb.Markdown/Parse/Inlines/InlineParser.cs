@@ -6,6 +6,7 @@ using Cyjb.Markdown.Parse.Blocks;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Cyjb.Markdown.Parse.Inlines;
 
@@ -146,104 +147,95 @@ internal sealed class InlineParser
 			}
 			switch (token.Kind)
 			{
-				case InlineKind.Literal:
-					ParseText(token);
-					break;
 				case InlineKind.Escaped:
 					AppendText((string)token.Value!, token.Span.End);
 					break;
 				case InlineKind.Node:
-					AddCurTextNode();
-					InlineNode node = (InlineNode)token.Value!;
-					// 词法分析器内部拿到的 Span 是映射前的，
-					// 这里的 token.Span 才是正确的映射后的范围。
-					node.Span = token.Span;
-					children.Add(node);
+					{
+						AddCurTextNode();
+						InlineNode node = (InlineNode)token.Value!;
+						// 词法分析器内部拿到的 Span 是映射前的，
+						// 这里的 token.Span 才是正确的映射后的范围。
+						node.Span = token.Span;
+						children.Add(node);
+					}
+					break;
+				case InlineKind.LinkStart:
+					{
+						AddCurTextNode();
+						bool isImage = (bool)token.Value!;
+						Literal node = new(token.Text, token.Span);
+						children.Add(node);
+						if (brackets.Count > 0)
+						{
+							brackets.Peek().BracketAfter = true;
+						}
+						brackets.Push(new(node, isImage, reader.Mark())
+						{
+							Delimiter = delimiterInfo,
+						});
+						// 允许识别链接闭合。
+						Controller!.EnterContext(InlineLexer.LinkCloseContext);
+					}
+					break;
+				case InlineKind.LinkClose:
+					if (!ParseCloseBracket(token))
+					{
+						// 链接匹配失败，作为普通字符添加。
+						AppendText(token.Text, token.Span.End);
+					}
 					break;
 				case InlineKind.Autolink:
-					AddCurTextNode();
-					Link link = (Link)token.Value!;
-					link.Span = token.Span;
-					var (start, end) = token.Span;
-					link.Children[0].Span = new TextSpan(start + 1, end - 1);
-					children.Add(link);
+					{
+						AddCurTextNode();
+						Link link = (Link)token.Value!;
+						link.Span = token.Span;
+						var (start, end) = token.Span;
+						// 自动链接内部文本不包含左右 <>。
+						link.Children[0].Span = new TextSpan(start + 1, end - 1);
+						children.Add(link);
+					}
+					break;
+				case InlineKind.ExtAutolink:
+					{
+						AddCurTextNode();
+						Link link = (Link)token.Value!;
+						link.Span = token.Span;
+						link.Children[0].Span = token.Span;
+						children.Add(link);
+					}
+					break;
+				case InlineKind.Literal:
+					{
+						string text = (string)token.Value!;
+						if (text.Length == 1 &&
+							processors.TryGetValue(text[0], out DelimiterProcessor? processor))
+						{
+							DelimiterInfo info = ScanDelimiters(text, processor);
+							if (info.CanOpen || info.CanClose)
+							{
+								info.Prev = delimiterInfo;
+								if (delimiterInfo != null)
+								{
+									delimiterInfo.Next = info;
+								}
+								delimiterInfo = info;
+							}
+							// 添加分隔符的文本节点
+							AddCurTextNode();
+							children.Add(info.Node);
+						}
+						else
+						{
+							// 其他场景当作普通文本添加。
+							AppendText(text, token.Span.End);
+						}
+					}
 					break;
 			}
 		}
 		ProcessDelimiter(null);
 		MergeText(children);
-	}
-
-	/// <summary>
-	/// 解析指定的文本词法单元。
-	/// </summary>
-	/// <param name="token">要解析的文本词法单元。</param>
-	private void ParseText(Token<InlineKind> token)
-	{
-		string text = (string)token.Value!;
-		switch (text)
-		{
-			case "!":
-			case "[":
-				{
-					bool isImage = text == "!";
-					Literal node;
-					// 仅当下一个字符是 [ 时才可能表示图片。
-					if (isImage)
-					{
-						Token<InlineKind> next = Peek();
-						if (!IsText(next, "["))
-						{
-							break;
-						}
-						Read();
-						node = new("![", TextSpan.Combine(token.Span, next.Span));
-					}
-					else
-					{
-						node = new(text, token.Span);
-					}
-					AddCurTextNode();
-					children.Add(node);
-					if (brackets.Count > 0)
-					{
-						brackets.Peek().BracketAfter = true;
-					}
-					brackets.Push(new(node, isImage, reader.Mark())
-					{
-						Delimiter = delimiterInfo,
-					});
-					return;
-				}
-			case "]":
-				if (ParseCloseBracket(token))
-				{
-					return;
-				}
-				break;
-			default:
-				if (text.Length == 1 &&
-					processors.TryGetValue(text[0], out DelimiterProcessor? processor))
-				{
-					DelimiterInfo info = ScanDelimiters(text, processor);
-					if (info.CanOpen || info.CanClose)
-					{
-						info.Prev = delimiterInfo;
-						if (delimiterInfo != null)
-						{
-							delimiterInfo.Next = info;
-						}
-						delimiterInfo = info;
-					}
-					// 添加分隔符的文本节点
-					AddCurTextNode();
-					children.Add(info.Node);
-					return;
-				}
-				break;
-		}
-		// 其他场景当作普通文本添加。
-		AppendText(text, token.Span.End);
 	}
 
 	/// <summary>
@@ -314,38 +306,34 @@ internal sealed class InlineParser
 			PopBracket();
 			return false;
 		}
-		opener.EndMark = reader.Mark();
 
 		// 进入链接状态，尝试匹配链接体或标签。
-		Link? link;
-		Controller!.PushContext(InlineLexer.LinkContext);
-		Token<InlineKind> next = Peek();
-		Controller!.PopContext();
-		TextSpan span = TextSpan.Combine(opener.Node.Span, next.Span);
-		if (next.Kind == InlineKind.LinkBody)
+		Link link;
+		TextSpan span = TextSpan.Combine(opener.Node.Span, token.Span);
+		if (token.Value is LinkBody linkBody)
 		{
-			Read();
-			LinkBody body = (LinkBody)next.Value!;
-			link = new Link(opener.IsImage, body.URL, body.Title, span);
+			// 包含链接 URL。
+			link = new Link(opener.IsImage, linkBody.URL, linkBody.Title, span);
 		}
-		else if (next.Kind == InlineKind.LinkLabel)
+		else if (token.Value is LinkDefinition linkDefine)
 		{
-			Read();
-			LinkDefinition linkDefine = (LinkDefinition)next.Value!;
+			// 包含链接标签。
 			link = new Link(opener.IsImage, linkDefine, span);
 		}
-		else if (!opener.BracketAfter && !IsText(next, "[") &&
-			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText()!), out LinkDefinition? linkDefine))
+		else if (!opener.BracketAfter && reader.Peek() != '[' &&
+			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(reader.Index - 1)!), out LinkDefinition? linkDefine2))
 		{
+			// 是 ]，后面没有 URL 或标签。
 			// 如果没有更多待匹配的括号，缺失第二个 label 时会将当前文本当作标签解析。
 			// label 不能包含未转义的标签，因此检查 BracketAfter 来快速排除这一场景。
-			link = new Link(opener.IsImage, linkDefine, TextSpan.Combine(opener.Node.Span, token.Span));
+			link = new Link(opener.IsImage, linkDefine2, TextSpan.Combine(opener.Node.Span, token.Span));
 		}
 		else
 		{
 			PopBracket();
 			return false;
 		}
+
 		// 将起始和结束括号间的节点添加为 link 的子节点。
 		AddCurTextNode();
 		// 先处理分隔符。
@@ -378,7 +366,15 @@ internal sealed class InlineParser
 	{
 		BracketInfo opener = brackets.Pop();
 		reader.Release(opener.StartMark);
-		reader.Release(opener.EndMark);
+		// 根据是否包含有效的起始中括号，决定后续是否要识别链接 URL 或标签。
+		if (brackets.Count > 0 && brackets.Peek().Active)
+		{
+			Controller!.EnterContext(InlineLexer.LinkCloseContext);
+		}
+		else
+		{
+			Controller!.ExitContext(InlineLexer.LinkCloseContext);
+		}
 	}
 
 	/// <summary>
@@ -539,15 +535,16 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 返回当前的链接文本。
 	/// </summary>
+	/// <param name="endIndex">链接文本的结束索引（不含）。</param>
 	/// <returns>当前的链接文本。</returns>
-	internal string? GetCurrentLinkText()
+	internal string? GetCurrentLinkText(int endIndex)
 	{
 		if (brackets.Count == 0)
 		{
 			return null;
 		}
 		BracketInfo info = brackets.Peek();
-		return reader.ReadBlock(info.StartMark.Index, info.EndMark!.Index - info.StartMark.Index - 1);
+		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
 	}
 
 	#region Utils

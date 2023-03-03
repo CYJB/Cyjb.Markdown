@@ -55,7 +55,7 @@ internal static class Emojis
 	/// <summary>
 	/// emoji 信息字典。
 	/// </summary>
-	public static readonly Dictionary<string, IEmojiInfo> Infos = new()
+	public static readonly Dictionary<string, EmojiInfo> Infos = new()
 	{
 <#
 	if (emojis != null)

@@ -37,8 +37,9 @@ Console.WriteLine(renderer);
 	- [表情符号](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7)：`:EMOJICODE:`。  
 	  有关可用表情符号和代码的完整列表，请查看 [Emoji-Cheat-Sheet](https://github.com/ikatyang/emoji-cheat-sheet/)。  
 	  还可以通过 `Emoji.RegisterUnicodeEmoji` 或 `Emoji.RegisterCustomEmoji` 注册额外的表情符号。
-- 支持额外的列表样式，具体请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md)。
-- 支持数学公式，具体请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md)。
+	- [扩展自动链接](https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls#url)：注意不支持 `xmpp://` 协议。
+- 支持额外的列表样式：`a. item`、`i. item` 或 `α. item`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md)。
+- 支持数学公式：`$ $` 或 `$$ $$`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md)。
 
 ### 其它的建议用法
 

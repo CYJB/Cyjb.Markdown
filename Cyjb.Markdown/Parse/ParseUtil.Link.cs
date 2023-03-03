@@ -6,14 +6,9 @@ namespace Cyjb.Markdown.Parse;
 internal static partial class ParseUtil
 {
 	/// <summary>
-	/// 空白字符。
+	/// 链接中的空白字符。
 	/// </summary>
-	private static readonly CharSet Whitespace = new("\x7F ");
-
-	static ParseUtil()
-	{
-		Whitespace.Add('\x00', '\x1F');
-	}
+	private static readonly ReadOnlyCharSet Whitespace = ReadOnlyCharSet.FromRange("\x00\x20\x7F\x7F");
 
 	/// <summary>
 	/// 解析链接标签。
@@ -30,7 +25,7 @@ internal static partial class ParseUtil
 			label = null;
 			return false;
 		}
-		label = text[1..idx].ToString();
+		label = text[0..idx].ToString();
 		text = text[(idx + 1)..];
 		return true;
 	}

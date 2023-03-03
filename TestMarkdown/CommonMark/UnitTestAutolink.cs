@@ -142,7 +142,7 @@ public class UnitTestAutolink : BaseTest
 	[TestMethod]
 	public void Test601()
 	{
-		AssertMarkdown("<http://foo.bar/baz bim>", () =>
+		AssertCommonMark("<http://foo.bar/baz bim>", () =>
 		{
 			Paragraph(0..24, () =>
 			{
@@ -235,7 +235,7 @@ public class UnitTestAutolink : BaseTest
 	[TestMethod]
 	public void Test607()
 	{
-		AssertMarkdown("< http://foo.bar >", () =>
+		AssertCommonMark("< http://foo.bar >", () =>
 		{
 			Paragraph(0..18, () =>
 			{
@@ -271,7 +271,7 @@ public class UnitTestAutolink : BaseTest
 	[TestMethod]
 	public void Test610()
 	{
-		AssertMarkdown("http://example.com", () =>
+		AssertCommonMark("http://example.com", () =>
 		{
 			Paragraph(0..18, () =>
 			{
@@ -283,7 +283,7 @@ public class UnitTestAutolink : BaseTest
 	[TestMethod]
 	public void Test611()
 	{
-		AssertMarkdown("foo@bar.example.com", () =>
+		AssertCommonMark("foo@bar.example.com", () =>
 		{
 			Paragraph(0..19, () =>
 			{
