@@ -15,8 +15,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test1()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("http://www.commonmark.org\r\n\r\nhttps://www.commonmark.org foo\r\n\r\nwww.commonmark.org<bar\r\n\r\nVisit www.commonmark.org/help for more information.\r\n\r\nmy-http://www.commonmark.org\r\n", () =>
 		{
 			Paragraph(0..27, () =>
@@ -65,8 +63,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test2()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("http://commonmark.org\r\n\r\nhttp://www.commonmark._org\r\n\r\nhttp://www\r\n", () =>
 		{
 			Paragraph(0..23, () =>
@@ -94,8 +90,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test3()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("Visit www.commonmark.org/help for more information.\r\n", () =>
 		{
 			Paragraph(0..53, () =>
@@ -117,8 +111,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test4()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("Visit www.commonmark.org.\r\n\r\nVisit www.commonmark.org/a.b.\r\n\r\n访问http://www.commonmark.org/?p=你好,世界。\r\n\r\nhttp://commonmark.org/`bar`\r\n", () =>
 		{
 			Paragraph(0..27, () =>
@@ -165,8 +157,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test5()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("www.google.com/search?q=Markup+(business)\r\n\r\nwww.google.com/search?q=([Markup])+(business))]\r\n\r\n(www.google.com/search?q=Markup+(business))\r\n\r\n(www.google.com/search?q=Markup+(business)\r\n\r\nwww.google.com/search?q=Markup+[business]]\r\n\r\n（www.google.com/search?q=Markup+【business】）\r\n", () =>
 		{
 			Paragraph(0..43, () =>
@@ -189,8 +179,6 @@ public class UnitTestExtAutolink : BaseTest
 				Literal(96..97, "(");
 				Link(97..138, "http://www.google.com/search?q=Markup+(business)", null, () =>
 				{
-					//               0         1         2         3         4         5         6         7         8         9         10
-					//               01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 					Literal(97..138, "www.google.com/search?q=Markup+(business)");
 				});
 				Literal(138..139, ")");
@@ -200,8 +188,6 @@ public class UnitTestExtAutolink : BaseTest
 				Literal(143..144, "(");
 				Link(144..185, "http://www.google.com/search?q=Markup+(business)", null, () =>
 				{
-					//               0         1         2         3         4         5         6         7         8         9         10
-					//               01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 					Literal(144..185, "www.google.com/search?q=Markup+(business)");
 				});
 			});
@@ -209,8 +195,6 @@ public class UnitTestExtAutolink : BaseTest
 			{
 				Link(189..230, "http://www.google.com/search?q=Markup+[business]", null, () =>
 				{
-					//                 0         1         2         3         4         5         6         7         8         9         10
-					//                 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 					Literal(189..230, "www.google.com/search?q=Markup+[business]");
 				});
 				Literal(230..231, "]");
@@ -220,8 +204,6 @@ public class UnitTestExtAutolink : BaseTest
 				Literal(235..236, "（");
 				Link(236..277, "http://www.google.com/search?q=Markup+【business】", null, () =>
 				{
-					//                0         1         2         3         4         5         6         7         8         9         10
-					//                01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 					Literal(236..277, "www.google.com/search?q=Markup+【business】");
 				});
 				Literal(277..278, "）");
@@ -236,8 +218,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test6()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("www.google.com/search?q=commonmark&hl=en\r\n\r\nwww.google.com/search?q=commonmark&hl;\r\n\r\nwww.google.com/search?q=commonmark&;\r\n", () =>
 		{
 			Paragraph(0..42, () =>
@@ -272,8 +252,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test7()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("www.google.com/search?q=(business))+ok\r\n\r\nwww.google.com/search?q=Markup]+(business))\r\n", () =>
 		{
 			Paragraph(0..40, () =>
@@ -301,8 +279,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test8()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("Visit www.commonmark.org/a.b.,,\r\n\r\nwww.google.com/search?q=Markup+(business)])\r\n\r\nwww.google.com/search?q=Markup+[business]].)&amp;\r\n", () =>
 		{
 			Paragraph(0..33, () =>
@@ -340,8 +316,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test9()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("www.commonmark.org/he<lp\r\n", () =>
 		{
 			Paragraph(0..26, () =>
@@ -362,8 +336,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test10()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("*http://commonmark.org/*/*\r\n", () =>
 		{
 			Paragraph(0..28, () =>
@@ -386,8 +358,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test11()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("<http://commonmark.org/>\r\n\r\n<a href=\"http://commonmark.org/\">\r\n\r\n[http://commonmark.org/](http://commonmark.org/)\r\n\r\n[foo http://commonmark.org/`bar`\r\n\r\n[foo http://commonmark.org/`bar`](http://commonmark.org/\r\n\r\n[foo [bar](/uri) http://commonmark.org/](/uri)\r\n", () =>
 		{
 			Paragraph(0..26, () =>
@@ -443,8 +413,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test12()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("http://commonmark.org\r\n\r\n(Visit https://encrypted.google.com/search?q=Markup+(business))\r\n", () =>
 		{
 			Paragraph(0..23, () =>
@@ -473,8 +441,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test13()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("foo@bar.baz\r\n\r\nmailto:foo.bar@b-a-z.bim\r\n\r\nfoo@bar\r\n", () =>
 		{
 			Paragraph(0..13, () =>
@@ -505,8 +471,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test14()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.\r\n", () =>
 		{
 			Paragraph(0..68, () =>
@@ -528,8 +492,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test15()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("a.b-c_d@a.b\r\n\r\na.b-c_d@a.b.\r\n\r\na.b-c_d@a.b-\r\n\r\na.b-c_d@a.b_\r\n\r\na.b-c_d@a.b其它\r\n", () =>
 		{
 			Paragraph(0..13, () =>
@@ -577,8 +539,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test16()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("mailto:foo@bar.baz\r\n\r\nmailto:a.b-c_d@a.b\r\n\r\nmailto:a.b-c_d@a.b.\r\n\r\nmailto:a.b-c_d@a.b/\r\n\r\nmailto:a.b-c_d@a.b-\r\n\r\nmailto:a.b-c_d@a.b_\r\n\r\nxmpp:foo@bar.baz\r\n", () =>
 		{
 			Paragraph(0..20, () =>
@@ -637,8 +597,6 @@ public class UnitTestExtAutolink : BaseTest
 	[TestMethod]
 	public void Test17()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("<foo@bar.baz>\r\n\r\n<a href=\"mailto:foo@bar.baz\">\r\n\r\n[foo@bar.baz](mailto:biz@boo.bim)\r\n\r\n[foo foo@bar.baz`bar`\r\n\r\n[foo foo@bar.baz`bar`](mailto:biz@boo.bim\r\n\r\n[foo [bar](/uri) foo@bar.baz](/uri)\r\n", () =>
 		{
 			Paragraph(0..15, () =>
