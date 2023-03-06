@@ -31,7 +31,7 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// 当前节点的 HTML 属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private HtmlAttribute[]? attributes;
+	private HtmlAttributeList? attributes;
 
 	/// <summary>
 	/// 使用指定的 HTML 节点类型、内容和文本范围初始化 <see cref="Html"/> 类的新实例。
@@ -84,7 +84,7 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// </summary>
 	/// <remarks>对于 <see cref="MarkdownKind.HtmlStartTag"/> 会返回其属性；
 	/// 其它 Html 类型会返回空数组。</remarks>
-	public HtmlAttribute[] Attributes
+	public HtmlAttributeList Attributes
 	{
 		get
 		{
@@ -160,8 +160,9 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// <param name="kind">节点的类型。</param>
 	/// <param name="text">节点的文本。</param>
 	/// <returns>HTML 节点的属性。</returns>
-	private static HtmlAttribute[] GetAttributes(MarkdownKind kind, string text)
+	private static HtmlAttributeList GetAttributes(MarkdownKind kind, string text)
 	{
+		HtmlAttributeList list = new();
 		if (kind == MarkdownKind.HtmlStartTag)
 		{
 			ReadOnlySpan<char> span = text.AsSpan()[1..^1];
@@ -171,24 +172,23 @@ public sealed class Html : InlineNode, IEquatable<Html>
 				span = span[idx..].Trim();
 				if (span.Length > 0)
 				{
-					return AttributeRegex.Matches(span.ToString()).Select(match =>
+					IEnumerable<Match> matches = AttributeRegex.Matches(span.ToString());
+					foreach (Match match in matches)
 					{
 						string name = match.Groups[1].Value;
 						string value = match.Groups[2].Value;
-						string quote = string.Empty;
 						char quotChar;
 						if (value.Length >= 2 && (quotChar = value[0]) == value[^1] &&
 							(quotChar == '"' || quotChar == '\''))
 						{
 							value = value[1..^1];
-							quote = quotChar.ToString();
 						}
-						return new HtmlAttribute(name, value, quote);
-					}).ToArray();
+						list[name] = value;
+					};
 				}
 			}
 		}
-		return Array.Empty<HtmlAttribute>();
+		return list;
 	}
 
 	#region IEquatable<Html> 成员

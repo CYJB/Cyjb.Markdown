@@ -72,6 +72,33 @@ public abstract partial class BaseTest
 
 		Heading heading = (node as Heading)!;
 		Assert.AreEqual(depth, heading.Depth);
+		Assert.AreEqual(0, heading.Attributes.Count);
+		if (validator == null)
+		{
+			Assert.AreEqual(0, heading.Children.Count);
+		}
+		else
+		{
+			AssertChildren(node, heading.Children, validator);
+		}
+	}
+
+	/// <summary>
+	/// 验证是包含指定属性的标题。
+	/// </summary>
+	/// <param name="span">节点的文本范围。</param>
+	/// <param name="depth">标题的深度。</param>
+	/// <param name="attrs">标题的属性。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void Heading(TextSpan span, int depth, HtmlAttributeList attrs, Action? validator = null)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.Heading, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		Heading heading = (node as Heading)!;
+		Assert.AreEqual(depth, heading.Depth);
+		CollectionAssert.AreEquivalent(attrs, heading.Attributes);
 		if (validator == null)
 		{
 			Assert.AreEqual(0, heading.Children.Count);

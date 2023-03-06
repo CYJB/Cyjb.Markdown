@@ -1,3 +1,4 @@
+using System.Text;
 using Cyjb.Markdown.Parse.Inlines;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
@@ -30,10 +31,15 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	/// <param name="start">Setext 标题的起始位置。</param>
 	/// <param name="depth">Setext 标题的深度。</param>
 	/// <param name="text">Setext 标题的文本。</param>
-	private SetextHeadingProcessor(int start, int depth, IList<MappedText> text)
+	/// <param name="attrs">Setext 标题的属性。</param>
+	private SetextHeadingProcessor(int start, int depth, IList<MappedText> text, HtmlAttributeList? attrs)
 		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
+		if (attrs != null)
+		{
+			heading.Attributes.AddRange(attrs);
+		}
 		this.text = text;
 	}
 
@@ -97,7 +103,80 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 			int depth = line.Peek().Text[0] == '=' ? 1 : 2;
 			// 移除尾行后的空白。
 			lines[^1].TrimEnd();
-			yield return new SetextHeadingProcessor(lines[0].Span.Start, depth, lines);
+			HtmlAttributeList? attrs = null;
+			// 尝试解析属性。
+			if (line.Options.UseHeaderAttributes)
+			{
+				attrs = ParseAttributes(lines);
+				// 移除尾行后的空白。
+				lines[^1].TrimEnd();
+			}
+			yield return new SetextHeadingProcessor(lines[0].Span.Start, depth, lines, attrs);
+		}
+
+		/// <summary>
+		/// 尝试从行中解析属性。
+		/// </summary>
+		/// <param name="lines">要检查的行。</param>
+		/// <returns>解析得到的属性列表，或者 <c>null</c> 表示解析失败。</returns>
+		public static HtmlAttributeList? ParseAttributes(IList<MappedText> lines)
+		{
+			// 最后一个字符是 }
+			string text = lines[^1].ToString();
+			if (text.Length == 0 || text[^1] != '}')
+			{
+				return null;
+			}
+			// 向前能找到未被转义的 {
+			int lineIdx = lines.Count - 1;
+			int startIdx = -1;
+			for (; lineIdx >= 0; lineIdx--)
+			{
+				text = lines[lineIdx].ToString();
+				startIdx = text.LastIndexOf('{');
+				if (startIdx < 0)
+				{
+					continue;
+				}
+				if (text.AsSpan().IsEscaped(startIdx))
+				{
+					return null;
+				}
+				break;
+			}
+			if (startIdx < 0)
+			{
+				// 未找到起始 {。
+				return null;
+			}
+			StringBuilder builder = new();
+			for (int i = lineIdx; i < lines.Count; i++)
+			{
+				if (i == lineIdx)
+				{
+					builder.Append(lines[i].ToString()[startIdx..]);
+				}
+				else
+				{
+					builder.Append(lines[i].ToString());
+				}
+			}
+			ReadOnlySpan<char> span = builder.ToString();
+			HtmlAttributeList attrs = new();
+			if (ParseUtil.TryParseAttributes(ref span, attrs, true))
+			{
+				// 移除行中不需要的部分。
+				for (int i = lines.Count - 1; i > lineIdx; i--)
+				{
+					lines.RemoveAt(i);
+				}
+				lines[^1] = lines[^1][0..startIdx];
+				return attrs;
+			}
+			else
+			{
+				return null;
+			}
 		}
 	}
 }

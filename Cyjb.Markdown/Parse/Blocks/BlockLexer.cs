@@ -11,14 +11,18 @@ namespace Cyjb.Markdown.Parse.Blocks;
 [LexerRejectable]
 [LexerRegex("WS", "[ \t]")]
 [LexerRegex("WS_O", "{WS}*")]
+[LexerRegex("WS_A", @"[ \t]*\r?\n?[ \t]*")]
 [LexerRegex("WS_P", "{WS}+")]
+[LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
+[LexerRegex("ExtAttrChar", @"[^ \t\r\n""'=<>`'{}]+")]
+[LexerRegex("ExtAttrItem", @"#{ExtAttrChar}|\.{ExtAttrChar}|{AttrName}={ExtAttrChar}+")]
+[LexerRegex("ExtAttr", @"\{{WS_A}({ExtAttrItem}{WS_A})*\}")]
 [LexerSymbol(@"\r|\r?\n", Kind = BlockKind.NewLine)]
 [LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
 [LexerSymbol(@"`{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
 [LexerSymbol(@"~{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
 [LexerSymbol(@"`{3,}[^`\r\n]+$", Kind = BlockKind.CodeFenceStart)]
 [LexerSymbol(@"~{3,}.+$", Kind = BlockKind.CodeFenceStart)]
-[LexerSymbol(@"#{1,6}({WS_P}.*)?$", Kind = BlockKind.ATXHeading)]
 [LexerSymbol(@"=+{WS_O}$", Kind = BlockKind.SetextUnderline)]
 [LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
 internal partial class BlockLexer : LexerController<BlockKind>
@@ -27,6 +31,34 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 获取解析选项。
 	/// </summary>
 	private ParseOptions Options => (ParseOptions)SharedContext!;
+
+	/// <summary>
+	/// 带有额外属性的 ATX 标题。
+	/// </summary>
+	[LexerSymbol(@"#{1,6}({WS_P}.*)?{ExtAttr}{WS_O}$", Kind = BlockKind.ATXHeading)]
+	private void ATXHeadingWithAttributesAction()
+	{
+		if (Options.UseHeaderAttributes)
+		{
+			ReadOnlySpan<char> text = Text;
+			HtmlAttributeList attrs = new();
+			if (ParseUtil.TryParseAttributes(ref text, attrs, false))
+			{
+				Text = text.ToString();
+				Accept(attrs);
+				return;
+			}
+		}
+		Reject(RejectOptions.State);
+	}
+	/// <summary>
+	/// 普通 ATX 标题。
+	/// </summary>
+	[LexerSymbol(@"#{1,6}({WS_P}.*)?$", Kind = BlockKind.ATXHeading)]
+	private void ATXHeadingAction()
+	{
+		Accept();
+	}
 
 	/// <summary>
 	/// 缩进的动作。
@@ -229,7 +261,6 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// HTML 其它标签的动作。
 	/// </summary>
 	[LexerRegex("TagName", @"[a-z][a-z0-9-]*", RegexOptions.IgnoreCase)]
-	[LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
 	[LexerRegex("AttrValue", @"[^ \t\r\n""'=<>`']+|'[^'\r\n]*'|\""[^""\r\n]*\""", RegexOptions.IgnoreCase)]
 	[LexerSymbol(@"[<]{TagName}({WS_P}{AttrName}({WS_O}={WS_O}{AttrValue})?)*{WS_O}\/?>{WS_O}$", Kind = BlockKind.HtmlStart)]
 	[LexerSymbol(@"[<]\/{TagName}{WS_O}>{WS_O}$", Kind = BlockKind.HtmlStart)]

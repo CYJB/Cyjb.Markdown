@@ -23,6 +23,7 @@ public readonly struct ParseOptions
 		UseEmoji = false,
 		UseMath = false,
 		UseExtAutolink = false,
+		UseHeaderAttributes = false,
 	};
 
 	/// <summary>
@@ -39,29 +40,41 @@ public readonly struct ParseOptions
 	/// <summary>
 	/// 是否解析删除线，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text"/>
 	public bool UseStrikethrough { get; init; } = true;
 	/// <summary>
 	/// 是否解析额外的列表样式类型（英文字母、罗马数字、希腊字母），默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md"/>
 	public bool UseExtraListStyleType { get; init; } = true;
 	/// <summary>
 	/// 是否解析任务列表项，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#task-lists"/>
 	public bool UseTaskListItem { get; init; } = true;
 	/// <summary>
 	/// 是否解析表格，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables"/>
 	public bool UseTable { get; init; } = true;
 	/// <summary>
 	/// 是否解析表情符号，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#%E4%BD%BF%E7%94%A8%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7"/>
 	public bool UseEmoji { get; init; } = true;
 	/// <summary>
 	/// 是否解析数学公式，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md"/>
 	public bool UseMath { get; init; } = true;
 	/// <summary>
 	/// 是否支持扩展自动链接，默认为 <c>true</c>。
 	/// </summary>
+	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls#url"/>
 	public bool UseExtAutolink { get; init; } = true;
+	/// <summary>
+	/// 是否支持标题的属性，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#标题属性"/>
+	public bool UseHeaderAttributes { get; init; } = true;
 }

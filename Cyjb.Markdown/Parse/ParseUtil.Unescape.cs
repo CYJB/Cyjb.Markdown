@@ -30,7 +30,19 @@ internal static partial class ParseUtil
 	/// <returns><paramref name="target"/> 首次出现（非转义）的索引。</returns>
 	public static int IndexOfUnescaped(this ReadOnlySpan<char> text, char target)
 	{
-		for (int i = 0; i < text.Length; i++)
+		return IndexOfUnescaped(text, target, 0);
+	}
+
+	/// <summary>
+	/// 返回指定字符序列中，指定字符首次出现（非转义）的索引。
+	/// </summary>
+	/// <param name="text">要检查的字符序列。</param>
+	/// <param name="target">要检查的字符。</param>
+	/// <param name="start">要检查的起始索引。</param>
+	/// <returns><paramref name="target"/> 首次出现（非转义）的索引。</returns>
+	public static int IndexOfUnescaped(this ReadOnlySpan<char> text, char target, int start)
+	{
+		for (int i = start; i < text.Length; i++)
 		{
 			char ch = text[i];
 			if (ch == '\\')
@@ -50,6 +62,30 @@ internal static partial class ParseUtil
 			}
 		}
 		return -1;
+	}
+
+	/// <summary>
+	/// 返回指定字符序列中，指定索引的字符是否是被转义的。
+	/// </summary>
+	/// <param name="text">要检查的字符序列。</param>
+	/// <param name="idx">要检查的字符位置。</param>
+	/// <param name="start">要检查的起始索引。</param>
+	/// <returns>如果指定索引的字符是被转义的，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool IsEscaped(this ReadOnlySpan<char> text, int idx, int start = 0)
+	{
+		int slashCount = 0;
+		for (int i = idx - 1; i >= start; i--)
+		{
+			if (text[i] == '\\')
+			{
+				slashCount++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return (slashCount & 1) == 1;
 	}
 
 	/// <summary>

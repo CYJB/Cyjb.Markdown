@@ -18,6 +18,11 @@ public sealed class Heading : BlockNode, INodeContainer<InlineNode>
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private int depth;
+	/// <summary>
+	/// 标题的属性。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private readonly HtmlAttributeList attributes = new();
 
 	/// <summary>
 	/// 使用指定的深度和文本范围初始化 <see cref="Heading"/> 类的新实例。
@@ -46,6 +51,11 @@ public sealed class Heading : BlockNode, INodeContainer<InlineNode>
 			depth = value;
 		}
 	}
+
+	/// <summary>
+	/// 获取标题的属性列表。
+	/// </summary>
+	public HtmlAttributeList Attributes => attributes;
 
 	/// <summary>
 	/// 获取子节点列表。

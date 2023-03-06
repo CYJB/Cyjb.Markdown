@@ -1,3 +1,5 @@
+using Cyjb.Markdown.Syntax;
+
 namespace Cyjb.Markdown.Renderer;
 
 /// <summary>
@@ -10,6 +12,6 @@ public interface IAttributeModifier
 	/// </summary>
 	/// <param name="node">当前节点。</param>
 	/// <param name="tagName">当前标签名。</param>
-	/// <param name="attributes">当前属性字典。</param>
-	void UpdateAttributes(Node node, string tagName, Dictionary<string, string> attributes);
+	/// <param name="attributes">当前属性列表。</param>
+	void UpdateAttributes(Node node, string tagName, HtmlAttributeList attributes);
 }

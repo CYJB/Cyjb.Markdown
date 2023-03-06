@@ -31,9 +31,15 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <param name="start">ATX 标题的起始位置。</param>
 	/// <param name="depth">ATX 标题的深度。</param>
 	/// <param name="text">ATX 标题的文本。</param>
-	private ATXHeadingProcessor(int start, int depth, MappedText text) : base(MarkdownKind.Heading)
+	/// <param name="attrs">ATX 标题的属性。</param>
+	private ATXHeadingProcessor(int start, int depth, MappedText text, HtmlAttributeList? attrs)
+		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
+		if (attrs != null)
+		{
+			heading.Attributes.AddRange(attrs);
+		}
 		this.text = text;
 	}
 
@@ -90,6 +96,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 				yield break;
 			}
 			line.SkipIndent();
+			HtmlAttributeList? attrs = line.Peek().Value as HtmlAttributeList;
 			MappedText text = line.Text;
 			// 计算标题的深度。
 			int depth = 0;
@@ -111,7 +118,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 					text.TrimEnd();
 				}
 			}
-			yield return new ATXHeadingProcessor(line.Start, depth, text);
+			yield return new ATXHeadingProcessor(line.Start, depth, text, attrs);
 		}
 	}
 }

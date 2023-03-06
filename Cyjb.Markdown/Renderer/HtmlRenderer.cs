@@ -11,11 +11,6 @@ namespace Cyjb.Markdown.Renderer;
 public class HtmlRenderer : SyntaxWalker
 {
 	/// <summary>
-	/// HTML 属性名称的正则表达式。
-	/// </summary>
-	private static readonly Regex AttributeNameRegex = new("^[a-z_:][a-z0-9_.:-]*$", RegexOptions.IgnoreCase);
-
-	/// <summary>
 	/// HTML 属性修改器。
 	/// </summary>
 	private readonly List<IAttributeModifier> attributeModifiers = new();
@@ -101,7 +96,9 @@ public class HtmlRenderer : SyntaxWalker
 	{
 		string tagName = $"h{node.Depth}";
 		WriteLine();
-		WriteStartTag(node, tagName);
+		HtmlAttributeList attrs = new();
+		attrs.AddRange(node.Attributes);
+		WriteStartTag(node, tagName, attrs);
 		DefaultVisit(node);
 		WriteEndTag(tagName);
 		WriteLine();
@@ -113,7 +110,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的代码块节点。</param>
 	public override void VisitCodeBlock(CodeBlock node)
 	{
-		Dictionary<string, string> attrs = new();
+		HtmlAttributeList attrs = new();
 		string? info = node.Info;
 		if (!info.IsNullOrEmpty())
 		{
@@ -220,7 +217,7 @@ public class HtmlRenderer : SyntaxWalker
 	public override void VisitList(List node)
 	{
 		string tagName;
-		Dictionary<string, string> attrs = new();
+		HtmlAttributeList attrs = new();
 		if (node.StyleType == ListStyleType.Unordered)
 		{
 			tagName = "ul";
@@ -276,20 +273,20 @@ public class HtmlRenderer : SyntaxWalker
 		{
 			tagName = "td";
 		}
-		Dictionary<string, string> attrs = new();
+		HtmlAttributeList attrs = new();
 		if (tableAlign != TableAlign.None)
 		{
 			// 添加对齐的样式。
 			switch (tableAlign)
 			{
 				case TableAlign.Left:
-					attrs.Add("style", "text-align: left;");
+					attrs["style"] = "text-align: left;";
 					break;
 				case TableAlign.Center:
-					attrs.Add("style", "text-align: center;");
+					attrs["style"] = "text-align: center;";
 					break;
 				case TableAlign.Right:
-					attrs.Add("style", "text-align: right;");
+					attrs["style"] = "text-align: right;";
 					break;
 			}
 		}
@@ -381,10 +378,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的数学公式块节点。</param>
 	public override void VisitMathBlock(MathBlock node)
 	{
-		Dictionary<string, string> attrs = new()
-		{
-			["class"] = "math"
-		};
+		HtmlAttributeList attrs = new() { { "class", "math" } };
 		WriteStartTag(node, "div", attrs);
 		Write("\\[");
 		Write(node.Content);
@@ -447,7 +441,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的链接节点。</param>
 	public override void VisitLink(Link node)
 	{
-		Dictionary<string, string> attrs = new();
+		HtmlAttributeList attrs = new();
 		if (node.Kind == MarkdownKind.Link)
 		{
 			attrs["href"] = LinkUtil.EncodeURL(node.URL);
@@ -514,9 +508,9 @@ public class HtmlRenderer : SyntaxWalker
 		else if (node.FallbackUrl != null)
 		{
 			// GitHub 自定义 Emoji 转换为 img。
-			Dictionary<string, string> attrs = new()
+			HtmlAttributeList attrs = new()
 			{
-				["src"] = node.FallbackUrl
+				{ "src", node.FallbackUrl },
 			};
 			WriteStartTag(node, "img", attrs, true);
 		}
@@ -528,10 +522,7 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	public override void VisitMathSpan(MathSpan node)
 	{
-		Dictionary<string, string> attrs = new()
-		{
-			["class"] = "math"
-		};
+		HtmlAttributeList attrs = new() { { "class", "math" } };
 		WriteStartTag(node, "span", attrs);
 		Write("\\(");
 		Write(node.Content);
@@ -616,27 +607,19 @@ public class HtmlRenderer : SyntaxWalker
 	/// <param name="attrs">标签的属性。</param>
 	/// <param name="closed">标签是否是闭合的。</param>
 	protected void WriteStartTag(Node node, string tagName,
-		Dictionary<string, string>? attrs = null, bool closed = false)
+		HtmlAttributeList? attrs = null, bool closed = false)
 	{
 		text.Append('<');
 		text.Append(tagName);
-		attrs ??= new Dictionary<string, string>();
+		attrs ??= new HtmlAttributeList();
 		foreach (IAttributeModifier modifier in attributeModifiers)
 		{
 			modifier.UpdateAttributes(node, tagName, attrs);
 		}
-		foreach (KeyValuePair<string, string> attr in attrs)
+		if (attrs.Count > 0)
 		{
-			// 忽略非法的属性名。
-			if (!AttributeNameRegex.IsMatch(attr.Key))
-			{
-				continue;
-			}
 			text.Append(' ');
-			text.Append(attr.Key);
-			text.Append("=\"");
-			text.Append(attr.Value.Replace("\"", "&quot;"));
-			text.Append('\"');
+			text.Append(attrs.ToString());
 		}
 		if (closed)
 		{
