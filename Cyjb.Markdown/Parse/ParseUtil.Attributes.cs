@@ -1,3 +1,4 @@
+using System;
 using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -6,6 +7,36 @@ namespace Cyjb.Markdown.Parse;
 
 internal static partial class ParseUtil
 {
+	/// <summary>
+	/// 找到属性的起始 <c>{</c> 字符。
+	/// </summary>
+	/// <param name="text">要检查的文本。</param>
+	/// <returns>起始 <c>{</c> 字符的索引；如果未找到则返回 <c>-1</c>；
+	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
+	public static int FindAttributeStart(ReadOnlySpan<char> text)
+	{
+		for (int i = text.Length - 1; i >= 0; i--)
+		{
+			char ch = text[i];
+			if (ch == '{')
+			{
+				// 要求 { 是未转义的。
+				if (text.IsEscaped(i))
+				{
+					return -2;
+				}
+				else
+				{
+					return i;
+				}
+			}
+			else if (ch == '"' || ch == '\'')
+			{
+				for (i--; i >= 0 && text[i] != ch; i--) ;
+			}
+		}
+		return -1;
+	}
 	/// <summary>
 	/// 尝试从文本中解析属性。
 	/// </summary>
@@ -16,9 +47,9 @@ internal static partial class ParseUtil
 	public static bool TryParseAttributes(ref ReadOnlySpan<char> text, HtmlAttributeList attrs
 		, bool checkChar)
 	{
-		// 找到最后一个 {，要求是未转义的。
-		int idx = text.LastIndexOf('{');
-		if (idx < 0 || text.IsEscaped(idx))
+		// 找到属性的起始索引。
+		int idx = ParseUtil.FindAttributeStart(text);
+		if (idx < 0)
 		{
 			return false;
 		}
@@ -35,47 +66,82 @@ internal static partial class ParseUtil
 		MarkdownUtil.Trim(ref attrText);
 		while (!attrText.IsEmpty)
 		{
-			idx = attrText.IndexOfAny(" \t\r\n");
-			if (idx < 0)
+			if (attrText[0] == '#' || attrText[0] == '.')
 			{
-				idx = attrText.Length;
-			}
-			if (attrText[0] == '#')
-			{
-				ReadOnlySpan<char> value = attrText[1..idx];
+				ReadOnlySpan<char> value;
+				idx = MarkdownUtil.IndexOfWhitespace(attrText);
+				if (idx < 0)
+				{
+					idx = attrText.Length;
+				}
+				value = attrText[1..idx];
 				if (checkChar && IsInvalidAttributeValue(value))
 				{
 					return false;
 				}
-				attrs["id"] = value.ToString();
-			}
-			else if (attrText[0] == '.')
-			{
-				ReadOnlySpan<char> value = attrText[1..idx];
-				if (checkChar && IsInvalidAttributeValue(value))
+				if (attrText[0] == '#')
 				{
-					return false;
+					attrs["id"] = value.ToString();
 				}
-				attrs.AddClass(value.ToString());
+				else
+				{
+					attrs.AddClass(value.ToString());
+				}
 			}
 			else
 			{
 				int idx2 = attrText.IndexOf('=');
-				if (idx2 < 0 || idx2 > idx)
+				if (idx2 < 0)
 				{
-					if (checkChar && IsInvalidAttributeKey(attrText))
+					idx = MarkdownUtil.IndexOfWhitespace(attrText);
+					if (idx < 0)
+					{
+						idx = attrText.Length;
+					}
+					ReadOnlySpan<char> key = attrText[0..idx];
+					if (checkChar && IsInvalidAttributeKey(key))
 					{
 						return false;
 					}
-					attrs[attrText.ToString()] = string.Empty;
+					attrs[key.ToString()] = string.Empty;
 				}
 				else
 				{
 					ReadOnlySpan<char> key = attrText[0..idx2];
-					ReadOnlySpan<char> value = attrText[(idx2 + 1)..idx];
-					if (checkChar && (IsInvalidAttributeKey(key) || IsInvalidAttributeValue(value)))
+					if (checkChar && IsInvalidAttributeKey(key))
 					{
 						return false;
+					}
+					idx2++;
+					ReadOnlySpan<char> value;
+					if (attrText[idx2] == '"' || attrText[idx2] == '\'')
+					{
+						idx = attrText.IndexOf(attrText[idx2], idx2 + 1);
+						if (idx < 0)
+						{
+							// 未找到匹配的结束引号。
+							return false;
+						}
+						if (idx + 1 < attrText.Length && !MarkdownUtil.IsWhitespace(attrText[idx + 1]))
+						{
+							// 结束引号后不是空白或文本结束。
+							return false;
+						}
+						value = attrText[(idx2 + 1)..idx];
+						idx++;
+					}
+					else
+					{
+						idx = MarkdownUtil.IndexOfWhitespace(attrText);
+						if (idx < 0)
+						{
+							idx = attrText.Length;
+						}
+						value = attrText[idx2..idx];
+						if (checkChar && IsInvalidAttributeValue(value))
+						{
+							return false;
+						}
 					}
 					attrs[key.ToString()] = value.ToString();
 				}

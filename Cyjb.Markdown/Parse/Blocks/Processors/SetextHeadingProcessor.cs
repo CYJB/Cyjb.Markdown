@@ -127,20 +127,22 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 			{
 				return null;
 			}
-			// 向前能找到未被转义的 {
+			// 找到最后一个未被引号扩起来的 {，且要求是未转义的。
 			int lineIdx = lines.Count - 1;
 			int startIdx = -1;
 			for (; lineIdx >= 0; lineIdx--)
 			{
 				text = lines[lineIdx].ToString();
-				startIdx = text.LastIndexOf('{');
-				if (startIdx < 0)
+				startIdx = ParseUtil.FindAttributeStart(text);
+				if (startIdx == -2)
 				{
-					continue;
-				}
-				if (text.AsSpan().IsEscaped(startIdx))
-				{
+					// -2 表示找到了 { 但不能用作属性起始。
 					return null;
+				}
+				else if (startIdx == -1)
+				{
+					// -1 表示未找到 {。
+					continue;
 				}
 				break;
 			}

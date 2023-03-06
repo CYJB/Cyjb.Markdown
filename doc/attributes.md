@@ -10,7 +10,7 @@
 
 类名以 `.` 开始，后跟至少一个字符（除空格、Tab、换行、`"`、`'`、`=`、`<`、`>`、`` ` ``、`{` 和 `}`）。如果指定多个相同的类名，会重复添加到 `class` 部分。
 
-属性包含属性名和一个可选的属性值，属性名由 ASCII 字母、`_` 或 `:` 后跟零个或更多 ASCII 字母、数字、`_`、`.`、`:` 或 `-` 组成。属性值由 `=` 和至少一个字符（除空格、Tab、换行、`"`、`'`、`=`、`<`、`>`、`` ` ``、`{` 和 `}`）组成。与 [Raw HTML](https://spec.commonmark.org/0.30/#raw-html) 相比，`=` 两边不能包含空白，且不支持使用 `"` 或 `'` 括起来的属性值。如果存在多个具有相同键的属性，会使用最后一个值。
+属性与 [Raw HTML](https://spec.commonmark.org/0.30/#raw-html) 类似，但要求 `=` 两边不能包含空白，并且未用引号括起来的属性值不能包含 `{` 或 `}`。如果存在多个具有相同键的属性，会使用最后一个值。
 
 ## 标题属性
 
@@ -19,7 +19,7 @@
 <a id="example-1" href="#example-1">示例 1</a>
 
 ```markdown
-# foo {#id .class attr=value attr2=value2}
+# foo {#id .class attr=value attr2="value={2}"}
 
 bar { .class2  #id2 .class2 .class3}
 ---
@@ -27,7 +27,7 @@ bar { .class2  #id2 .class2 .class3}
 ### baz {#other}{#id #id3}
 ```
 ```html
-<h1 id="id" class="class" attr="value" attr2="value2">foo</h1>
+<h1 id="id" class="class" attr="value" attr2="value={2}">foo</h1>
 <h2 class="class2 class2 class3" id="id2">bar</h2>
 <h3 id="id3">baz {#other}</h2>
 ```
@@ -39,7 +39,7 @@ bar { .class2  #id2 .class2 .class3}
 ```markdown
 # foo {
 #id-foo
-   key=value   
+   key='value'   
 }
 
 bar
@@ -99,9 +99,9 @@ bar { # }
 
 ```markdown
 # foo \{#id}
-# foo \\{#id}
+# foo \\{#id myKey}
 ```
 ```html
 <h1>foo {#id}</h1>
-<h1 id="id">foo \</h1>
+<h1 id="id" myKey="">foo \</h1>
 ```

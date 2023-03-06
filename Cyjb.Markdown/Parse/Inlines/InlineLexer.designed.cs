@@ -52,7 +52,7 @@ internal partial class InlineLexer
 			new TerminalData<InlineKind>(InlineKind.ExtAutolink, action: (InlineLexer c) => c.ExtAutolinkAction(), trailing: 0, useShortest: true),
 			// 7: (mailto:)?[a-z0-9.+_-]+@{MailPart}(\.{MailPart})+
 			new TerminalData<InlineKind>(InlineKind.ExtAutolink, action: (InlineLexer c) => c.ExtEmailAutolinkAction()),
-			// 8: [<]{TagName}(([ \t]+|[ \t]*\r?\n[ \t]*){AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>
+			// 8: [<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>
 			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlStartTagAction()),
 			// 9: [<]\/{TagName}{WS}>
 			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlEndTagAction()),

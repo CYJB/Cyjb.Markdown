@@ -193,7 +193,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// HTML 起始标签的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]{TagName}(([ \t]+|[ \t]*\r?\n[ \t]*){AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>", Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>", Kind = InlineKind.Node)]
 	private void HtmlStartTagAction()
 	{
 		Accept(new Html(MarkdownKind.HtmlStartTag, Text));

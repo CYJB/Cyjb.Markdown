@@ -16,29 +16,29 @@ public class UnitTestAttributes : BaseTest
 	[TestMethod]
 	public void Test1()
 	{
-		AssertMarkdown("# foo {#id .class attr=value attr2=value2}\r\n\r\nbar { .class2  #id2 .class2 .class3}\r\n---\r\n\r\n### baz {#other}{#id #id3}\r\n", () =>
+		AssertMarkdown("# foo {#id .class attr=value attr2=\"value={2}\"}\r\n\r\nbar { .class2  #id2 .class2 .class3}\r\n---\r\n\r\n### baz {#other}{#id #id3}\r\n", () =>
 		{
-			Heading(0..44, 1, new HtmlAttributeList() {
+			Heading(0..49, 1, new HtmlAttributeList() {
 				{ "id", "id" },
 				{ "class", "class" },
 				{ "attr", "value" },
-				{ "attr2", "value2" },
+				{ "attr2", "value={2}" },
 			}, () =>
 			{
 				Literal(2..5, "foo");
 			});
-			Heading(46..89, 2, new HtmlAttributeList() {
+			Heading(51..94, 2, new HtmlAttributeList() {
 				{ "class", "class2 class2 class3" },
 				{ "id", "id2" },
 			}, () =>
 			{
-				Literal(46..49, "bar");
+				Literal(51..54, "bar");
 			});
-			Heading(91..119, 3, new HtmlAttributeList() {
+			Heading(96..124, 3, new HtmlAttributeList() {
 				{ "id", "id3" },
 			}, () =>
 			{
-				Literal(95..107, "baz {#other}");
+				Literal(100..112, "baz {#other}");
 			});
 		});
 	}
@@ -50,21 +50,21 @@ public class UnitTestAttributes : BaseTest
 	[TestMethod]
 	public void Test2()
 	{
-		AssertMarkdown("# foo {\r\n#id-foo\r\n   key=value   \r\n}\r\n\r\nbar\r\n{\r\n  .class\r\n}\r\n---\r\n", () =>
+		AssertMarkdown("# foo {\r\n#id-foo\r\n   key='value'   \r\n}\r\n\r\nbar\r\n{\r\n  .class\r\n}\r\n---\r\n", () =>
 		{
-			Heading(0..38, 1, new HtmlAttributeList() {
+			Heading(0..40, 1, new HtmlAttributeList() {
 				{ "id", "id-foo" },
 				{ "key", "value" },
 			}, () =>
 			{
 				Literal(2..5, "foo");
 			});
-			Heading(40..66, 2, new HtmlAttributeList() {
+			Heading(42..68, 2, new HtmlAttributeList() {
 				{ "class", "class" },
 			}, () =>
 			{
-				Literal(40..43, "bar");
-				SoftBreak(43..45);
+				Literal(42..45, "bar");
+				SoftBreak(45..47);
 			});
 		});
 	}
@@ -137,15 +137,16 @@ public class UnitTestAttributes : BaseTest
 	[TestMethod]
 	public void Test5()
 	{
-		AssertMarkdown("# foo \\{#id}\r\n# foo \\\\{#id}\r\n", () =>
+		AssertMarkdown("# foo \\{#id}\r\n# foo \\\\{#id myKey}\r\n", () =>
 		{
 			Heading(0..14, 1, () =>
 			{
 				Literal(2..12, "foo {#id}");
 			});
-			Heading(14..29, 1, new HtmlAttributeList()
+			Heading(14..35, 1, new HtmlAttributeList()
 			{
-				{ "id", "id" }
+				{ "id", "id" },
+				{ "myKey", "" },
 			}, () =>
 			{
 				Literal(16..22, "foo \\");

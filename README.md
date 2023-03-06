@@ -40,6 +40,7 @@ Console.WriteLine(renderer);
 	- [扩展自动链接](https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls#url)：注意不支持 `xmpp://` 协议。
 - 支持额外的列表样式：`a. item`、`i. item` 或 `α. item`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/extra-list-style-type.md)。
 - 支持数学公式：`$ $` 或 `$$ $$`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md)。
+- 支持为标题、代码块、链接和图片添加属性：`{#id .class key=value}`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md)。
 
 ### 其它的建议用法
 
