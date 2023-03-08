@@ -6,7 +6,6 @@
 	<Nullable>enable</Nullable>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<SignAssembly>True</SignAssembly>
-	<AssemblyOriginatorKeyFile>../CYJB_Code_Key.snk</AssemblyOriginatorKeyFile>
 	<PackageProjectUrl>https://github.com/CYJB/Cyjb.Markdown</PackageProjectUrl>
 	<Description>提供 Markdown 解析和渲染能力</Description>
 	<Copyright>﻿Copyright (c) 2022, CYJB</Copyright>
@@ -20,6 +19,10 @@
 	<Authors>CYJB</Authors>
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<AssemblyOriginatorKeyFile>../CYJB_Code_Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
