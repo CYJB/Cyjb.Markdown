@@ -2,6 +2,7 @@ Cyjb.Markdown
 ====
 
 [![](https://img.shields.io/nuget/v/Cyjb.Markdown.svg)](https://www.nuget.org/packages/Cyjb.Markdown)
+[![codecov](https://codecov.io/gh/CYJB/Cyjb.Markdown/branch/main/graph/badge.svg?token=JT5LPDSPAI)](https://codecov.io/gh/CYJB/Cyjb.Markdown)
 
 提供 Markdown 的解析和 HTML 渲染能力，基于 .NET 6。
 
