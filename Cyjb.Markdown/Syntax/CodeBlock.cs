@@ -9,15 +9,20 @@ namespace Cyjb.Markdown.Syntax;
 public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 {
 	/// <summary>
-	/// 代码的内容。
+	/// 代码块的内容。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
+	/// <summary>
+	/// 代码块的属性。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private readonly HtmlAttributeList attributes = new();
 
 	/// <summary>
 	/// 使用指定的代码内容和文本范围初始化 <see cref="CodeBlock"/> 类的新实例。
 	/// </summary>
-	/// <param name="content">代码的内容。</param>
+	/// <param name="content">代码块的内容。</param>
 	/// <param name="span">文本的范围。</param>
 	public CodeBlock(string content, TextSpan span = default) : base(MarkdownKind.CodeBlock)
 	{
@@ -31,7 +36,12 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	public string? Info { get; set; }
 
 	/// <summary>
-	/// 获取或设置代码的内容。
+	/// 获取代码块的属性列表。
+	/// </summary>
+	public HtmlAttributeList Attributes => attributes;
+
+	/// <summary>
+	/// 获取或设置代码块的内容。
 	/// </summary>
 	public string Content
 	{

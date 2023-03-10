@@ -24,6 +24,11 @@ public sealed class LinkDefinition : BlockNode
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string? identifier;
+	/// <summary>
+	/// 定义的属性。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private readonly HtmlAttributeList attributes = new();
 
 	/// <summary>
 	/// 使用指定的链接定义信息和文本范围初始化 <see cref="LinkDefinition"/> 类的新实例。
@@ -83,6 +88,10 @@ public sealed class LinkDefinition : BlockNode
 	/// 获取或设置链接定义的标题。
 	/// </summary>
 	public string? Title { get; set; }
+	/// <summary>
+	/// 获取链接定义的属性列表。
+	/// </summary>
+	public HtmlAttributeList Attributes => attributes;
 
 	/// <summary>
 	/// 应用指定的访问器。

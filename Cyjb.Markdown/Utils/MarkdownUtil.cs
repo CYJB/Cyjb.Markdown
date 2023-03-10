@@ -3,12 +3,12 @@ namespace Cyjb.Markdown.Utils;
 /// <summary>
 /// Markdown 的工具类。
 /// </summary>
-internal static class MarkdownUtil
+internal static partial class MarkdownUtil
 {
 	/// <summary>
 	/// Markdown 的空白字符。
 	/// </summary>
-	private const string Whitespace = " \t\r\n";
+	public const string Whitespace = " \t\r\n";
 
 	/// <summary>
 	/// 返回指定字符是否表示 Markdown 空白。
@@ -19,6 +19,39 @@ internal static class MarkdownUtil
 	public static bool IsWhitespace(char ch)
 	{
 		return ch is ' ' or '\t' or '\r' or '\n';
+	}
+
+	/// <summary>
+	/// 返回指定字符是否是 Markdown 的标点符号。
+	/// </summary>
+	/// <param name="ch">要检查的字符。</param>
+	/// <returns>指定字符是否是 Markdown 的标点符号。</returns>
+	public static bool IsPunctuation(char ch)
+	{
+		return char.IsPunctuation(ch) ||
+			ch == '$' || ch == '+' || ch == '<' || ch == '=' ||
+			ch == '>' || ch == '^' || ch == '`' || ch == '|' ||
+			ch == '~' || ch == '\'';
+	}
+
+	/// <summary>
+	/// 返回指定字符序列中，指定字符首次出现的索引。
+	/// </summary>
+	/// <param name="text">要检查的字符序列。</param>
+	/// <param name="ch">要检查的字符。</param>
+	/// <param name="startIndex">要检查的起始索引。</param>
+	/// <returns><paramref name="ch"/> 首次出现的索引。</returns>
+	public static int IndexOf(this ReadOnlySpan<char> text, char ch, int startIndex)
+	{
+		for (int i = startIndex; i < text.Length; i++)
+		{
+			char cur = text[i];
+			if (cur == ch)
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/// <summary>

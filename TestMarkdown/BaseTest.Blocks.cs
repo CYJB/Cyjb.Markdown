@@ -66,21 +66,7 @@ public abstract partial class BaseTest
 	/// <param name="validator">子节点验证器。</param>
 	protected void Heading(TextSpan span, int depth, Action? validator = null)
 	{
-		Node node = Next();
-		Assert.AreEqual(MarkdownKind.Heading, node.Kind);
-		Assert.AreEqual(span, node.Span);
-
-		Heading heading = (node as Heading)!;
-		Assert.AreEqual(depth, heading.Depth);
-		Assert.AreEqual(0, heading.Attributes.Count);
-		if (validator == null)
-		{
-			Assert.AreEqual(0, heading.Children.Count);
-		}
-		else
-		{
-			AssertChildren(node, heading.Children, validator);
-		}
+		Heading(span, depth, new HtmlAttributeList(), validator);
 	}
 
 	/// <summary>
@@ -116,7 +102,9 @@ public abstract partial class BaseTest
 	/// <param name="label">预期的链接的标签。</param>
 	/// <param name="url">预期的链接的 URL。</param>
 	/// <param name="title">预期的链接的标题。</param>
-	protected void LinkDefinition(TextSpan span, string label, string url, string? title = null)
+	/// <param name="attrs">预期的链接的属性。</param>
+	protected void LinkDefinition(TextSpan span, string label, string url, string? title = null,
+		HtmlAttributeList? attrs = null)
 	{
 		Node node = Next();
 		Assert.AreEqual(MarkdownKind.LinkDefinition, node.Kind);
@@ -126,6 +114,14 @@ public abstract partial class BaseTest
 		Assert.AreEqual(label, link.Label);
 		Assert.AreEqual(url, link.URL);
 		Assert.AreEqual(title, link.Title);
+		if (attrs == null)
+		{
+			Assert.AreEqual(0, link.Attributes.Count);
+		}
+		else
+		{
+			CollectionAssert.AreEquivalent(attrs, link.Attributes);
+		}
 	}
 
 	/// <summary>
@@ -134,7 +130,8 @@ public abstract partial class BaseTest
 	/// <param name="span">节点的文本范围。</param>
 	/// <param name="content">代码块的内容。</param>
 	/// <param name="info">代码块的其它信息。</param>
-	protected void CodeBlock(TextSpan span, string content, string? info = null)
+	/// <param name="attrs">代码块的属性。</param>
+	protected void CodeBlock(TextSpan span, string content, string? info = null, HtmlAttributeList? attrs = null)
 	{
 		Node node = Next();
 		Assert.AreEqual(MarkdownKind.CodeBlock, node.Kind);
@@ -143,6 +140,14 @@ public abstract partial class BaseTest
 		CodeBlock code = (CodeBlock)node!;
 		Assert.AreEqual(content, code.Content);
 		Assert.AreEqual(info, code.Info);
+		if (attrs == null)
+		{
+			Assert.AreEqual(0, code.Attributes.Count);
+		}
+		else
+		{
+			CollectionAssert.AreEquivalent(attrs, code.Attributes);
+		}
 	}
 
 	/// <summary>

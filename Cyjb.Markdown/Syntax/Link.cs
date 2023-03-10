@@ -28,6 +28,11 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private LinkDefinition? definition;
+	/// <summary>
+	/// 链接的属性。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private readonly HtmlAttributeList attributes = new();
 
 	/// <summary>
 	/// 使用指定的 URL、标题和文本范围初始化 <see cref="Link"/> 类的新实例。
@@ -67,7 +72,7 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// </summary>
 	public string URL
 	{
-		get => Definition?.URL ?? url;
+		get => definition?.URL ?? url;
 		set
 		{
 			TransferDefinition();
@@ -79,7 +84,7 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// </summary>
 	public string? Title
 	{
-		get => Definition?.Title ?? title;
+		get => definition?.Title ?? title;
 		set
 		{
 			TransferDefinition();
@@ -102,6 +107,10 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 		}
 	}
 	/// <summary>
+	/// 获取链接的属性列表。
+	/// </summary>
+	public HtmlAttributeList Attributes => definition?.Attributes ?? attributes;
+	/// <summary>
 	/// 获取子节点列表。
 	/// </summary>
 	public NodeList<InlineNode> Children => children;
@@ -120,12 +129,14 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// </summary>
 	private void TransferDefinition()
 	{
-		if (Definition == null)
+		if (definition == null)
 		{
 			return;
 		}
-		url = Definition.URL;
-		title = Definition.Title;
+		url = definition.URL;
+		title = definition.Title;
+		attributes.Clear();
+		attributes.AddRange(definition.Attributes);
 		definition = null;
 	}
 

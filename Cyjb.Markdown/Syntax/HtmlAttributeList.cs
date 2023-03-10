@@ -112,7 +112,14 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	{
 		foreach (KeyValuePair<string, string> attr in attrs)
 		{
-			this[attr.Key] = attr.Value;
+			if (attr.Key.ToLowerInvariant() == "class")
+			{
+				this.AddClass(attr.Value);
+			}
+			else
+			{
+				this[attr.Key] = attr.Value;
+			}
 		}
 	}
 
@@ -182,6 +189,14 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 			}
 		}
 		return -1;
+	}
+
+	/// <summary>
+	/// 从当前集合中移除所有元素。
+	/// </summary>
+	public void Clear()
+	{
+		list.Clear();
 	}
 
 	#region ReadOnlyListBase<KeyValuePair<string, string>> 成员

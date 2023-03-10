@@ -72,6 +72,19 @@ public abstract partial class BaseTest
 	/// <param name="validator">子节点验证器。</param>
 	protected void Link(TextSpan span, string url, string? title, Action? validator = null)
 	{
+		Link(span, url, title, new HtmlAttributeList(), validator);
+	}
+
+	/// <summary>
+	/// 验证是链接。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="url">预期的链接 URL。</param>
+	/// <param name="title">预期的链接标题。</param>
+	/// <param name="attrs">预期的链接属性。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void Link(TextSpan span, string url, string? title, HtmlAttributeList attrs, Action? validator = null)
+	{
 		Node node = Next();
 		Assert.AreEqual(MarkdownKind.Link, node.Kind);
 		Assert.AreEqual(span, node.Span);
@@ -79,6 +92,7 @@ public abstract partial class BaseTest
 		Link link = (Link)node!;
 		Assert.AreEqual(url, link.URL);
 		Assert.AreEqual(title, link.Title);
+		CollectionAssert.AreEquivalent(attrs, link.Attributes);
 		if (validator == null)
 		{
 			Assert.AreEqual(0, link.Children.Count);
@@ -93,10 +107,23 @@ public abstract partial class BaseTest
 	/// 验证是图片。
 	/// </summary>
 	/// <param name="span">预期的文本范围。</param>
-	/// <param name="url">预期的链接 URL。</param>
-	/// <param name="title">预期的链接标题。</param>
+	/// <param name="url">预期的图片 URL。</param>
+	/// <param name="title">预期的图片标题。</param>
 	/// <param name="validator">子节点验证器。</param>
 	protected void Image(TextSpan span, string? url, string? title, Action? validator = null)
+	{
+		Image(span, url, title, new HtmlAttributeList(), validator);
+	}
+
+	/// <summary>
+	/// 验证是图片。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="url">预期的图片 URL。</param>
+	/// <param name="title">预期的图片标题。</param>
+	/// <param name="attrs">预期的图片属性。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void Image(TextSpan span, string? url, string? title, HtmlAttributeList attrs, Action? validator = null)
 	{
 		Node node = Next();
 		Assert.AreEqual(MarkdownKind.Image, node.Kind);
@@ -105,6 +132,7 @@ public abstract partial class BaseTest
 		Link link = (Link)node!;
 		Assert.AreEqual(url, link.URL);
 		Assert.AreEqual(title, link.Title);
+		CollectionAssert.AreEquivalent(attrs, link.Attributes);
 		if (validator == null)
 		{
 			Assert.AreEqual(0, link.Children.Count);

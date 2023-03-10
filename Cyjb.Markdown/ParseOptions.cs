@@ -24,6 +24,8 @@ public readonly struct ParseOptions
 		UseMath = false,
 		UseExtAutolink = false,
 		UseHeaderAttributes = false,
+		UseCodeAttributes = false,
+		UseLinkAttributes = false,
 	};
 
 	/// <summary>
@@ -77,4 +79,14 @@ public readonly struct ParseOptions
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#标题属性"/>
 	public bool UseHeaderAttributes { get; init; } = true;
+	/// <summary>
+	/// 是否支持代码的属性，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#代码块属性"/>
+	public bool UseCodeAttributes { get; init; } = true;
+	/// <summary>
+	/// 是否支持链接的属性，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#链接属性"/>
+	public bool UseLinkAttributes { get; init; } = true;
 }

@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.RegularExpressions;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 
@@ -46,6 +45,10 @@ public class HtmlRenderer : SyntaxWalker
 	/// <remarks>如果表格标题的单元格全部是空的，那么若设置为 <c>false</c>，
 	/// 不会输出 <c>&lt;thead&gt;</c>；若设置为 <c>true</c>，则会输出 <c>&lt;thead&gt;</c>。</remarks>
 	public bool OutputEmptyTableHeading { get; set; } = false;
+	/// <summary>
+	/// 代码块的语言前缀，默认为 <c>language-</c>。
+	/// </summary>
+	public string CodeBlockLanguagePrefix { get; set; } = "language-";
 	/// <summary>
 	/// 获取或设置未选中状态的任务列表项 HTML。
 	/// </summary>
@@ -124,8 +127,10 @@ public class HtmlRenderer : SyntaxWalker
 			{
 				lang = info[0..idx];
 			}
-			attrs["class"] = $"language-{lang}";
+			attrs.AddClass(CodeBlockLanguagePrefix + lang);
 		}
+		attrs.AddRange(node.Attributes);
+
 		WriteLine();
 		WriteStartTag(node, "pre");
 		WriteStartTag(node, "code", attrs);
@@ -442,6 +447,7 @@ public class HtmlRenderer : SyntaxWalker
 	public override void VisitLink(Link node)
 	{
 		HtmlAttributeList attrs = new();
+		attrs.AddRange(node.Attributes);
 		if (node.Kind == MarkdownKind.Link)
 		{
 			attrs["href"] = LinkUtil.EncodeURL(node.URL);

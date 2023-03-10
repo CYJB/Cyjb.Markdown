@@ -103,6 +103,17 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试属性规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md"/>
+	[TestMethod]
+	public void TestAttributes()
+	{
+		SpecItem[] items = ReadSpec("Attributes.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>
@@ -131,7 +142,7 @@ public class UnitTestRender
 			Document doc = Document.Parse(item.Markdown, options);
 			renderer.Clear();
 			doc.Accept(renderer);
-			Assert.AreEqual(item.Html, renderer.ToString(), "{0}: Example {1}", item.Section, item.Example);
+			Assert.AreEqual(item.Html, renderer.ToString(), item.Section + " Example " + item.Example);
 		}
 	}
 
