@@ -38,6 +38,27 @@ f2 f3=a/ a4="""" a5='
 			{ "a5", "\r\n" },
 		}, node.Attributes);
 
+		node = new Html(MarkdownKind.HtmlStartTag, "<a key=\"v\r\n  a\r\n  l\r\n  ue\" />");
+		Assert.AreEqual("a", node.Value);
+		CollectionAssert.AreEquivalent(new HtmlAttributeList(){
+			{ "key", "v\r\n  a\r\n  l\r\n  ue" },
+		}, node.Attributes);
+
+		node = new Html(MarkdownKind.HtmlStartTag, "<a key='v\r\n  a\r\n  l\r\n  ue' />");
+		Assert.AreEqual("a", node.Value);
+		CollectionAssert.AreEquivalent(new HtmlAttributeList(){
+			{ "key", "v\r\n  a\r\n  l\r\n  ue" },
+		}, node.Attributes);
+
+		node = new Html(MarkdownKind.HtmlStartTag, "<a key=v\r\n  a\r\n  l\r\n  ue />");
+		Assert.AreEqual("a", node.Value);
+		CollectionAssert.AreEquivalent(new HtmlAttributeList(){
+			{ "key", "v" },
+			{ "a", "" },
+			{ "l", "" },
+			{ "ue", "" },
+		}, node.Attributes);
+
 		Html node2 = new(MarkdownKind.HtmlEndTag, "</b>");
 		Assert.AreEqual("b", node2.Value);
 		Assert.AreEqual(0, node2.Attributes.Count);

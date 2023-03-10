@@ -7,7 +7,7 @@ namespace TestMarkdown.CommonMark;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#autolinks"/>
 [TestClass]
-public class UnitTestHtml : BaseTest
+public partial class UnitTestHtml : BaseTest
 {
 	/// <see href="https://spec.commonmark.org/0.30/#example-612"/>
 	[TestMethod]
