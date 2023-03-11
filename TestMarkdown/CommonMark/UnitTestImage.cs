@@ -7,7 +7,7 @@ namespace TestMarkdown.CommonMark;
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.30/#images"/>
 [TestClass]
-public class UnitTestImage : BaseTest
+public partial class UnitTestImage : BaseTest
 {
 	/// <see href="https://spec.commonmark.org/0.30/#example-571"/>
 	[TestMethod]

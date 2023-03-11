@@ -27,12 +27,21 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	}
 
 	/// <summary>
+	/// 访问指定的行内代码段节点。
+	/// </summary>
+	/// <param name="node">要访问的行内代码段节点。</param>
+	public override void VisitCodeSpan(CodeSpan node)
+	{
+		text.Append(node.Content);
+	}
+
+	/// <summary>
 	/// 访问指定的换行节点。
 	/// </summary>
 	/// <param name="node">要访问的换行节点。</param>
 	public override void VisitBreak(Break node)
 	{
-		text.Append('\n');
+		text.Append(' ');
 	}
 
 	/// <summary>
@@ -40,6 +49,15 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// </summary>
 	/// <param name="node">要访问的文本节点。</param>
 	public override void VisitLiteral(Literal node)
+	{
+		text.Append(node.Content);
+	}
+
+	/// <summary>
+	/// 访问指定的行内 HTML 节点。
+	/// </summary>
+	/// <param name="node">要访问的行内 HTML 节点。</param>
+	public override void VisitHtml(Html node)
 	{
 		text.Append(node.Content);
 	}
