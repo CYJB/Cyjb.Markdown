@@ -54,15 +54,6 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	}
 
 	/// <summary>
-	/// 访问指定的行内 HTML 节点。
-	/// </summary>
-	/// <param name="node">要访问的行内 HTML 节点。</param>
-	public override void VisitHtml(Html node)
-	{
-		text.Append(node.Content);
-	}
-
-	/// <summary>
 	/// 返回当前对象的字符串表示形式。
 	/// </summary>
 	/// <returns>当前对象的字符串表示形式。</returns>
