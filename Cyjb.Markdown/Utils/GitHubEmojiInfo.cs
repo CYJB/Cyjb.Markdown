@@ -1,23 +1,23 @@
 namespace Cyjb.Markdown.Utils;
 
 /// <summary>
-/// 表示 GitHub emoji 的信息。
+/// 表示 GitHub 表情符号的信息。
 /// </summary>
 internal class GitHubEmojiInfo : EmojiInfo
 {
 	/// <summary>
-	/// 使用指定的 Unicode emoji 初始化。
+	/// 使用指定的 Unicode 表情符号初始化。
 	/// </summary>
-	/// <param name="text">emoji 的文本。</param>
+	/// <param name="text">表情符号的文本。</param>
 	/// <param name="fallbackName">后备链接的名称。</param>
 	public GitHubEmojiInfo(string text, string fallbackName)
 		: base(true, text, fallbackName)
 	{ }
 
 	/// <summary>
-	/// 使用指定的 GitHub 自定义 emoji 初始化。
+	/// 使用指定的 GitHub 自定义表情符号初始化。
 	/// </summary>
-	/// <param name="name">emoji 的名称。</param>
+	/// <param name="name">表情符号的名称。</param>
 	public GitHubEmojiInfo(string name)
 		: base(false, null, name)
 	{ }

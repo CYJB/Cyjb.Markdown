@@ -33,40 +33,40 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 	/// <summary>
 	/// 注册指定的 Unicode 表情符号。
 	/// </summary>
-	/// <param name="name">表情符号的名称。</param>
+	/// <param name="code">表情符号的代码。</param>
 	/// <param name="text">表情符号的 Unicode 文本。</param>
 	/// <param name="fallbackUrl">后备链接。</param>
-	/// <exception cref="ArgumentNullException"><paramref name="name"/> 或 <paramref name="text"/>
+	/// <exception cref="ArgumentNullException"><paramref name="code"/> 或 <paramref name="text"/>
 	/// 为 <c>null</c>。</exception>
-	/// <exception cref="ArgumentException"><paramref name="name"/> 包含 <c>:</c>。</exception>
-	public static void RegisterUnicodeEmoji(string name, string text, string? fallbackUrl = null)
+	/// <exception cref="ArgumentException"><paramref name="code"/> 包含 <c>:</c>。</exception>
+	public static void RegisterUnicodeEmoji(string code, string text, string? fallbackUrl = null)
 	{
-		ArgumentNullException.ThrowIfNull(name);
+		ArgumentNullException.ThrowIfNull(code);
 		ArgumentNullException.ThrowIfNull(text);
-		if (name.Contains(':'))
+		if (code.Contains(':'))
 		{
-			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(name));
+			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(code));
 		}
-		Emojis.Infos[name] = new EmojiInfo(true, text, fallbackUrl);
+		Emojis.Infos[code] = new EmojiInfo(true, text, fallbackUrl);
 	}
 
 	/// <summary>
 	/// 注册指定的自定义表情符号。
 	/// </summary>
-	/// <param name="name">表情符号的名称。</param>
+	/// <param name="code">表情符号的代码。</param>
 	/// <param name="url">表情符号的链接。</param>
-	/// <exception cref="ArgumentNullException"><paramref name="name"/> 或 <paramref name="url"/>
+	/// <exception cref="ArgumentNullException"><paramref name="code"/> 或 <paramref name="url"/>
 	/// 为 <c>null</c>。</exception>
-	/// <exception cref="ArgumentException"><paramref name="name"/> 包含 <c>:</c>。</exception>
-	public static void RegisterCustomEmoji(string name, string url)
+	/// <exception cref="ArgumentException"><paramref name="code"/> 包含 <c>:</c>。</exception>
+	public static void RegisterCustomEmoji(string code, string url)
 	{
-		ArgumentNullException.ThrowIfNull(name);
+		ArgumentNullException.ThrowIfNull(code);
 		ArgumentNullException.ThrowIfNull(url);
-		if (name.Contains(':'))
+		if (code.Contains(':'))
 		{
-			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(name));
+			throw new ArgumentException(Resources.EmojiNameCanNotContainsColon, nameof(code));
 		}
-		Emojis.Infos[name] = new EmojiInfo(false, null, url);
+		Emojis.Infos[code] = new EmojiInfo(false, null, url);
 	}
 
 	/// <summary>

@@ -54,6 +54,17 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	}
 
 	/// <summary>
+	/// 访问指定的表情符号节点。
+	/// </summary>
+	/// <param name="node">要访问的表情符号节点。</param>
+	public override void VisitEmoji(Emoji node)
+	{
+		text.Append(':');
+		text.Append(node.Code);
+		text.Append(':');
+	}
+
+	/// <summary>
 	/// 返回当前对象的字符串表示形式。
 	/// </summary>
 	/// <returns>当前对象的字符串表示形式。</returns>
