@@ -1,3 +1,4 @@
+using Cyjb.Markdown;
 using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -119,6 +120,35 @@ public class UnitTestHeaderReferences : BaseTest
 				Link(18..23, "#foo", null, () =>
 				{
 					Literal(19..22, "foo");
+				});
+			});
+		});
+	}
+
+	/// <summary>
+	/// 未开启自动生成标识符时，只对显式指定标识符的标题支持引用。
+	/// </summary>
+	[TestMethod]
+	public void TestNoAutoIdentifier()
+	{
+		AssertMarkdown("# Foo\r\n# Bar {#bar}\r\n\r\n[foo]\r\n[bar]\r\n",
+			new ParseOptions() { UseAutoIdentifier = false }, () =>
+		{
+			Heading(0..7, 1, () =>
+			{
+				Literal(2..5, "Foo");
+			});
+			Heading(7..21, 1, new HtmlAttributeList() { { "id", "bar" } }, () =>
+			{
+				Literal(9..12, "Bar");
+			});
+			Paragraph(23..37, () =>
+			{
+				Literal(23..28, "[foo]");
+				SoftBreak(28..30);
+				Link(30..35, "#bar", null, () =>
+				{
+					Literal(31..34, "bar");
 				});
 			});
 		});

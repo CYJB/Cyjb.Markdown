@@ -34,6 +34,20 @@ public abstract partial class BaseTest
 	/// 测试解析 Markdown 字符串。
 	/// </summary>
 	/// <param name="text">要解析的 Markdown 字符串。</param>
+	/// <param name="options">解析选项。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void AssertMarkdown(string text, ParseOptions options, Action validator)
+	{
+		Document doc = Document.Parse(text, options);
+		Assert.AreEqual(new TextSpan(0, text.Length), doc.Span);
+		validationStack.Clear();
+		AssertChildren(doc, doc.Children, validator);
+	}
+
+	/// <summary>
+	/// 测试解析 Markdown 字符串。
+	/// </summary>
+	/// <param name="text">要解析的 Markdown 字符串。</param>
 	/// <param name="validator">子节点验证器。</param>
 	protected void AssertCommonMark(string text, Action validator)
 	{

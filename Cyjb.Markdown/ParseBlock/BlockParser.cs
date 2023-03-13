@@ -313,7 +313,7 @@ internal sealed class BlockParser
 		if (node != null)
 		{
 			// 处理标题引用。
-			if (node is Heading heading && (options.UseHeaderReferences || heading.Attributes.Id != null))
+			if (node is Heading heading && (options.UseAutoIdentifier || heading.Attributes.Id != null))
 			{
 				string label = ((IHeadingProcessor)processor).GetIdentifier();
 				if (!headingReferences.ContainsKey(label))
