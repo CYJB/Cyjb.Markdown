@@ -1,4 +1,5 @@
-using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 using Cyjb.Markdown;
 using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,10 +7,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace TestMarkdown;
 
 /// <summary>
-/// <see cref="SyntaxVisitor"/> 类的单元测试。
+/// <see cref="SyntaxVisitor{T}"/> 类的单元测试。
 /// </summary>
 [TestClass]
-public class UnitTestSyntaxVisitor : BaseTest
+public class UnitTestSyntaxVisitorT : BaseTest
 {
 	/// <summary>
 	/// 测试接受访问器。
@@ -40,8 +41,7 @@ $$
 [foo] `bar` _a **b** c_ ~~d~~ <test>
 :atom: $3$");
 		TestVisitor visitor = new();
-		doc.Accept(visitor);
-		Assert.AreEqual(string.Join("", new string[]
+		CollectionAssert.AreEquivalent(new string[]
 		{
 			"Document",
 			"ThematicBreak",
@@ -90,23 +90,24 @@ $$
 			"Emoji",
 			"Literal",
 			"MathSpan",
-		}), visitor.ToString());
+		}, doc.Accept(visitor).ToArray());
 	}
 
-	private class TestVisitor : SyntaxVisitor
+	private class TestVisitor : SyntaxVisitor<IEnumerable<string>>
 	{
-		private readonly StringBuilder text = new();
-
 		/// <summary>
 		/// 访问指定的文档节点。
 		/// </summary>
 		/// <param name="node">要访问的文档节点。</param>
-		public override void VisitDocument(Document node)
+		public override IEnumerable<string> VisitDocument(Document node)
 		{
-			text.Append("Document");
+			yield return "Document";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -116,21 +117,24 @@ $$
 		/// 访问指定的分割线节点。
 		/// </summary>
 		/// <param name="node">要访问的分割线节点。</param>
-		public override void VisitThematicBreak(ThematicBreak node)
+		public override IEnumerable<string> VisitThematicBreak(ThematicBreak node)
 		{
-			text.Append("ThematicBreak");
+			yield return "ThematicBreak";
 		}
 
 		/// <summary>
 		/// 访问指定的标题节点。
 		/// </summary>
 		/// <param name="node">要访问的标题节点。</param>
-		public override void VisitHeading(Heading node)
+		public override IEnumerable<string> VisitHeading(Heading node)
 		{
-			text.Append("Heading");
+			yield return "Heading";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -138,39 +142,42 @@ $$
 		/// 访问指定的代码块节点。
 		/// </summary>
 		/// <param name="node">要访问的代码块节点。</param>
-		public override void VisitCodeBlock(CodeBlock node)
+		public override IEnumerable<string> VisitCodeBlock(CodeBlock node)
 		{
-			text.Append("CodeBlock");
+			yield return "CodeBlock";
 		}
 
 		/// <summary>
 		/// 访问指定的 HTML 块节点。
 		/// </summary>
 		/// <param name="node">要访问的 HTML 块节点。</param>
-		public override void VisitHtmlBlock(HtmlBlock node)
+		public override IEnumerable<string> VisitHtmlBlock(HtmlBlock node)
 		{
-			text.Append("HtmlBlock");
+			yield return "HtmlBlock";
 		}
 
 		/// <summary>
 		/// 访问指定的链接定义节点。
 		/// </summary>
 		/// <param name="node">要访问的链接定义节点。</param>
-		public override void VisitLinkDefinition(LinkDefinition node)
+		public override IEnumerable<string> VisitLinkDefinition(LinkDefinition node)
 		{
-			text.Append("LinkDefinition");
+			yield return "LinkDefinition";
 		}
 
 		/// <summary>
 		/// 访问指定的段落节点。
 		/// </summary>
 		/// <param name="node">要访问的段落节点。</param>
-		public override void VisitParagraph(Paragraph node)
+		public override IEnumerable<string> VisitParagraph(Paragraph node)
 		{
-			text.Append("Paragraph");
+			yield return "Paragraph";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -178,12 +185,15 @@ $$
 		/// 访问指定的引用节点。
 		/// </summary>
 		/// <param name="node">要访问的引用节点。</param>
-		public override void VisitBlockquote(Blockquote node)
+		public override IEnumerable<string> VisitBlockquote(Blockquote node)
 		{
-			text.Append("Blockquote");
+			yield return "Blockquote";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -191,12 +201,15 @@ $$
 		/// 访问指定的列表项节点。
 		/// </summary>
 		/// <param name="node">要访问的列表项节点。</param>
-		public override void VisitListItem(ListItem node)
+		public override IEnumerable<string> VisitListItem(ListItem node)
 		{
-			text.Append("ListItem");
+			yield return "ListItem";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -204,12 +217,15 @@ $$
 		/// 访问指定的列表节点。
 		/// </summary>
 		/// <param name="node">要访问的列表节点。</param>
-		public override void VisitList(List node)
+		public override IEnumerable<string> VisitList(List node)
 		{
-			text.Append("List");
+			yield return "List";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -217,12 +233,15 @@ $$
 		/// 访问指定的表格单元格。
 		/// </summary>
 		/// <param name="node">要访问的表格单元格节点。</param>
-		public override void VisitTableCell(TableCell node)
+		public override IEnumerable<string> VisitTableCell(TableCell node)
 		{
-			text.Append("TableCell");
+			yield return "TableCell";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -230,12 +249,15 @@ $$
 		/// 访问指定的表格行。
 		/// </summary>
 		/// <param name="node">要访问的表格行节点。</param>
-		public override void VisitTableRow(TableRow node)
+		public override IEnumerable<string> VisitTableRow(TableRow node)
 		{
-			text.Append("TableRow");
+			yield return "TableRow";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -243,12 +265,15 @@ $$
 		/// 访问指定的表格。
 		/// </summary>
 		/// <param name="node">要访问的表格节点。</param>
-		public override void VisitTable(Table node)
+		public override IEnumerable<string> VisitTable(Table node)
 		{
-			text.Append("Table");
+			yield return "Table";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -256,9 +281,9 @@ $$
 		/// 访问指定的数学公式块节点。
 		/// </summary>
 		/// <param name="node">要访问的数学公式块节点。</param>
-		public override void VisitMathBlock(MathBlock node)
+		public override IEnumerable<string> VisitMathBlock(MathBlock node)
 		{
-			text.Append("MathBlock");
+			yield return "MathBlock";
 		}
 
 		#endregion // 块节点
@@ -269,21 +294,24 @@ $$
 		/// 访问指定的行内代码段节点。
 		/// </summary>
 		/// <param name="node">要访问的行内代码段节点。</param>
-		public override void VisitCodeSpan(CodeSpan node)
+		public override IEnumerable<string> VisitCodeSpan(CodeSpan node)
 		{
-			text.Append("CodeSpan");
+			yield return "CodeSpan";
 		}
 
 		/// <summary>
 		/// 访问指定的强调节点。
 		/// </summary>
 		/// <param name="node">要访问的强调节点。</param>
-		public override void VisitEmphasis(Emphasis node)
+		public override IEnumerable<string> VisitEmphasis(Emphasis node)
 		{
-			text.Append("Emphasis");
+			yield return "Emphasis";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -291,12 +319,15 @@ $$
 		/// 访问指定的加粗节点。
 		/// </summary>
 		/// <param name="node">要访问的加粗节点。</param>
-		public override void VisitStrong(Strong node)
+		public override IEnumerable<string> VisitStrong(Strong node)
 		{
-			text.Append("Strong");
+			yield return "Strong";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -304,12 +335,15 @@ $$
 		/// 访问指定的删除节点。
 		/// </summary>
 		/// <param name="node">要访问的删除节点。</param>
-		public override void VisitStrikethrough(Strikethrough node)
+		public override IEnumerable<string> VisitStrikethrough(Strikethrough node)
 		{
-			text.Append("Strikethrough");
+			yield return "Strikethrough";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -317,12 +351,15 @@ $$
 		/// 访问指定的链接节点。
 		/// </summary>
 		/// <param name="node">要访问的链接节点。</param>
-		public override void VisitLink(Link node)
+		public override IEnumerable<string> VisitLink(Link node)
 		{
-			text.Append("Link");
+			yield return "Link";
 			foreach (var child in node.Children)
 			{
-				child.Accept(this);
+				foreach (string text in child.Accept(this)!)
+				{
+					yield return text;
+				}
 			}
 		}
 
@@ -330,57 +367,49 @@ $$
 		/// 访问指定的行内 HTML 节点。
 		/// </summary>
 		/// <param name="node">要访问的行内 HTML 节点。</param>
-		public override void VisitHtml(Html node)
+		public override IEnumerable<string> VisitHtml(Html node)
 		{
-			text.Append("Html");
+			yield return "Html";
 		}
 
 		/// <summary>
 		/// 访问指定的换行节点。
 		/// </summary>
 		/// <param name="node">要访问的换行节点。</param>
-		public override void VisitBreak(Break node)
+		public override IEnumerable<string> VisitBreak(Break node)
 		{
-			text.Append("Break");
+			yield return "Break";
 		}
 
 		/// <summary>
 		/// 访问指定的表情符号节点。
 		/// </summary>
 		/// <param name="node">要访问的表情符号节点。</param>
-		public override void VisitEmoji(Emoji node)
+		public override IEnumerable<string> VisitEmoji(Emoji node)
 		{
-			text.Append("Emoji");
+			yield return "Emoji";
 		}
 
 		/// <summary>
 		/// 访问指定的行内数学公式节点。
 		/// </summary>
 		/// <param name="node">要访问的行内数学公式节点。</param>
-		public override void VisitMathSpan(MathSpan node)
+		public override IEnumerable<string> VisitMathSpan(MathSpan node)
 		{
-			text.Append("MathSpan");
+			yield return "MathSpan";
 		}
 
 		/// <summary>
 		/// 访问指定的文本节点。
 		/// </summary>
 		/// <param name="node">要访问的文本节点。</param>
-		public override void VisitLiteral(Literal node)
+		public override IEnumerable<string> VisitLiteral(Literal node)
 		{
-			text.Append("Literal");
+			yield return "Literal";
 		}
 
 		#endregion // 行内节点
 
-		/// <summary>
-		/// 返回当前对象的字符串表示形式。
-		/// </summary>
-		/// <returns>当前对象的字符串表示形式。</returns>
-		public override string ToString()
-		{
-			return text.ToString();
-		}
 	}
 }
 
