@@ -195,7 +195,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	[TestMethod]
 	public void Test115()
 	{
-		AssertMarkdown("# Heading\r\n    foo\r\nHeading\r\n------\r\n    foo\r\n----", () =>
+		AssertCommonMark("# Heading\r\n    foo\r\nHeading\r\n------\r\n    foo\r\n----", () =>
 		{
 			Heading(0..11, 1, () =>
 			{

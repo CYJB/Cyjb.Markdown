@@ -1183,7 +1183,7 @@ public class UnitTestListItem : BaseTest
 	[TestMethod]
 	public void Test300()
 	{
-		AssertMarkdown("- # Foo\r\n- Bar\r\n  ---\r\n  baz\r\n", () =>
+		AssertCommonMark("- # Foo\r\n- Bar\r\n  ---\r\n  baz\r\n", () =>
 		{
 			UnorderedList(0..30, false, () =>
 			{

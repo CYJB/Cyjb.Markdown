@@ -395,7 +395,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	[TestMethod]
 	public void Test214()
 	{
-		AssertMarkdown("# [Foo]\r\n[foo]: /url\r\n> bar\r\n", () =>
+		AssertCommonMark("# [Foo]\r\n[foo]: /url\r\n> bar\r\n", () =>
 		{
 			Heading(0..9, 1, () =>
 			{
@@ -418,7 +418,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	[TestMethod]
 	public void Test215()
 	{
-		AssertMarkdown("[foo]: /url\r\nbar\r\n===\r\n[foo]\r\n", () =>
+		AssertCommonMark("[foo]: /url\r\nbar\r\n===\r\n[foo]\r\n", () =>
 		{
 			LinkDefinition(0..13, "foo", "/url");
 			Heading(13..23, 1, () =>

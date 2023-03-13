@@ -137,6 +137,12 @@ internal sealed class BlockParser
 			}
 		}
 		Document doc = document.GetDocument(end);
+		// 自动生成标识符。
+		if (options.UseAutoIdentifier)
+		{
+			AutoIdentifierWalker walker = new();
+			doc.Accept(walker);
+		}
 		// 填充行定位器。
 		if (options.UseLineLocator)
 		{

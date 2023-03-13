@@ -26,6 +26,7 @@ public readonly struct ParseOptions
 		UseHeaderAttributes = false,
 		UseCodeAttributes = false,
 		UseLinkAttributes = false,
+		UseAutoIdentifier = false,
 	};
 
 	/// <summary>
@@ -89,4 +90,9 @@ public readonly struct ParseOptions
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#链接属性"/>
 	public bool UseLinkAttributes { get; init; } = true;
+	/// <summary>
+	/// 是否支持为标题自动生成标识符，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/auto-identifiers.md"/>
+	public bool UseAutoIdentifier { get; init; } = true;
 }

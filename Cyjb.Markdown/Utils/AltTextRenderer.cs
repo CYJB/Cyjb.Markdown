@@ -1,7 +1,7 @@
 using System.Text;
 using Cyjb.Markdown.Syntax;
 
-namespace Cyjb.Markdown.Renderer;
+namespace Cyjb.Markdown.Utils;
 
 /// <summary>
 /// Alt 文本的渲染器。
@@ -17,6 +17,11 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// 初始化 <see cref="AltTextRenderer"/> 类的新实例。
 	/// </summary>
 	public AltTextRenderer() { }
+
+	/// <summary>
+	/// 返回内部的文本构造器。
+	/// </summary>
+	public StringBuilder Text => text;
 
 	/// <summary>
 	/// 清除已生成的 HTML 文本。

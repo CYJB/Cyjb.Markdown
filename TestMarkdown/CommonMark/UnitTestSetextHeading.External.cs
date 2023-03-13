@@ -25,7 +25,7 @@ public partial class UnitTestSetextHeading
 	[TestMethod]
 	public void TestLinkDefinition_2()
 	{
-		AssertMarkdown("[foo]: /url\r\nbar\r\n===\r\n", () =>
+		AssertCommonMark("[foo]: /url\r\nbar\r\n===\r\n", () =>
 		{
 			LinkDefinition(0..13, "foo", "/url");
 			Heading(13..23, 1, () =>
@@ -40,7 +40,7 @@ public partial class UnitTestSetextHeading
 	[TestMethod]
 	public void TestLinkDefinition_3()
 	{
-		AssertMarkdown("[foo]: /url\r\n[foo]\r\n===\r\n", () =>
+		AssertCommonMark("[foo]: /url\r\n[foo]\r\n===\r\n", () =>
 		{
 			LinkDefinition(0..13, "foo", "/url");
 			Heading(13..25, 1, () =>

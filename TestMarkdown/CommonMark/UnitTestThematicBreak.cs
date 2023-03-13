@@ -335,7 +335,7 @@ public class UnitTestThematicBreak : BaseTest
 	[TestMethod]
 	public void Test59()
 	{
-		AssertMarkdown("Foo\r\n---\r\nbar", () =>
+		AssertCommonMark("Foo\r\n---\r\nbar", () =>
 		{
 			Heading(0..10, 2, () =>
 			{

@@ -34,7 +34,7 @@ public class UnitTestRender
 				item.Html = "<p><a href=\"http://foo.bar.baz/test?q=hello&id=22&boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n";
 			}
 		}
-		TestRender(items, true);
+		TestRender(items, ParseOptions.CommonMark);
 	}
 
 	/// <summary>
@@ -88,7 +88,7 @@ public class UnitTestRender
 	public void TestMathematics()
 	{
 		SpecItem[] items = ReadSpec("Mathematics.spec.json");
-		TestRender(items);
+		TestRender(items, new ParseOptions() { UseAutoIdentifier = false });
 	}
 
 	/// <summary>
@@ -110,7 +110,7 @@ public class UnitTestRender
 	public void TestAttributes()
 	{
 		SpecItem[] items = ReadSpec("Attributes.spec.json");
-		TestRender(items);
+		TestRender(items, new ParseOptions() { UseAutoIdentifier = false });
 	}
 
 	/// <summary>
@@ -132,11 +132,12 @@ public class UnitTestRender
 	/// 测试 HTML 渲染结果。
 	/// </summary>
 	/// <param name="items">规范的项。</param>
+	/// <param name="options">解析选项。</param>
 	/// <param name="commonMark">是否使用 CommonMark 规范。</param>
-	private static void TestRender(SpecItem[] items, bool commonMark = false)
+	private static void TestRender(SpecItem[] items, ParseOptions? options = null)
 	{
 		HtmlRenderer renderer = new();
-		ParseOptions options = commonMark ? ParseOptions.CommonMark : ParseOptions.Default;
+		options ??= ParseOptions.Default;
 		foreach (SpecItem item in items)
 		{
 			Document doc = Document.Parse(item.Markdown, options);

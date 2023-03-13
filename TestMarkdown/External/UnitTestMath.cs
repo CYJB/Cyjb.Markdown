@@ -1,3 +1,4 @@
+using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestMarkdown;
@@ -618,12 +619,12 @@ public partial class UnitTestMath : BaseTest
 	{
 		AssertMarkdown("foo\r\n---\r\n$$\r\nbar\r\n$$\r\n# baz\r\n", () =>
 		{
-			Heading(0..10, 2, () =>
+			Heading(0..10, 2, new HtmlAttributeList() { { "id", "foo" } }, () =>
 			{
 				Literal(0..3, "foo");
 			});
 			MathBlock(10..23, "bar\r\n");
-			Heading(23..30, 1, () =>
+			Heading(23..30, 1, new HtmlAttributeList() { { "id", "baz" } }, () =>
 			{
 				Literal(25..28, "baz");
 			});

@@ -13,7 +13,7 @@ public class UnitTestQuote : BaseTest
 	[TestMethod]
 	public void Test228()
 	{
-		AssertMarkdown("> # Foo\r\n> bar\r\n> baz\r\n", () =>
+		AssertCommonMark("> # Foo\r\n> bar\r\n> baz\r\n", () =>
 		{
 			Blockquote(0..23, () =>
 			{
@@ -37,7 +37,7 @@ public class UnitTestQuote : BaseTest
 	[TestMethod]
 	public void Test229()
 	{
-		AssertMarkdown("># Foo\r\n>bar\r\n> baz\r\n", () =>
+		AssertCommonMark("># Foo\r\n>bar\r\n> baz\r\n", () =>
 		{
 			Blockquote(0..21, () =>
 			{
@@ -61,7 +61,7 @@ public class UnitTestQuote : BaseTest
 	[TestMethod]
 	public void Test230()
 	{
-		AssertMarkdown("   > # Foo\r\n   > bar\r\n > baz\r\n", () =>
+		AssertCommonMark("   > # Foo\r\n   > bar\r\n > baz\r\n", () =>
 		{
 			Blockquote(3..30, () =>
 			{
@@ -97,7 +97,7 @@ public class UnitTestQuote : BaseTest
 	[TestMethod]
 	public void Test232()
 	{
-		AssertMarkdown("> # Foo\r\n> bar\r\nbaz\r\n", () =>
+		AssertCommonMark("> # Foo\r\n> bar\r\nbaz\r\n", () =>
 		{
 			Blockquote(0..21, () =>
 			{
@@ -143,7 +143,7 @@ public class UnitTestQuote : BaseTest
 	[TestMethod]
 	public void Test234_1()
 	{
-		AssertMarkdown("> foo\r\n> ---\r\n", () =>
+		AssertCommonMark("> foo\r\n> ---\r\n", () =>
 		{
 			Blockquote(0..14, () =>
 			{

@@ -57,7 +57,10 @@ public class UnitTestAttributes : BaseTest
 			{
 				Literal(2..5, "foo");
 			});
-			Heading(42..68, 2, new HtmlAttributeList() { { "class", "class" } }, () =>
+			Heading(42..68, 2, new HtmlAttributeList() {
+				{ "class", "class" },
+				{ "id", "bar" },
+			}, () =>
 			{
 				Literal(42..45, "bar");
 				SoftBreak(45..47);
@@ -74,11 +77,17 @@ public class UnitTestAttributes : BaseTest
 	{
 		AssertMarkdown("# foo {key=value} \t\r\n\r\nbar { .class }  \t\r\n---\r\n", () =>
 		{
-			Heading(0..21, 1, new HtmlAttributeList() { { "key", "value" } }, () =>
+			Heading(0..21, 1, new HtmlAttributeList() {
+				{ "key", "value" } ,
+				{ "id", "foo" } ,
+			}, () =>
 			{
 				Literal(2..5, "foo");
 			});
-			Heading(23..47, 2, new HtmlAttributeList() { { "class", "class" } }, () =>
+			Heading(23..47, 2, new HtmlAttributeList() {
+				{ "class", "class" },
+				{ "id", "bar" } ,
+			}, () =>
 			{
 				Literal(23..26, "bar");
 			});
@@ -94,7 +103,7 @@ public class UnitTestAttributes : BaseTest
 	{
 		AssertMarkdown("# foo {\r\n#id-foo\r\n} bar\r\n\r\nbar { # }\r\n---\r\n# baz \\{#id}  \r\n# bim \\{#id} {#id2} {#id3}\r\n", () =>
 		{
-			Heading(0..9, 1, () =>
+			Heading(0..9, 1, new HtmlAttributeList() { { "id", "foo" } }, () =>
 			{
 				Literal(2..7, "foo {");
 			});
@@ -104,11 +113,11 @@ public class UnitTestAttributes : BaseTest
 				SoftBreak(16..18);
 				Literal(18..23, "} bar");
 			});
-			Heading(27..43, 2, () =>
+			Heading(27..43, 2, new HtmlAttributeList() { { "id", "bar" } }, () =>
 			{
 				Literal(27..36, "bar { # }");
 			});
-			Heading(43..59, 1, () =>
+			Heading(43..59, 1, new HtmlAttributeList() { { "id", "baz-id" } }, () =>
 			{
 				Literal(45..55, "baz {#id}");
 			});
@@ -128,7 +137,7 @@ public class UnitTestAttributes : BaseTest
 	{
 		AssertMarkdown("# foo \\{#id}\r\n# foo \\\\{#id myKey}\r\n", () =>
 		{
-			Heading(0..14, 1, () =>
+			Heading(0..14, 1, new HtmlAttributeList() { { "id", "foo-id" } }, () =>
 			{
 				Literal(2..12, "foo {#id}");
 			});
@@ -152,23 +161,23 @@ public class UnitTestAttributes : BaseTest
 	{
 		AssertMarkdown("# foo {#}\r\n# bar { . }\r\n# baz { = }\r\n# bim { =value }\r\n# boo { k = v}\r\n", () =>
 		{
-			Heading(0..11, 1, () =>
+			Heading(0..11, 1, new HtmlAttributeList() { { "id", "foo" } }, () =>
 			{
 				Literal(2..9, "foo {#}");
 			});
-			Heading(11..24, 1, () =>
+			Heading(11..24, 1, new HtmlAttributeList() { { "id", "bar" } }, () =>
 			{
 				Literal(13..22, "bar { . }");
 			});
-			Heading(24..37, 1, () =>
+			Heading(24..37, 1, new HtmlAttributeList() { { "id", "baz" } }, () =>
 			{
 				Literal(26..35, "baz { = }");
 			});
-			Heading(37..55, 1, () =>
+			Heading(37..55, 1, new HtmlAttributeList() { { "id", "bim-value" } }, () =>
 			{
 				Literal(39..53, "bim { =value }");
 			});
-			Heading(55..71, 1, () =>
+			Heading(55..71, 1, new HtmlAttributeList() { { "id", "boo-k-v" } }, () =>
 			{
 				Literal(57..69, "boo { k = v}");
 			});
@@ -184,7 +193,7 @@ public class UnitTestAttributes : BaseTest
 	{
 		AssertMarkdown("# foo {\r\n\r\n  #id }\r\n# bar { key=\r\nvalue }\r\n# baz {\r\n.class\r\n\r\n}\r\n", () =>
 		{
-			Heading(0..9, 1, () =>
+			Heading(0..9, 1, new HtmlAttributeList() { { "id", "foo" } }, () =>
 			{
 				Literal(2..7, "foo {");
 			});
@@ -192,7 +201,7 @@ public class UnitTestAttributes : BaseTest
 			{
 				Literal(13..18, "#id }");
 			});
-			Heading(20..34, 1, () =>
+			Heading(20..34, 1, new HtmlAttributeList() { { "id", "bar-key" } }, () =>
 			{
 				Literal(22..32, "bar { key=");
 			});
@@ -200,7 +209,7 @@ public class UnitTestAttributes : BaseTest
 			{
 				Literal(34..41, "value }");
 			});
-			Heading(43..52, 1, () =>
+			Heading(43..52, 1, new HtmlAttributeList() { { "id", "baz" } }, () =>
 			{
 				Literal(45..50, "baz {");
 			});

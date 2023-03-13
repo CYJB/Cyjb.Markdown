@@ -67,7 +67,7 @@ public class UnitTestCommonMarkJS : BaseTest
 	[TestMethod]
 	public void Test4()
 	{
-		AssertMarkdown("hi\r\n--\t\r\n", () =>
+		AssertCommonMark("hi\r\n--\t\r\n", () =>
 		{
 			Heading(0..9, 2, () =>
 			{
@@ -154,7 +154,7 @@ public class UnitTestCommonMarkJS : BaseTest
 	[TestMethod]
 	public void Test9()
 	{
-		AssertMarkdown("# foo\t#\t\r\n", () =>
+		AssertCommonMark("# foo\t#\t\r\n", () =>
 		{
 			Heading(0..10, 1, () =>
 			{

@@ -164,7 +164,7 @@ public class UnitTestTabs : BaseTest
 	[TestMethod]
 	public void Test10()
 	{
-		AssertMarkdown("#\tFoo\r\n", () =>
+		AssertCommonMark("#\tFoo\r\n", () =>
 		{
 			Heading(0..7, 1, () =>
 			{

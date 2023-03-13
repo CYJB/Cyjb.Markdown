@@ -13,7 +13,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test62()
 	{
-		AssertMarkdown("# foo\r\n## foo\r\n### foo\r\n#### foo\r\n##### foo\r\n###### foo\r\n", () =>
+		AssertCommonMark("# foo\r\n## foo\r\n### foo\r\n#### foo\r\n##### foo\r\n###### foo\r\n", () =>
 		{
 			Heading(0..7, 1, () =>
 			{
@@ -97,7 +97,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test66()
 	{
-		AssertMarkdown("# foo *bar* \\*baz\\*\r\n", () =>
+		AssertCommonMark("# foo *bar* \\*baz\\*\r\n", () =>
 		{
 			Heading(0..21, 1, () =>
 			{
@@ -117,7 +117,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test67()
 	{
-		AssertMarkdown("#                  foo                     \r\n", () =>
+		AssertCommonMark("#                  foo                     \r\n", () =>
 		{
 			Heading(0..45, 1, () =>
 			{
@@ -132,7 +132,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test68()
 	{
-		AssertMarkdown(" ### foo\r\n  ## foo\r\n   # foo\r\n", () =>
+		AssertCommonMark(" ### foo\r\n  ## foo\r\n   # foo\r\n", () =>
 		{
 			Heading(1..10, 3, () =>
 			{
@@ -181,7 +181,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test71()
 	{
-		AssertMarkdown("## foo ##\r\n  ###   bar    ###\r\n", () =>
+		AssertCommonMark("## foo ##\r\n  ###   bar    ###\r\n", () =>
 		{
 			Heading(0..11, 2, () =>
 			{
@@ -200,7 +200,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test72()
 	{
-		AssertMarkdown("# foo ##################################\r\n##### foo ##\r\n", () =>
+		AssertCommonMark("# foo ##################################\r\n##### foo ##\r\n", () =>
 		{
 			Heading(0..42, 1, () =>
 			{
@@ -219,7 +219,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test73()
 	{
-		AssertMarkdown("### foo ###     \r\n", () =>
+		AssertCommonMark("### foo ###     \r\n", () =>
 		{
 			Heading(0..18, 3, () =>
 			{
@@ -234,7 +234,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test74()
 	{
-		AssertMarkdown("### foo ### b\r\n", () =>
+		AssertCommonMark("### foo ### b\r\n", () =>
 		{
 			Heading(0..15, 3, () =>
 			{
@@ -249,7 +249,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test75()
 	{
-		AssertMarkdown("# foo#\r\n", () =>
+		AssertCommonMark("# foo#\r\n", () =>
 		{
 			Heading(0..8, 1, () =>
 			{
@@ -264,7 +264,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test76()
 	{
-		AssertMarkdown("### foo \\###\r\n## foo #\\##\r\n# foo \\#\r\n", () =>
+		AssertCommonMark("### foo \\###\r\n## foo #\\##\r\n# foo \\#\r\n", () =>
 		{
 			Heading(0..14, 3, () =>
 			{
@@ -287,7 +287,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test77()
 	{
-		AssertMarkdown("****\r\n## foo\r\n****\r\n", () =>
+		AssertCommonMark("****\r\n## foo\r\n****\r\n", () =>
 		{
 			ThematicBreak(0..6);
 			Heading(6..14, 2, () =>
@@ -301,7 +301,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test78()
 	{
-		AssertMarkdown("Foo bar\r\n# baz\r\nBar foo\r\n", () =>
+		AssertCommonMark("Foo bar\r\n# baz\r\nBar foo\r\n", () =>
 		{
 			Paragraph(0..9, () =>
 			{
@@ -324,7 +324,7 @@ public class UnitTestATXHeading : BaseTest
 	[TestMethod]
 	public void Test79()
 	{
-		AssertMarkdown("## \r\n#\r\n### ###\r\n", () =>
+		AssertCommonMark("## \r\n#\r\n### ###\r\n", () =>
 		{
 			Heading(0..5, 2);
 			Heading(5..8, 1);

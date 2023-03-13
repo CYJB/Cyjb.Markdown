@@ -16,7 +16,7 @@ public class UnitTestBlankLines : BaseTest
 	[TestMethod]
 	public void Test227()
 	{
-		AssertMarkdown("  \r\n\r\naaa\r\n  \r\n\r\n# aaa\r\n\r\n  \r\n", () =>
+		AssertCommonMark("  \r\n\r\naaa\r\n  \r\n\r\n# aaa\r\n\r\n  \r\n", () =>
 		{
 			Paragraph(6..11, () =>
 			{

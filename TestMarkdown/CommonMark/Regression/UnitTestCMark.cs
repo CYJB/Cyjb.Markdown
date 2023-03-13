@@ -93,7 +93,7 @@ public class UnitTestCMark : BaseTest
 	[TestMethod]
 	public void Test4()
 	{
-		AssertMarkdown("hi\r\n--\t\r\n", () =>
+		AssertCommonMark("hi\r\n--\t\r\n", () =>
 		{
 			Heading(0..9, 2, () =>
 			{

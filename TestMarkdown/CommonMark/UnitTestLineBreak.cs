@@ -328,7 +328,7 @@ public class UnitTestLineBreak : BaseTest
 	[TestMethod]
 	public void Test646()
 	{
-		AssertMarkdown("### foo\\", () =>
+		AssertCommonMark("### foo\\", () =>
 		{
 			Heading(0..8, 3, () =>
 			{
@@ -340,7 +340,7 @@ public class UnitTestLineBreak : BaseTest
 	[TestMethod]
 	public void Test647()
 	{
-		AssertMarkdown("### foo  ", () =>
+		AssertCommonMark("### foo  ", () =>
 		{
 			Heading(0..9, 3, () =>
 			{

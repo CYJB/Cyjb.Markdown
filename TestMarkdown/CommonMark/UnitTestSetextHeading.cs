@@ -13,7 +13,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test80()
 	{
-		AssertMarkdown("Foo *bar*\r\n=========\r\n\r\nFoo *bar*\r\n---------\r\n", () =>
+		AssertCommonMark("Foo *bar*\r\n=========\r\n\r\nFoo *bar*\r\n---------\r\n", () =>
 		{
 			Heading(0..22, 1, () =>
 			{
@@ -40,7 +40,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test81()
 	{
-		AssertMarkdown("Foo *bar\r\nbaz*\r\n====\r\n", () =>
+		AssertCommonMark("Foo *bar\r\nbaz*\r\n====\r\n", () =>
 		{
 			Heading(0..22, 1, () =>
 			{
@@ -61,7 +61,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test82()
 	{
-		AssertMarkdown("  Foo *bar\r\nbaz*\t\r\n====\r\n", () =>
+		AssertCommonMark("  Foo *bar\r\nbaz*\t\r\n====\r\n", () =>
 		{
 			Heading(2..25, 1, () =>
 			{
@@ -82,7 +82,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test83()
 	{
-		AssertMarkdown("Foo\r\n-------------------------\r\n\r\nFoo\r\n=\r\n", () =>
+		AssertCommonMark("Foo\r\n-------------------------\r\n\r\nFoo\r\n=\r\n", () =>
 		{
 			Heading(0..32, 2, () =>
 			{
@@ -101,7 +101,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test84()
 	{
-		AssertMarkdown("   Foo\r\n---\r\n\r\n  Foo\r\n-----\r\n\r\n  Foo\r\n  ===\r\n", () =>
+		AssertCommonMark("   Foo\r\n---\r\n\r\n  Foo\r\n-----\r\n\r\n  Foo\r\n  ===\r\n", () =>
 		{
 			Heading(3..13, 2, () =>
 			{
@@ -137,7 +137,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test86()
 	{
-		AssertMarkdown("Foo\r\n   ----      \r\n", () =>
+		AssertCommonMark("Foo\r\n   ----      \r\n", () =>
 		{
 			Heading(0..20, 2, () =>
 			{
@@ -191,7 +191,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test89()
 	{
-		AssertMarkdown("Foo  \r\n-----\r\n", () =>
+		AssertCommonMark("Foo  \r\n-----\r\n", () =>
 		{
 			Heading(0..14, 2, () =>
 			{
@@ -206,7 +206,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test90()
 	{
-		AssertMarkdown("Foo\\\r\n----\r\n", () =>
+		AssertCommonMark("Foo\\\r\n----\r\n", () =>
 		{
 			Heading(0..12, 2, () =>
 			{
@@ -221,7 +221,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test91()
 	{
-		AssertMarkdown("`Foo\r\n----\r\n`\r\n\r\n<a title=\"a lot\r\n---\r\nof dashes\"/>\r\n", () =>
+		AssertCommonMark("`Foo\r\n----\r\n`\r\n\r\n<a title=\"a lot\r\n---\r\nof dashes\"/>\r\n", () =>
 		{
 			Heading(0..12, 2, () =>
 			{
@@ -305,7 +305,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test95()
 	{
-		AssertMarkdown("Foo\r\nBar\r\n---\r\n", () =>
+		AssertCommonMark("Foo\r\nBar\r\n---\r\n", () =>
 		{
 			Heading(0..15, 2, () =>
 			{
@@ -322,7 +322,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test96()
 	{
-		AssertMarkdown("---\r\nFoo\r\n---\r\nBar\r\n---\r\nBaz\r\n", () =>
+		AssertCommonMark("---\r\nFoo\r\n---\r\nBar\r\n---\r\nBaz\r\n", () =>
 		{
 			ThematicBreak(0..5);
 			Heading(5..15, 2, () =>
@@ -419,7 +419,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test102()
 	{
-		AssertMarkdown("\\> foo\r\n-----\r\n", () =>
+		AssertCommonMark("\\> foo\r\n-----\r\n", () =>
 		{
 			Heading(0..15, 2, () =>
 			{
@@ -434,7 +434,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	[TestMethod]
 	public void Test103()
 	{
-		AssertMarkdown("Foo\r\n\r\nbar\r\n---\r\nbaz\r\n", () =>
+		AssertCommonMark("Foo\r\n\r\nbar\r\n---\r\nbaz\r\n", () =>
 		{
 			Paragraph(0..5, () =>
 			{

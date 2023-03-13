@@ -312,7 +312,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	[TestMethod]
 	public void Test141()
 	{
-		AssertMarkdown("foo\r\n---\r\n~~~\r\nbar\r\n~~~\r\n# baz\r\n", () =>
+		AssertCommonMark("foo\r\n---\r\n~~~\r\nbar\r\n~~~\r\n# baz\r\n", () =>
 		{
 			Heading(0..10, 2, () =>
 			{
