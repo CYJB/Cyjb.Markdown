@@ -18,82 +18,64 @@ public class UnitTestSyntaxVisitorT : BaseTest
 	[TestMethod]
 	public void TestAccept()
 	{
-		Document doc = Document.Parse(@"---
-# heading
-```foo
-bar
-```
-<script></script>
+		Document doc = Document.Parse(SyntaxConstants.SyntaxMarkdown);
 
-[foo]:/url
+		TestVisitor1 visitor1 = new();
+		Assert.AreEqual(null, visitor1.Visit(null));
+		CollectionAssert.AreEquivalent(SyntaxConstants.SyntaxNames, doc.Accept(visitor1).ToArray());
 
-> - baz
-> - bim
-
-| h1 | h2 |
-|:--:| -- |
-| c1 | c2 |
-
-$$
-math
-$$
-
-[foo] `bar` _a **b** c_ ~~d~~ <test>
-:atom: $3$");
-		TestVisitor visitor = new();
-		CollectionAssert.AreEquivalent(new string[]
-		{
-			"Document",
-			"ThematicBreak",
-			"Heading",
-			"Literal",
-			"CodeBlock",
-			"HtmlBlock",
-			"LinkDefinition",
-			"Blockquote",
-			"List",
-			"ListItem",
-			"Paragraph",
-			"Literal",
-			"ListItem",
-			"Paragraph",
-			"Literal",
-			"Table",
-			"TableRow",
-			"TableCell",
-			"Literal",
-			"TableCell",
-			"Literal",
-			"TableRow",
-			"TableCell",
-			"Literal",
-			"TableCell",
-			"Literal",
-			"MathBlock",
-			"Paragraph",
-			"Link",
-			"Literal",
-			"Literal",
-			"CodeSpan",
-			"Literal",
-			"Emphasis",
-			"Literal",
-			"Strong",
-			"Literal",
-			"Literal",
-			"Literal",
-			"Strikethrough",
-			"Literal",
-			"Literal",
-			"Html",
-			"Break",
-			"Emoji",
-			"Literal",
-			"MathSpan",
-		}, doc.Accept(visitor).ToArray());
+		TestVisitor2 visitor2 = new();
+		Assert.AreEqual(null, visitor2.Visit(null));
+		CollectionAssert.AreEquivalent(SyntaxConstants.SyntaxNames, doc.Accept(visitor2).ToArray());
 	}
 
-	private class TestVisitor : SyntaxVisitor<IEnumerable<string>>
+	private class TestVisitor1 : SyntaxVisitor<IEnumerable<string>>
+	{
+		/// <summary>
+		/// 提供默认的访问行为。
+		/// </summary>
+		/// <param name="node">要访问的节点。</param>
+		/// <returns>返回的结果。</returns>
+		public override IEnumerable<string> DefaultVisit(Node node)
+		{
+			yield return node.GetType().Name;
+			IReadOnlyList<Node> nodes;
+			if (node is INodeContainer<BlockNode> blockContainer)
+			{
+				nodes = blockContainer.Children;
+			}
+			else if (node is INodeContainer<InlineNode> inlineContainer)
+			{
+				nodes = inlineContainer.Children;
+			}
+			else if (node is INodeContainer<ListItem> listContainer)
+			{
+				nodes = listContainer.Children;
+			}
+			else if (node is INodeContainer<TableRow> tableRowContainer)
+			{
+				nodes = tableRowContainer.Children;
+			}
+			else if (node is INodeContainer<TableCell> tableCellContainer)
+			{
+				nodes = tableCellContainer.Children;
+			}
+			else
+			{
+				yield break;
+			}
+			int count = nodes.Count;
+			for (int i = 0; i < count; i++)
+			{
+				foreach (var child in nodes[i].Accept(this)!)
+				{
+					yield return child;
+				}
+			}
+		}
+	}
+
+	private class TestVisitor2 : SyntaxVisitor<IEnumerable<string>>
 	{
 		/// <summary>
 		/// 访问指定的文档节点。

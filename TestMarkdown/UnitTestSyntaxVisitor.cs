@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using Cyjb.Markdown;
 using Cyjb.Markdown.Syntax;
@@ -17,83 +18,76 @@ public class UnitTestSyntaxVisitor : BaseTest
 	[TestMethod]
 	public void TestAccept()
 	{
-		Document doc = Document.Parse(@"---
-# heading
-```foo
-bar
-```
-<script></script>
+		Document doc = Document.Parse(SyntaxConstants.SyntaxMarkdown);
 
-[foo]:/url
+		TestVisitor1 visitor1 = new();
+		visitor1.Visit(null);
+		Assert.AreEqual("", visitor1.ToString());
+		doc.Accept(visitor1);
+		Assert.AreEqual(string.Join("", SyntaxConstants.SyntaxNames), visitor1.ToString());
 
-> - baz
-> - bim
-
-| h1 | h2 |
-|:--:| -- |
-| c1 | c2 |
-
-$$
-math
-$$
-
-[foo] `bar` _a **b** c_ ~~d~~ <test>
-:atom: $3$");
-		TestVisitor visitor = new();
-		doc.Accept(visitor);
-		Assert.AreEqual(string.Join("", new string[]
-		{
-			"Document",
-			"ThematicBreak",
-			"Heading",
-			"Literal",
-			"CodeBlock",
-			"HtmlBlock",
-			"LinkDefinition",
-			"Blockquote",
-			"List",
-			"ListItem",
-			"Paragraph",
-			"Literal",
-			"ListItem",
-			"Paragraph",
-			"Literal",
-			"Table",
-			"TableRow",
-			"TableCell",
-			"Literal",
-			"TableCell",
-			"Literal",
-			"TableRow",
-			"TableCell",
-			"Literal",
-			"TableCell",
-			"Literal",
-			"MathBlock",
-			"Paragraph",
-			"Link",
-			"Literal",
-			"Literal",
-			"CodeSpan",
-			"Literal",
-			"Emphasis",
-			"Literal",
-			"Strong",
-			"Literal",
-			"Literal",
-			"Literal",
-			"Strikethrough",
-			"Literal",
-			"Literal",
-			"Html",
-			"Break",
-			"Emoji",
-			"Literal",
-			"MathSpan",
-		}), visitor.ToString());
+		TestVisitor2 visitor2 = new();
+		visitor2.Visit(null);
+		Assert.AreEqual("", visitor2.ToString());
+		doc.Accept(visitor2);
+		Assert.AreEqual(string.Join("", SyntaxConstants.SyntaxNames), visitor2.ToString());
 	}
 
-	private class TestVisitor : SyntaxVisitor
+	private class TestVisitor1 : SyntaxVisitor
+	{
+		private readonly StringBuilder text = new();
+
+		/// <summary>
+		/// 提供默认的访问行为。
+		/// </summary>
+		/// <param name="node">要访问的节点。</param>
+		/// <returns>返回的结果。</returns>
+		public override void DefaultVisit(Node node)
+		{
+			text.Append(node.GetType().Name);
+			IReadOnlyList<Node> nodes;
+			if (node is INodeContainer<BlockNode> blockContainer)
+			{
+				nodes = blockContainer.Children;
+			}
+			else if (node is INodeContainer<InlineNode> inlineContainer)
+			{
+				nodes = inlineContainer.Children;
+			}
+			else if (node is INodeContainer<ListItem> listContainer)
+			{
+				nodes = listContainer.Children;
+			}
+			else if (node is INodeContainer<TableRow> tableRowContainer)
+			{
+				nodes = tableRowContainer.Children;
+			}
+			else if (node is INodeContainer<TableCell> tableCellContainer)
+			{
+				nodes = tableCellContainer.Children;
+			}
+			else
+			{
+				return;
+			}
+			int count = nodes.Count;
+			for (int i = 0; i < count; i++)
+			{
+				nodes[i].Accept(this);
+			}
+		}
+
+		/// <summary>
+		/// 返回当前对象的字符串表示形式。
+		/// </summary>
+		/// <returns>当前对象的字符串表示形式。</returns>
+		public override string ToString()
+		{
+			return text.ToString();
+		}
+	}
+
+	private class TestVisitor2 : SyntaxVisitor
 	{
 		private readonly StringBuilder text = new();
 
