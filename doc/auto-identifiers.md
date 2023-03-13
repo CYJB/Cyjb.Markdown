@@ -2,6 +2,8 @@
 
 版本：`1.0`
 
+参考：[pandoc auto_identifiers](https://pandoc.org/MANUAL.html#extension-auto_identifiers)
+
 可以根据标题内容自动生成标识符，如果已经利用[标题属性](./attributes.md)显式指定了标识符，那么不会再自动生成。
 
 自动生成标识符会根据标题内容，使用以下方式生成：

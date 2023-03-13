@@ -2,6 +2,8 @@
 
 版本：`1.0`
 
+参考：[GitHub Flavored Markdown Spec](https://github.github.com/gfm/#autolinks-extension-)
+
 为了更好的处理 Unicode 文本，这里基于 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/#autolinks-extension-) 做了一些微调，采用以下的规范。
 
 扩展自动链接也可以处理未被 `<..>` 括起来的链接，包括 URL 自动链接和邮件自动链接两类。

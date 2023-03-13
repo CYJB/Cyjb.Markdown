@@ -2,6 +2,8 @@
 
 版本：`1.0`
 
+参考：[pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes)
+
 可以为标题、代码块、链接和图片添加属性。属性使用类似 `{#identifier .class key=value}` 的形式指定，具体格式为：
 
 属性使用 `{` 和 `}` 包裹，内部可以包含任意个数的标识符、类名或属性，它们之间可以使用空格、Tab 或至多一个换行分割。

@@ -2,6 +2,8 @@
 
 版本：`1.0`
 
+参考：[pandoc implicit_header_references](https://pandoc.org/MANUAL.html#extension-implicit_header_references)
+
 可以直接将标题内容作为链接标签使用，而不需要显式指定标题的链接。注意需要启用[自动生成标识符](./auto-identifiers.md)的能力，或者利用[标题属性](./attributes.md)显式指定标题的标识符。
 
 <a id="example-1" href="#example-1">示例 1</a>
