@@ -16,8 +16,6 @@ public class UnitTestAutoIdentifiers : BaseTest
 	[TestMethod]
 	public void Test1()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("# Heading identifiers in HTML\r\n# Maître d'hôtel\r\n# 示例 :grinning:\r\n# *Dogs*?-in *my* house?\r\n# [link](/url) and `code`\r\n# --3. Applications--\r\n# ??\r\n", () =>
 		{
 			Heading(0..31, 1, new HtmlAttributeList() { { "id", "heading-identifiers-in-html" } }, () =>
@@ -73,8 +71,6 @@ public class UnitTestAutoIdentifiers : BaseTest
 	[TestMethod]
 	public void Test2()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("# Heading\r\n# Heading-1\r\n# Heading\r\n## Heading-2\r\n## Heading-1\r\n", () =>
 		{
 			Heading(0..11, 1, new HtmlAttributeList() { { "id", "heading" } }, () =>
@@ -107,8 +103,6 @@ public class UnitTestAutoIdentifiers : BaseTest
 	[TestMethod]
 	public void Test3()
 	{
-		//              0         1         2         3         4         5         6         7         8         9         10
-		//              01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 		AssertMarkdown("# Section 1\r\n# Section 2 {#sec2}\r\n", () =>
 		{
 			Heading(0..13, 1, new HtmlAttributeList() { { "id", "section-1" } }, () =>

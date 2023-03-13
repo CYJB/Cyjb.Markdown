@@ -61,11 +61,11 @@ internal partial class InlineLexer
 			//     [<]!--[^>].*[^-]-->
 			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlCommentAction()),
 			// 11: [<]\?.*\?>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlProcessingAction()),
+			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlProcessingAction(), useShortest: true),
 			// 12: [<]![a-z][^>]*>
 			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlDeclarationAction()),
 			// 13: [<]!\[CDATA\[.*\]\]>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlCDataAction()),
+			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlCDataAction(), useShortest: true),
 			// 14: <LinkClose>]{LinkLabel}
 			new TerminalData<InlineKind>(InlineKind.LinkClose, action: (InlineLexer c) => c.LinkLabelAction()),
 			// 15: <LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?

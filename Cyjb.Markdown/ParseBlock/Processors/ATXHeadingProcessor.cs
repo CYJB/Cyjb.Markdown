@@ -8,7 +8,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// ATX 标题的解析器。
 /// </summary>
-internal sealed class ATXHeadingProcessor : BlockProcessor
+internal sealed class ATXHeadingProcessor : BlockProcessor, IHeadingProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -76,6 +76,15 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	public override void ParseInline(InlineParser parser)
 	{
 		parser.Parse(Enumerable.Repeat(text, 1), heading.Children);
+	}
+
+	/// <summary>
+	/// 返回标题的链接标签。
+	/// </summary>
+	/// <returns>当前标题的链接标签。</returns>
+	public string GetIdentifier()
+	{
+		return LinkUtil.NormalizeLabel(text.ToString());
 	}
 
 	/// <summary>

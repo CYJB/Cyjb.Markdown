@@ -27,6 +27,7 @@ public readonly struct ParseOptions
 		UseCodeAttributes = false,
 		UseLinkAttributes = false,
 		UseAutoIdentifier = false,
+		UseHeaderReferences = false,
 	};
 
 	/// <summary>
@@ -95,4 +96,9 @@ public readonly struct ParseOptions
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/auto-identifiers.md"/>
 	public bool UseAutoIdentifier { get; init; } = true;
+	/// <summary>
+	/// 是否支持将标题作为链接引用使用，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/header-references.md"/>
+	public bool UseHeaderReferences { get; init; } = true;
 }

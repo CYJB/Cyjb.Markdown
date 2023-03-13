@@ -43,6 +43,7 @@ Console.WriteLine(renderer);
 - 支持数学公式：`$ $` 或 `$$ $$`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md)。
 - 支持为标题、代码块、链接和图片添加属性：`{#id .class key=value}`，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md)。
 - 支持为标题自动生成标识符，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/auto-identifiers.md)。
+- 支持直接将标题内容作为链接标签使用，具体规范请参见[这里](https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/header-references.md)。
 
 ### 其它的建议用法
 

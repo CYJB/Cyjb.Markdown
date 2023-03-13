@@ -287,19 +287,10 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// HTML 处理结构的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]\?.*\?>", RegexOptions.Singleline, Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]\?.*\?>", RegexOptions.Singleline, Kind = InlineKind.Node, UseShortest = true)]
 	private void HtmlProcessingAction()
 	{
-		var content = Text.AsSpan()[2..^2];
-		if (content.Contains("?>", StringComparison.Ordinal))
-		{
-			// 内容不能包含 ?>。
-			Reject();
-		}
-		else
-		{
-			Accept(new Html(MarkdownKind.HtmlProcessing, Text));
-		}
+		Accept(new Html(MarkdownKind.HtmlProcessing, Text));
 	}
 
 	/// <summary>
@@ -314,18 +305,11 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// HTML CDATA 的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]!\[CDATA\[.*\]\]>", RegexOptions.IgnoreCase | RegexOptions.Singleline, Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]!\[CDATA\[.*\]\]>", RegexOptions.IgnoreCase | RegexOptions.Singleline, Kind = InlineKind.Node,
+		UseShortest = true)]
 	private void HtmlCDataAction()
 	{
-		var content = Text.AsSpan()[10..^3];
-		if (content.Contains("]]>", StringComparison.Ordinal))
-		{
-			Reject();
-		}
-		else
-		{
-			Accept(new Html(MarkdownKind.HtmlCData, Text));
-		}
+		Accept(new Html(MarkdownKind.HtmlCData, Text));
 	}
 
 	/// <summary>

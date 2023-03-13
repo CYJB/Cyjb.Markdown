@@ -1,0 +1,20 @@
+[
+  {
+    "markdown": "# Heading identifiers in HTML\n# Maître d'hôtel\n# 示例 :grinning:\n# *Dogs*?-in *my* house?\n# [link](/url) and `code`\n# --3. Applications--\n# ??\n",
+    "html": "<h1 id=\"heading-identifiers-in-html\">Heading identifiers in HTML</h1>\n<h1 id=\"maître-dhôtel\">Maître d'hôtel</h1>\n<h1 id=\"示例-grinning\">示例 😀</h1>\n<h1 id=\"dogs-in-my-house\"><em>Dogs</em>?-in <em>my</em> house?</h1>\n<h1 id=\"link-and-code\"><a href=\"/url\">link</a> and <code>code</code></h1>\n<h1 id=\"3.-applications\">--3. Applications--</h1>\n<h1 id=\"section\">??</h1>\n",
+    "example": 1,
+    "section": "AutoIdentifier"
+  },
+  {
+    "markdown": "# Heading\n# Heading-1\n# Heading\n## Heading-2\n## Heading-1\n",
+    "html": "<h1 id=\"heading\">Heading</h1>\n<h1 id=\"heading-1\">Heading-1</h1>\n<h1 id=\"heading-2\">Heading</h1>\n<h2 id=\"heading-2-1\">Heading-2</h2>\n<h2 id=\"heading-1-1\">Heading-1</h2>\n",
+    "example": 2,
+    "section": "AutoIdentifier"
+  },
+  {
+    "markdown": "# Section 1\n# Section 2 {#sec2}\n",
+    "html": "<h1 id=\"section-1\">Section 1</h1>\n<h1 id=\"sec2\">Section 2</h1>\n",
+    "example": 3,
+    "section": "AutoIdentifier"
+  }
+]

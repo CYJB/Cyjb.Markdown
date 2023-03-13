@@ -48,6 +48,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ParseBlock\BlockLexer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BlockLexer.designed.cs</LastGenOutput>
+    </None>
+    <None Update="ParseInline\InlineLexer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>InlineLexer.designed.cs</LastGenOutput>
+    </None>
     <None Update="Parse\Blocks\BlockLexer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BlockLexer.designed.cs</LastGenOutput>
@@ -71,6 +79,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="ParseBlock\BlockLexer.designed.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BlockLexer.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ParseInline\InlineLexer.designed.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InlineLexer.tt</DependentUpon>
+    </Compile>
     <Compile Update="Parse\Blocks\BlockLexer.designed.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

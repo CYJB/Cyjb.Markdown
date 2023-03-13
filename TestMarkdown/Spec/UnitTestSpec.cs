@@ -114,6 +114,28 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试自动生成标识符规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/auto-identifier.md"/>
+	[TestMethod]
+	public void TestAutoIdentifier()
+	{
+		SpecItem[] items = ReadSpec("AutoIdentifier.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
+	/// 测试标题引用规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/header-references.md"/>
+	[TestMethod]
+	public void TestHeaderReferences()
+	{
+		SpecItem[] items = ReadSpec("HeaderReferences.spec.json");
+		TestRender(items);
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>

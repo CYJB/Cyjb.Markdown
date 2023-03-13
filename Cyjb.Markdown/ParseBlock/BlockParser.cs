@@ -61,6 +61,10 @@ internal sealed class BlockParser
 	/// </summary>
 	private readonly Dictionary<string, LinkDefinition> linkDefines = new();
 	/// <summary>
+	/// 标题自动链接定义。
+	/// </summary>
+	private readonly Dictionary<string, Tuple<Heading, LinkDefinition>> headingReferences = new();
+	/// <summary>
 	/// 开启状态的处理器。
 	/// </summary>
 	private readonly ListStack<BlockProcessor> openedProcessors = new();
@@ -127,6 +131,14 @@ internal sealed class BlockParser
 		// 栈底总是文档，总是不需要 Close。
 		int end = token.Span.Start;
 		CloseProcessor(document, end);
+		// 合并标题引用。
+		if (headingReferences.Count > 0)
+		{
+			foreach (var pair in headingReferences)
+			{
+				linkDefines.TryAdd(pair.Key, pair.Value.Item2);
+			}
+		}
 		// 解析行内节点。
 		if (pendingInlineProcessors.Count > 0)
 		{
@@ -142,6 +154,14 @@ internal sealed class BlockParser
 		{
 			AutoIdentifierWalker walker = new();
 			doc.Accept(walker);
+		}
+		// 填充标题的链接声明
+		if (headingReferences.Count > 0)
+		{
+			foreach (var tuple in headingReferences.Values)
+			{
+				tuple.Item2.URL = $"#{tuple.Item1.Attributes.Id}";
+			}
 		}
 		// 填充行定位器。
 		if (options.UseLineLocator)
@@ -292,6 +312,16 @@ internal sealed class BlockParser
 		BlockNode? node = processor.CloseNode(end);
 		if (node != null)
 		{
+			// 处理标题引用。
+			if (node is Heading heading && (options.UseHeaderReferences || heading.Attributes.Id != null))
+			{
+				string label = ((IHeadingProcessor)processor).GetIdentifier();
+				if (!headingReferences.ContainsKey(label))
+				{
+					headingReferences[label] = new Tuple<Heading, LinkDefinition>(heading,
+						new LinkDefinition(label, string.Empty, null));
+				}
+			}
 			parent.AddNode(node);
 			if (processor.NeedParseInlines)
 			{
