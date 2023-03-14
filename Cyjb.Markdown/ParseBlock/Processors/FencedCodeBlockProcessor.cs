@@ -166,6 +166,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 				MarkdownUtil.Trim(ref text);
 				info = text.Unescape();
 				attrs = token.Value as HtmlAttributeList;
+				attrs?.AddPrefix(line.Options.AttributesPrefix);
 			}
 			// 标记当前行已处理完毕。
 			line.Skip();

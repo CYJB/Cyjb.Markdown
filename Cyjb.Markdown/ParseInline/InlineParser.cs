@@ -194,6 +194,7 @@ internal sealed class InlineParser
 			// 包含链接 URL。
 			link = new Link(opener.IsImage, linkBody.URL, linkBody.Title, span);
 			link.Attributes.AddRange(linkBody.Attributes);
+			link.Attributes.AddPrefix(options.AttributesPrefix);
 		}
 		else if (token.Value is LinkDefinition linkDefine)
 		{

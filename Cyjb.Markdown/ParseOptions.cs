@@ -92,6 +92,10 @@ public readonly struct ParseOptions
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#链接属性"/>
 	public bool UseLinkAttributes { get; init; } = true;
 	/// <summary>
+	/// 属性的前缀，用于指定标题、代码或链接属性的前缀。默认为 <c>null</c>。
+	/// </summary>
+	public string? AttributesPrefix { get; init; } = null;
+	/// <summary>
 	/// 是否支持为标题自动生成标识符，默认为 <c>true</c>。
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/auto-identifiers.md"/>

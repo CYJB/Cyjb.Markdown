@@ -312,16 +312,7 @@ internal sealed class BlockParser
 		BlockNode? node = processor.CloseNode(end);
 		if (node != null)
 		{
-			// 处理标题引用。
-			if (node is Heading heading && (options.UseAutoIdentifier || heading.Attributes.Id != null))
-			{
-				string label = ((IHeadingProcessor)processor).GetIdentifier();
-				if (!headingReferences.ContainsKey(label))
-				{
-					headingReferences[label] = new Tuple<Heading, LinkDefinition>(heading,
-						new LinkDefinition(label, string.Empty, null));
-				}
-			}
+			ProcessHeading(processor, node);
 			parent.AddNode(node);
 			if (processor.NeedParseInlines)
 			{
@@ -335,12 +326,40 @@ internal sealed class BlockParser
 	/// </summary>
 	public void AddLinkDefinition(BlockProcessor processor, BlockProcessor parent)
 	{
-		if (processor is ParagraphProcessor paragraph)
+		if (processor is not ParagraphProcessor paragraph)
 		{
-			foreach (LinkDefinition definition in paragraph.GetDefinitions())
+			return;
+		}
+		foreach (LinkDefinition definition in paragraph.GetDefinitions())
+		{
+			// 处理链接属性
+			definition.Attributes.AddPrefix(options.AttributesPrefix);
+			parent.AddNode(definition);
+			linkDefines.TryAdd(definition.Identifier, definition);
+		}
+	}
+
+	/// <summary>
+	/// 处理标题。
+	/// </summary>
+	/// <param name="processor">处理器。</param>
+	/// <param name="node">要处理的节点。</param>
+	private void ProcessHeading(BlockProcessor processor, Node node)
+	{
+		if (node is not Heading heading)
+		{
+			return;
+		}
+		// 处理标题属性
+		heading.Attributes.AddPrefix(options.AttributesPrefix);
+		// 处理标题引用。
+		if (options.UseAutoIdentifier || heading.Attributes.Id != null)
+		{
+			string label = ((IHeadingProcessor)processor).GetIdentifier();
+			if (!headingReferences.ContainsKey(label))
 			{
-				parent.AddNode(definition);
-				linkDefines.TryAdd(definition.Identifier, definition);
+				headingReferences[label] = new Tuple<Heading, LinkDefinition>(heading,
+					new LinkDefinition(label, string.Empty, null));
 			}
 		}
 	}

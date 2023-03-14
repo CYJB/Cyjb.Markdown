@@ -1,3 +1,4 @@
+using Cyjb.Markdown;
 using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -643,25 +644,82 @@ public class UnitTestAttributes : BaseTest
 	}
 
 	/// <summary>
+	/// 测试为属性添加前缀。
+	/// </summary>
+	[TestMethod]
+	public void TestAttributePrefix()
+	{
+		ParseOptions options = new()
+		{
+			AttributesPrefix = "data-",
+		};
+		AssertMarkdown("# foo {#id key=value}\r\n``` foo {#id .class2 k=v}\r\n  bar\r\n```\r\n\r\n[baz](/uri){#id k=v}\r\n[bom]\r\n\r\n[bom]:/uri {#id k=v}\r\n", options, () =>
+		{
+			Heading(0..23, 1, new HtmlAttributeList() {
+				{ "id", "id" },
+				{ "data-key", "value" },
+			}, () =>
+			{
+				Literal(2..5, "foo");
+			});
+			CodeBlock(23..62, "  bar\r\n", "foo", new HtmlAttributeList()
+			{
+				{ "id", "id" },
+				{ "class", "class2" },
+				{ "data-k", "v" },
+			});
+			Paragraph(64..93, () =>
+			{
+				Link(64..84, "/uri", null, new HtmlAttributeList()
+				{
+					{ "id", "id" },
+					{ "data-k", "v" },
+				}, () =>
+				{
+					Literal(65..68, "baz");
+				});
+				SoftBreak(84..86);
+				Link(86..91, "/uri", null, new HtmlAttributeList() {
+					{ "id", "id" },
+					{ "data-k", "v" } ,
+				}, () =>
+				{
+					Literal(87..90, "bom");
+				});
+			});
+			LinkDefinition(95..117, "bom", "/uri", null, new HtmlAttributeList() {
+				{ "id", "id" } ,
+				{ "data-k", "v" } ,
+			});
+		});
+	}
+
+	/// <summary>
 	/// 测试 CommonMark 不支持属性。
 	/// </summary>
 	[TestMethod]
 	public void TestCommonMark()
 	{
-		AssertCommonMark("# foo {#id}\r\n``` foo {#id}\r\n  bar\r\n```\r\n\r\n[baz](/uri){#id}\r\n", () =>
+		AssertCommonMark("# foo {#id}\r\n``` foo {#id}\r\n  bar\r\n```\r\n\r\n[baz](/uri){#id}\r\n[bom]\r\n\r\n[bom]:/uri {#id}\r\n", () =>
 		{
 			Heading(0..13, 1, () =>
 			{
 				Literal(2..11, "foo {#id}");
 			});
 			CodeBlock(13..40, "  bar\r\n", "foo {#id}");
-			Paragraph(42..60, () =>
+			Paragraph(42..67, () =>
 			{
 				Link(42..53, "/uri", null, () =>
 				{
 					Literal(43..46, "baz");
 				});
 				Literal(53..58, "{#id}");
+				SoftBreak(58..60);
+				Literal(60..65, "[bom]");
+			});
+			Paragraph(69..87, () =>
+			{
+				Literal(69..85, "[bom]:/uri {#id}");
 			});
 		});
 	}

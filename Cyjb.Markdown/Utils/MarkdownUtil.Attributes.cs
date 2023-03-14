@@ -171,7 +171,7 @@ internal static partial class MarkdownUtil
 				}
 				else
 				{
-					idx = IndexOfWhitespace(text);
+					idx = text.IndexOfAny(WhitespaceOrRightBrace);
 					if (idx < 0)
 					{
 						idx = text.Length;

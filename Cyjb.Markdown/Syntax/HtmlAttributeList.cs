@@ -199,6 +199,26 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 		list.Clear();
 	}
 
+	/// <summary>
+	/// 添加指定的属性前缀。
+	/// </summary>
+	/// <param name="prefix">要添加的前缀。</param>
+	internal void AddPrefix(string? prefix)
+	{
+		if (prefix.IsNullOrEmpty())
+		{
+			return;
+		}
+		for (int i = 0; i < list.Count; i++)
+		{
+			string key = list[i].Key;
+			if (key != IdKey && key != ClassKey)
+			{
+				list[i] = new KeyValuePair<string, string>(prefix + key, list[i].Value);
+			}
+		}
+	}
+
 	#region ReadOnlyListBase<KeyValuePair<string, string>> 成员
 
 	/// <summary>
