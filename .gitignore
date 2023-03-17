@@ -10,11 +10,9 @@ TestResults
 CodeCoverage
 coverage.cobertura.xml
 
-# test project
-ConsoleTest
-
 # files
 *.suo
 *.snk
 *.vspx
 *.user
+publish.ps1
