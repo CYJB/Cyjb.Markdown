@@ -13,7 +13,7 @@
 	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	<NeutralLanguage>en</NeutralLanguage>
 	<Version>$(VersionPrefix)</Version>
-	<VersionPrefix>1.0.0</VersionPrefix>
+	<VersionPrefix>1.0.1</VersionPrefix>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<TransformOnBuild>true</TransformOnBuild>
 	<Authors>CYJB</Authors>
