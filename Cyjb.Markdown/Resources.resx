@@ -125,17 +125,9 @@
     <value>Link label can not be empty or consists only of white-space characters.</value>
     <comment>链接标签不能为空字符串或仅由空白字符组成。</comment>
   </data>
-  <data name="ExcludedNodeTypes" xml:space="preserve">
-    <value>Can not add '{0}' to current node.</value>
-    <comment>不能添加指定类型的节点。</comment>
-  </data>
   <data name="InvalidKind_Html" xml:space="preserve">
     <value>Invalid kind, expect one of 'HtmlStartTag', 'HtmlEndTag', 'HtmlComment', 'HtmlCData', 'HtmlDeclaration' or 'HtmlProcessing'.</value>
     <comment>无效的 HTML 类型。</comment>
-  </data>
-  <data name="InvalidKind_InlineGroup" xml:space="preserve">
-    <value>Invalid kind, expect one of 'Emphasis', 'Strong' or 'Strikethrough'.</value>
-    <comment>无效的行内组类型。</comment>
   </data>
   <data name="RowMustHaveCell" xml:space="preserve">
     <value>TableRow must have at least one TableCell.</value>
