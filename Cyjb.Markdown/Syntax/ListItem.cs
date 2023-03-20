@@ -6,8 +6,18 @@ namespace Cyjb.Markdown.Syntax;
 /// <summary>
 /// 表示 Markdown 的列表项。
 /// </summary>
-public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
+public sealed class ListItem : Node, INodeContainer<BlockNode>
 {
+	/// <summary>
+	/// 前驱兄弟节点。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private ListItem? prev;
+	/// <summary>
+	/// 后继兄弟节点。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private ListItem? next;
 	/// <summary>
 	/// 子节点列表。
 	/// </summary>
@@ -32,6 +42,14 @@ public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
 	/// 获取子节点列表。
 	/// </summary>
 	public NodeList<BlockNode> Children => children;
+	/// <summary>
+	/// 获取前驱兄弟节点。
+	/// </summary>
+	public override ListItem? Prev => prev;
+	/// <summary>
+	/// 获取后继兄弟节点。
+	/// </summary>
+	public override ListItem? Next => next;
 
 	/// <summary>
 	/// 获取或设置列表项的选中状态。
@@ -48,6 +66,23 @@ public sealed class ListItem : BlockNode, INodeContainer<BlockNode>
 	/// 获取最后一个子节点，如果不存在则返回 <c>null</c>。
 	/// </summary>
 	public override BlockNode? LastChild => children.LastOrDefault();
+
+	/// <summary>
+	/// 设置前驱兄弟节点。
+	/// </summary>
+	/// <param name="node">要设置的节点。</param>
+	internal override void SetPrev(Node? node)
+	{
+		prev = node as ListItem;
+	}
+	/// <summary>
+	/// 设置后继兄弟节点。
+	/// </summary>
+	/// <param name="node">要设置的节点。</param>
+	internal override void SetNext(Node? node)
+	{
+		next = node as ListItem;
+	}
 
 	/// <summary>
 	/// 应用指定的访问器。

@@ -6,8 +6,18 @@ namespace Cyjb.Markdown.Syntax;
 /// <summary>
 /// 表示 Markdown 表格的行。
 /// </summary>
-public sealed class TableRow : BlockNode, INodeContainer<TableCell>
+public sealed class TableRow : Node, INodeContainer<TableCell>
 {
+	/// <summary>
+	/// 前驱兄弟节点。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private TableRow? prev;
+	/// <summary>
+	/// 后继兄弟节点。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private TableRow? next;
 	/// <summary>
 	/// 单元格列表。
 	/// </summary>
@@ -45,6 +55,14 @@ public sealed class TableRow : BlockNode, INodeContainer<TableCell>
 	/// 获取单元格列表。
 	/// </summary>
 	public NodeList<TableCell> Children => children;
+	/// <summary>
+	/// 获取前驱兄弟节点。
+	/// </summary>
+	public override TableRow? Prev => prev;
+	/// <summary>
+	/// 获取后继兄弟节点。
+	/// </summary>
+	public override TableRow? Next => next;
 
 	/// <summary>
 	/// 获取第一个单元格，如果不存在则返回 <c>null</c>。
@@ -54,6 +72,23 @@ public sealed class TableRow : BlockNode, INodeContainer<TableCell>
 	/// 获取最后一个单元格，如果不存在则返回 <c>null</c>。
 	/// </summary>
 	public override TableCell? LastChild => children.LastOrDefault();
+
+	/// <summary>
+	/// 设置前驱兄弟节点。
+	/// </summary>
+	/// <param name="node">要设置的节点。</param>
+	internal override void SetPrev(Node? node)
+	{
+		prev = node as TableRow;
+	}
+	/// <summary>
+	/// 设置后继兄弟节点。
+	/// </summary>
+	/// <param name="node">要设置的节点。</param>
+	internal override void SetNext(Node? node)
+	{
+		next = node as TableRow;
+	}
 
 	/// <summary>
 	/// 应用指定的访问器。

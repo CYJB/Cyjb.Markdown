@@ -120,9 +120,9 @@ internal sealed class ListItemProcessor : BlockProcessor
 	/// 添加一个新节点。
 	/// </summary>
 	/// <param name="node">要添加的节点。</param>
-	public override void AddNode(BlockNode node)
+	public override void AddNode(Node node)
 	{
-		item.Children.Add(node);
+		item.Children.Add((BlockNode)node);
 		end = node.Span.End;
 	}
 
@@ -131,7 +131,7 @@ internal sealed class ListItemProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end)
 	{
 		// 优先使用列表项内容的结束位置。
 		// 这样能够忽略未被添加到列表项内的空行位置。

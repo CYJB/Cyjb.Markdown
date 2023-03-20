@@ -309,7 +309,7 @@ internal sealed class BlockParser
 		BlockProcessor processor = openedProcessors.Pop();
 		BlockProcessor parent = openedProcessors.Peek();
 		AddLinkDefinition(processor, parent);
-		BlockNode? node = processor.CloseNode(end);
+		Node? node = processor.CloseNode(end);
 		if (node != null)
 		{
 			ProcessHeading(processor, node);

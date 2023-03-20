@@ -1,4 +1,3 @@
-using System;
 using Cyjb.Markdown.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,9 +19,6 @@ public class UnitTestListItem
 		ListItem item = new();
 		list.Children.Add(item);
 		Assert.AreEqual(list, item.Parent);
-
-		Blockquote blockquote = new();
-		Assert.ThrowsException<ArgumentException>(() => blockquote.Children.Add(item));
 	}
 }
 

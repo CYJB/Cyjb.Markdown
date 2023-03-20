@@ -99,14 +99,14 @@ internal abstract class BlockProcessor
 	/// 添加一个新节点。
 	/// </summary>
 	/// <param name="node">要添加的节点。</param>
-	public virtual void AddNode(BlockNode node) { }
+	public virtual void AddNode(Node node) { }
 
 	/// <summary>
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public abstract BlockNode? CloseNode(int end);
+	public abstract Node? CloseNode(int end);
 
 	/// <summary>
 	/// 解析行内节点。

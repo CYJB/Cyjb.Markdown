@@ -52,9 +52,9 @@ internal sealed class DocumentProcessor : BlockProcessor
 	/// 添加一个新节点。
 	/// </summary>
 	/// <param name="node">要添加的节点。</param>
-	public override void AddNode(BlockNode node)
+	public override void AddNode(Node node)
 	{
-		document.Children.Add(node);
+		document.Children.Add((BlockNode)node);
 	}
 
 	/// <summary>
@@ -62,7 +62,7 @@ internal sealed class DocumentProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end)
 	{
 		return null;
 	}
