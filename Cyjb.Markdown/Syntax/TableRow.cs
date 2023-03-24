@@ -25,6 +25,16 @@ public sealed class TableRow : Node, INodeContainer<TableCell>
 	private readonly NodeList<TableCell> children;
 
 	/// <summary>
+	/// 使用指定的单元格和文本范围初始化 <see cref="TableRow"/> 类的新实例。
+	/// </summary>
+	/// <param name="cell">单元格集合。</param>
+	/// <param name="span">文本范围。</param>
+	/// <exception cref="ArgumentNullException"><paramref name="cell"/> 为 <c>null</c>。</exception>
+	public TableRow(TableCell cell, TextSpan span = default)
+		: this(Enumerable.Repeat(cell, 1), span)
+	{ }
+
+	/// <summary>
 	/// 使用指定的单元格集合和文本范围初始化 <see cref="TableRow"/> 类的新实例。
 	/// </summary>
 	/// <param name="cells">单元格集合。</param>

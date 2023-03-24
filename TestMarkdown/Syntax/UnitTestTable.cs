@@ -17,9 +17,9 @@ public class UnitTestTable
 	[TestMethod]
 	public void TestMustHaveHeading()
 	{
-		TableRow row = new(new TableCell[] { new TableCell() });
-		TableRow row2 = new(new TableCell[] { new TableCell() });
-		TableRow row3 = new(new TableCell[] { new TableCell() });
+		TableRow row = new(new TableCell());
+		TableRow row2 = new(new TableCell());
+		TableRow row3 = new(new TableCell());
 
 		Table table = new(row);
 		table.Children.Add(row2);
@@ -46,7 +46,7 @@ public class UnitTestTable
 			TableAlign.None,
 			TableAlign.None,
 		};
-		TableRow row = new(new TableCell[] { new TableCell() });
+		TableRow row = new(new TableCell());
 		row.Children.Add(new TableCell());
 		Table table = new(row);
 		CollectionAssert.AreEqual(expectedAligns, table.Aligns);
@@ -90,7 +90,7 @@ public class UnitTestTable
 		TableCell cell2 = new();
 		TableCell cell3 = new();
 
-		TableRow row = new(new TableCell[] { cell });
+		TableRow row = new(cell);
 		row.Children.Add(cell2);
 		Assert.AreEqual(2, row.Children.Count);
 		Assert.ThrowsException<InvalidOperationException>(() => row.Children.Clear());

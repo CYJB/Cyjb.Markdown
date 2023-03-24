@@ -22,7 +22,7 @@ internal static class HeadingUtils
 			!parser.HeadingReferences.ContainsKey(label))
 		{
 			parser.HeadingReferences[label] = new Tuple<Heading, LinkDefinition>(heading,
-				new LinkDefinition(label, string.Empty, null));
+				new LinkDefinition(label, string.Empty));
 		}
 	}
 }

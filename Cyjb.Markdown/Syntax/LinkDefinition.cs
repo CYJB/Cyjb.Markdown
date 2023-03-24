@@ -40,7 +40,7 @@ public sealed class LinkDefinition : BlockNode
 	/// <exception cref="ArgumentNullException"><paramref name="label"/> 或 <paramref name="url"/>
 	/// 为 <c>null</c>。</exception>
 	/// <exception cref="ArgumentException"><paramref name="label"/> 为空字符串或只包含空白字符。</exception>
-	public LinkDefinition(string label, string url, string? title, TextSpan span = default)
+	public LinkDefinition(string label, string url, string? title = null, TextSpan span = default)
 		: base(MarkdownKind.LinkDefinition)
 	{
 		LinkUtil.CheckLabel(label);
