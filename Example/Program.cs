@@ -1,5 +1,6 @@
 using Cyjb.Markdown;
 using Cyjb.Markdown.Renderer;
+using Cyjb.Markdown.Syntax;
 
 // 将 Markdown 字符串解析成语法树。
 Document doc = Document.Parse("This is a **markdown**");
