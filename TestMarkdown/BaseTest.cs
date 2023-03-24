@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cyjb.Markdown;
+using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

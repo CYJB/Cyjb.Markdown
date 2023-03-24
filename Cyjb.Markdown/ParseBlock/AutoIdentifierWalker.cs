@@ -11,9 +11,9 @@ namespace Cyjb.Markdown.ParseBlock;
 internal sealed class AutoIdentifierWalker : SyntaxWalker
 {
 	/// <summary>
-	/// 自动生成的标识符集合。
+	/// 唯一标识符。
 	/// </summary>
-	private readonly Dictionary<string, int> identifiers = new();
+	private readonly UniqueIdentifier uniqueIdentifier = new();
 	/// <summary>
 	/// Alt 文本的渲染器。
 	/// </summary>
@@ -41,16 +41,7 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker
 		}
 		altTextRenderer.Clear();
 		node.Accept(altTextRenderer);
-		string id = GetIdentifier(altTextRenderer.Text);
-		if (identifiers.TryGetValue(id, out int nextIdx))
-		{
-			string nextId;
-			for (; identifiers.ContainsKey((nextId = $"{id}-{nextIdx}")); nextIdx++) ;
-			identifiers[id] = nextIdx + 1;
-			id = nextId;
-		}
-		identifiers[id] = 1;
-		node.Attributes.Id = id;
+		node.Attributes.Id = uniqueIdentifier.Unique(GetIdentifier(altTextRenderer.Text));
 	}
 
 	/// <summary>

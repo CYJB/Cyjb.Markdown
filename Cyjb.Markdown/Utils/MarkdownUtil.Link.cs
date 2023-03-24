@@ -16,6 +16,7 @@ internal static partial class MarkdownUtil
 	/// <param name="text">要解析的字符串。</param>
 	/// <param name="label">解析得到的链接标签。</param>
 	/// <returns>如果解析成功，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	/// <remarks>认为已经读入了 <c>[</c> 字符，会在 <c>]</c> 字符之前结束。</remarks>
 	public static bool TryParseLinkLabel(ref ReadOnlySpan<char> text,
 		[MaybeNullWhen(false)] out string label)
 	{

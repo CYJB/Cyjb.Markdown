@@ -1,9 +1,8 @@
 using System.Diagnostics;
-using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
-namespace Cyjb.Markdown;
+namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
 /// 表示 Markdown 的节点。
@@ -107,9 +106,25 @@ public abstract class Node
 		{
 			((INodeContainer<BlockNode>)Parent!).Children.Remove(block);
 		}
+		else if (this is InlineNode inline)
+		{
+			((INodeContainer<InlineNode>)Parent!).Children.Remove(inline);
+		}
+		else if (this is ListItem listItem)
+		{
+			((INodeContainer<ListItem>)Parent!).Children.Remove(listItem);
+		}
+		else if (this is TableRow tableRow)
+		{
+			((INodeContainer<TableRow>)Parent!).Children.Remove(tableRow);
+		}
+		else if (this is TableCell tableCell)
+		{
+			((INodeContainer<TableCell>)Parent!).Children.Remove(tableCell);
+		}
 		else
 		{
-			((INodeContainer<InlineNode>)Parent!).Children.Remove((InlineNode)this);
+			throw CommonExceptions.Unreachable();
 		}
 	}
 

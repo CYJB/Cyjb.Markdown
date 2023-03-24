@@ -121,6 +121,10 @@
     <value>表情符号名称不能包含冒号。</value>
     <comment>表情符号名称不能包含冒号。</comment>
   </data>
+  <data name="EmptyFootnoteLabel" xml:space="preserve">
+    <value>脚注标签不能为空或包含空白字符。</value>
+    <comment>脚注标签不能为空或包含空白字符。</comment>
+  </data>
   <data name="EmptyLinkLabel" xml:space="preserve">
     <value>链接标签不能为空或仅由空白字符组成。</value>
     <comment>链接标签不能为空字符串或仅由空白字符组成。</comment>

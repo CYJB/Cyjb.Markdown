@@ -103,9 +103,11 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
+		AddDefinitions(parser);
 		if (lines.Count == 0)
 		{
 			// 没有有效的行。
@@ -118,12 +120,20 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	}
 
 	/// <summary>
-	/// 返回所有解析的链接定义。
+	/// 添加链接定义。
 	/// </summary>
-	/// <returns>链接定义列表。</returns>
-	public List<LinkDefinition> GetDefinitions()
+	/// <param name="parser">块解析器。</param>
+	public void AddDefinitions(BlockParser parser)
 	{
-		return linkDefinitionParser.GetDefinitions();
+		string? attributesPrefix = parser.Options.AttributesPrefix;
+		BlockProcessor parent = parser.ActivatedProcessor;
+		foreach (LinkDefinition definition in linkDefinitionParser.GetDefinitions())
+		{
+			// 处理链接属性
+			definition.Attributes.AddPrefix(attributesPrefix);
+			parent.AddNode(definition);
+			parser.LinkDefines.TryAdd(definition.Identifier, definition);
+		}
 	}
 
 	/// <summary>

@@ -121,6 +121,10 @@
     <value>Emoji name can not contains colon.</value>
     <comment>表情符号名称不能包含冒号。</comment>
   </data>
+  <data name="EmptyFootnoteLabel" xml:space="preserve">
+    <value>Footnote label can not be empty or contains white-space characters.</value>
+    <comment>脚注标签不能为空字符串或包含空白字符。</comment>
+  </data>
   <data name="EmptyLinkLabel" xml:space="preserve">
     <value>Link label can not be empty or consists only of white-space characters.</value>
     <comment>链接标签不能为空字符串或仅由空白字符组成。</comment>

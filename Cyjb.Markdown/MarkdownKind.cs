@@ -62,6 +62,10 @@ public enum MarkdownKind
 	/// 表格的单元格。
 	/// </summary>
 	TableCell,
+	/// <summary>
+	/// 脚注。
+	/// </summary>
+	Footnote,
 
 	/// <summary>
 	/// 行内代码段。
@@ -127,6 +131,10 @@ public enum MarkdownKind
 	/// 行内数学公式。
 	/// </summary>
 	MathSpan,
+	/// <summary>
+	/// 脚注引用。
+	/// </summary>
+	FootnoteRef,
 	/// <summary>
 	/// 文本。
 	/// </summary>

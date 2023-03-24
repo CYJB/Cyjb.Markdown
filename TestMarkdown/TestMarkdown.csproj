@@ -46,6 +46,9 @@
     <None Update="Spec\ExtraListStyleType.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Spec\Footnotes.spec.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Spec\GitHubFlavoredMarkdown.0.29.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

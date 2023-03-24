@@ -325,7 +325,23 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Reject(RejectOptions.State);
+		}
+	}
+
+	/// <summary>
+	/// 脚注起始的动作。
+	/// </summary>
+	[LexerSymbol(@"\[^([^ \t\r\n\[\]]|\\.)+\]:", Kind = BlockKind.FootnoteStart, UseShortest = true)]
+	private void FootnoteStartAction()
+	{
+		if (Options.UseFootnotes)
+		{
+			Accept(Text[2..^2]);
+		}
+		else
+		{
+			Reject(RejectOptions.State);
 		}
 	}
 

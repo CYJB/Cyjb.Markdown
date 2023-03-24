@@ -7,7 +7,7 @@ namespace Cyjb.Markdown.Renderer;
 /// <summary>
 /// Markdown 的 HTML 渲染器。
 /// </summary>
-public class HtmlRenderer : SyntaxWalker
+public class HtmlRenderer : BaseRenderer
 {
 	/// <summary>
 	/// HTML 属性修改器。
@@ -17,34 +17,12 @@ public class HtmlRenderer : SyntaxWalker
 	/// 文本构造器。
 	/// </summary>
 	private readonly StringBuilder text = new();
-	/// <summary>
-	/// Alt 文本的渲染器。
-	/// </summary>
-	private AltTextRenderer? altTextRenderer;
-	/// <summary>
-	/// 当前是否正在输出表格标题。
-	/// </summary>
-	private bool isTableHeading = false;
-	/// <summary>
-	/// 当前表格对齐。
-	/// </summary>
-	private TableAlign tableAlign = TableAlign.None;
 
 	/// <summary>
 	/// 初始化 <see cref="HtmlRenderer"/> 类的新实例。
 	/// </summary>
 	public HtmlRenderer() { }
 
-	/// <summary>
-	/// 获取或设置软换行的字符，默认为 <c>\n</c>。
-	/// </summary>
-	public string SoftBreak { get; set; } = "\n";
-	/// <summary>
-	/// 是否输出空的表格标题，默认为 <c>false</c>。
-	/// </summary>
-	/// <remarks>如果表格标题的单元格全部是空的，那么若设置为 <c>false</c>，
-	/// 不会输出 <c>&lt;thead&gt;</c>；若设置为 <c>true</c>，则会输出 <c>&lt;thead&gt;</c>。</remarks>
-	public bool OutputEmptyTableHeading { get; set; } = false;
 	/// <summary>
 	/// 代码块的语言前缀，默认为 <c>language-</c>。
 	/// </summary>
@@ -73,8 +51,9 @@ public class HtmlRenderer : SyntaxWalker
 	/// <summary>
 	/// 清除已生成的 HTML 文本。
 	/// </summary>
-	public void Clear()
+	public override void Clear()
 	{
+		base.Clear();
 		text.Clear();
 	}
 
@@ -150,12 +129,6 @@ public class HtmlRenderer : SyntaxWalker
 		WriteRaw(node.Content);
 		WriteLine();
 	}
-
-	/// <summary>
-	/// 访问指定的链接定义节点。
-	/// </summary>
-	/// <param name="node">要访问的链接定义节点。</param>
-	public override void VisitLinkDefinition(LinkDefinition node) { }
 
 	/// <summary>
 	/// 访问指定的段落节点。
@@ -309,31 +282,19 @@ public class HtmlRenderer : SyntaxWalker
 	{
 		WriteStartTag(node, "tr");
 		WriteLine();
-		Table? table = node.Parent;
-		if (table == null)
-		{
-			// 不存在父表格，直接依次输出。
-			DefaultVisit(node);
-		}
-		else
-		{
-			// 存在父表格，设置每列的对齐，并确保每行的列数一致。
-			int columnCount = table.ColumnCount;
-			int len = Math.Min(node.Children.Count, columnCount);
-			for (int i = 0; i < len; i++)
-			{
-				tableAlign = table.Aligns[i];
-				node.Children[i].Accept(this);
-			}
-			tableAlign = TableAlign.None;
-			for (int i = len; i < columnCount; i++)
-			{
-				WriteStartTag(node, "td");
-				WriteEndTag("td");
-				WriteLine();
-			}
-		}
+		base.VisitTableRow(node);
 		WriteEndTag("tr");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 写入空的表格单元格，用于补齐表格行缺少的单元格。
+	/// </summary>
+	/// <param name="row">缺少单元格的表格行。</param>
+	protected override void WriteEmptyTableCell(TableRow row)
+	{
+		WriteStartTag(row, "td");
+		WriteEndTag("td");
 		WriteLine();
 	}
 
@@ -345,35 +306,36 @@ public class HtmlRenderer : SyntaxWalker
 	{
 		WriteStartTag(node, "table");
 		WriteLine();
-		// 输出 thead
-		bool hasHeading = true;
-		if (!OutputEmptyTableHeading)
-		{
-			hasHeading = node.Children[0].Children.Any(cell => cell.Children.Count > 0);
-		}
-		if (hasHeading)
-		{
-			WriteStartTag(node, "thead");
-			WriteLine();
-			isTableHeading = true;
-			node.Children[0].Accept(this);
-			isTableHeading = false;
-			WriteEndTag("thead");
-			WriteLine();
-		}
-		// 输出 tbody
-		if (node.Children.Count > 1)
-		{
-			WriteStartTag(node, "tbody");
-			WriteLine();
-			foreach (TableRow row in node.Children.Skip(1))
-			{
-				row.Accept(this);
-			}
-			WriteEndTag("tbody");
-			WriteLine();
-		}
+		base.VisitTable(node);
 		WriteEndTag("table");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 写入表格的头。
+	/// </summary>
+	/// <param name="table">表格节点。</param>
+	/// <param name="heading">表格的行。</param>
+	protected override void WriteTableHead(Table table, TableRow heading)
+	{
+		WriteStartTag(heading, "thead");
+		WriteLine();
+		base.WriteTableHead(table, heading);
+		WriteEndTag("thead");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 写入表格的内容。
+	/// </summary>
+	/// <param name="table">表格节点。</param>
+	/// <param name="rows">表格的行。</param>
+	protected override void WriteTableBody(Table table, IEnumerable<TableRow> rows)
+	{
+		WriteStartTag(table, "tbody");
+		WriteLine();
+		base.WriteTableBody(table, rows);
+		WriteEndTag("tbody");
 		WriteLine();
 	}
 
@@ -461,11 +423,8 @@ public class HtmlRenderer : SyntaxWalker
 		}
 		else
 		{
-			altTextRenderer ??= new AltTextRenderer();
-			altTextRenderer.Clear();
-			node.Accept(altTextRenderer);
 			attrs["src"] = LinkUtil.EncodeURL(node.URL);
-			attrs["alt"] = altTextRenderer.ToString();
+			attrs["alt"] = GetAltText(node);
 			if (node.Title != null)
 			{
 				attrs["title"] = node.Title;
@@ -537,6 +496,45 @@ public class HtmlRenderer : SyntaxWalker
 	}
 
 	/// <summary>
+	/// 访问指定的脚注引用节点。
+	/// </summary>
+	/// <param name="node">要访问的脚注引用节点。</param>
+	/// <param name="backref">反向引用信息。</param>
+	protected override void VisitFootnoteRef(FootnoteRef node, FootnoteBackref backref)
+	{
+		HtmlAttributeList attrs = new()
+		{
+			{ "href", "#" + LinkUtil.EncodeURL(backref.Info.Id) },
+			{ "id", LinkUtil.EncodeURL(backref.Identifier) },
+		};
+		WriteStartTag(node, "sup");
+		WriteStartTag(node, "a", attrs);
+		Write(backref.Info.Index);
+		WriteEndTag("a");
+		WriteEndTag("sup");
+	}
+
+	/// <summary>
+	/// 访问脚注的反向引用。
+	/// </summary>
+	/// <param name="node">要访问的脚注反向引用节点。</param>
+	protected override void VisitFootnoteBackRef(FootnoteBackref node)
+	{
+		// 如果是段落内的首个节点，那么不输出空白。
+		if (node.Parent != null && node.Parent.FirstChild != node)
+		{
+			Write(" ");
+		}
+		HtmlAttributeList attrs = new()
+		{
+			{ "href", "#" + LinkUtil.EncodeURL(node.Identifier) },
+		};
+		WriteStartTag(node, "a", attrs);
+		Write("↩");
+		WriteEndTag("a");
+	}
+
+	/// <summary>
 	/// 访问指定的文本节点。
 	/// </summary>
 	/// <param name="node">要访问的文本节点。</param>
@@ -546,6 +544,38 @@ public class HtmlRenderer : SyntaxWalker
 	}
 
 	#endregion // 行内节点
+
+	/// <summary>
+	/// 写入脚注段。
+	/// </summary>
+	/// <param name="doc">文档节点。</param>
+	/// <param name="footnotes">要写入的脚注列表。</param>
+	protected override void WriteFootnotes(Document doc, List<Footnote> footnotes)
+	{
+		WriteStartTag(doc, "section", new HtmlAttributeList() { Id = "footnotes" });
+		WriteLine();
+		WriteStartTag(doc, "ol");
+		WriteLine();
+		base.WriteFootnotes(doc, footnotes);
+		WriteEndTag("ol");
+		WriteLine();
+		WriteEndTag("section");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 写入脚注节点。
+	/// </summary>
+	/// <param name="node">脚注节点。</param>
+	/// <param name="info">脚注的信息。</param>
+	protected override void WriteFootnote(Footnote node, FootnoteInfo info)
+	{
+		WriteStartTag(node, "li", new HtmlAttributeList() { Id = LinkUtil.EncodeURL(info.Id) });
+		WriteLine();
+		base.WriteFootnote(node, info);
+		WriteEndTag("li");
+		WriteLine();
+	}
 
 	#region 写入 HTML
 

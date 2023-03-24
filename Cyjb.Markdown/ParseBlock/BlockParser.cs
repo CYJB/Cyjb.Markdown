@@ -33,6 +33,7 @@ internal sealed class BlockParser
 			// 中划线行可能存在歧义，需要都做检测。
 			SetextHeadingProcessor.Factory, ThematicBreakProcessor.Factory } },
 		{ BlockKind.TableDelimiterRow, new IBlockFactory[] { TableProcessor.Factory } },
+		{ BlockKind.FootnoteStart, new IBlockFactory[] { FootnoteProcessor.Factory } },
 	};
 
 	/// <summary>
@@ -65,6 +66,10 @@ internal sealed class BlockParser
 	/// </summary>
 	private readonly Dictionary<string, Tuple<Heading, LinkDefinition>> headingReferences = new();
 	/// <summary>
+	/// 脚注定义。
+	/// </summary>
+	private readonly Dictionary<string, Footnote> footnotes = new();
+	/// <summary>
 	/// 开启状态的处理器。
 	/// </summary>
 	private readonly ListStack<BlockProcessor> openedProcessors = new();
@@ -94,11 +99,22 @@ internal sealed class BlockParser
 	/// 获取当前激活的节点处理器。
 	/// </summary>
 	public BlockProcessor ActivatedProcessor => openedProcessors.Peek();
-
 	/// <summary>
 	/// 获取解析的选项。
 	/// </summary>
 	public ParseOptions Options => options;
+	/// <summary>
+	/// 获取链接定义。
+	/// </summary>
+	public Dictionary<string, LinkDefinition> LinkDefines => linkDefines;
+	/// <summary>
+	/// 获取标题自动链接定义。
+	/// </summary>
+	public Dictionary<string, Tuple<Heading, LinkDefinition>> HeadingReferences => headingReferences;
+	/// <summary>
+	/// 获取脚注定义。
+	/// </summary>
+	public Dictionary<string, Footnote> Footnotes => footnotes;
 
 	/// <summary>
 	/// 解析当前文档。
@@ -142,7 +158,7 @@ internal sealed class BlockParser
 		// 解析行内节点。
 		if (pendingInlineProcessors.Count > 0)
 		{
-			InlineParser parser = new(linkDefines, options);
+			InlineParser parser = new(linkDefines, footnotes, options);
 			foreach (BlockProcessor processor in pendingInlineProcessors)
 			{
 				processor.ParseInline(parser);
@@ -245,9 +261,9 @@ internal sealed class BlockParser
 			// 开始新块前，先闭合之前未延伸的块。
 			CloseProcessor(processor, lineStart);
 			// 替换之前的处理器。
-			if (processor.IsNeedReplaced)
+			if (processor.IsNeedReplaced && openedProcessors.Pop() is ParagraphProcessor paragraphProcessor)
 			{
-				AddLinkDefinition(openedProcessors.Pop(), openedProcessors.Peek());
+				paragraphProcessor.AddDefinitions(this);
 			}
 			foreach (BlockProcessor newProcessor in processors)
 			{
@@ -307,60 +323,15 @@ internal sealed class BlockParser
 	private void CloseLastProcessor(int end)
 	{
 		BlockProcessor processor = openedProcessors.Pop();
-		BlockProcessor parent = openedProcessors.Peek();
-		AddLinkDefinition(processor, parent);
-		Node? node = processor.CloseNode(end);
-		if (node != null)
-		{
-			ProcessHeading(processor, node);
-			parent.AddNode(node);
-			if (processor.NeedParseInlines)
-			{
-				pendingInlineProcessors.Add(processor);
-			}
-		}
-	}
-
-	/// <summary>
-	/// 添加段落的链接定义。
-	/// </summary>
-	public void AddLinkDefinition(BlockProcessor processor, BlockProcessor parent)
-	{
-		if (processor is not ParagraphProcessor paragraph)
+		Node? node = processor.CloseNode(end, this);
+		if (node == null)
 		{
 			return;
 		}
-		foreach (LinkDefinition definition in paragraph.GetDefinitions())
+		ActivatedProcessor.AddNode(node);
+		if (processor.NeedParseInlines)
 		{
-			// 处理链接属性
-			definition.Attributes.AddPrefix(options.AttributesPrefix);
-			parent.AddNode(definition);
-			linkDefines.TryAdd(definition.Identifier, definition);
-		}
-	}
-
-	/// <summary>
-	/// 处理标题。
-	/// </summary>
-	/// <param name="processor">处理器。</param>
-	/// <param name="node">要处理的节点。</param>
-	private void ProcessHeading(BlockProcessor processor, Node node)
-	{
-		if (node is not Heading heading)
-		{
-			return;
-		}
-		// 处理标题属性
-		heading.Attributes.AddPrefix(options.AttributesPrefix);
-		// 处理标题引用。
-		if (options.UseAutoIdentifier || heading.Attributes.Id != null)
-		{
-			string label = ((IHeadingProcessor)processor).GetIdentifier();
-			if (!headingReferences.ContainsKey(label))
-			{
-				headingReferences[label] = new Tuple<Heading, LinkDefinition>(heading,
-					new LinkDefinition(label, string.Empty, null));
-			}
+			pendingInlineProcessors.Add(processor);
 		}
 	}
 

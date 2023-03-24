@@ -1,8 +1,6 @@
-using Cyjb.Collections;
 using Cyjb.Collections.ObjectModel;
-using Cyjb.Markdown.Syntax;
 
-namespace Cyjb.Markdown;
+namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
 /// 表示 Markdown 的子节点列表。
@@ -244,6 +242,42 @@ public sealed class NodeList<T> : ListBase<T>
 			nodes[j].Parent = null;
 		}
 		RemoveRangeUnchecked(index, count);
+	}
+
+	/// <summary>
+	/// 移除指定范围的子节点。
+	/// </summary>
+	/// <param name="start">要移除的起始节点（包含）。</param>
+	/// <param name="end">要移除的结束节点（不含）。</param>
+	/// <remarks>如果 <paramref name="start"/> 为 <c>null</c>，或者并非当前列表内的子节点，
+	/// 那么什么都不做。如果 <paramref name="end"/> 为 <c>null</c>，那么将移除 <paramref name="start"/>
+	/// 开始的所有子节点。</remarks>
+	public void RemoveRange(T? start, T? end)
+	{
+		if (start == null || (start.Parent as INodeContainer<T>)?.Children != this)
+		{
+			return;
+		}
+		int index = nodes.IndexOf(start);
+		int endIdx;
+		if (end == null)
+		{
+			endIdx = nodes.Count;
+		}
+		else
+		{
+			endIdx = nodes.IndexOf(end);
+			if (endIdx < 0)
+			{
+				endIdx = nodes.Count;
+			}
+		}
+		// 清除父节点。
+		for (int i = index; i < endIdx; i++)
+		{
+			nodes[i].Parent = null;
+		}
+		RemoveRangeUnchecked(index, endIdx - index);
 	}
 
 	/// <summary>

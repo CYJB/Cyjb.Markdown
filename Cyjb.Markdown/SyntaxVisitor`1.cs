@@ -179,6 +179,16 @@ public abstract class SyntaxVisitor<TResult>
 		return DefaultVisit(node);
 	}
 
+	/// <summary>
+	/// 访问指定的脚注节点。
+	/// </summary>
+	/// <param name="node">要访问的脚注节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitFootnote(Footnote node)
+	{
+		return DefaultVisit(node);
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点
@@ -269,6 +279,16 @@ public abstract class SyntaxVisitor<TResult>
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	/// <returns>返回的结果。</returns>
 	public virtual TResult? VisitMathSpan(MathSpan node)
+	{
+		return DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的脚注引用节点。
+	/// </summary>
+	/// <param name="node">要访问的脚注引用节点。</param>
+	/// <returns>返回的结果。</returns>
+	public virtual TResult? VisitFootnoteRef(FootnoteRef node)
 	{
 		return DefaultVisit(node);
 	}

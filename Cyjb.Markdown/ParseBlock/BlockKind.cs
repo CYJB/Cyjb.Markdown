@@ -65,6 +65,10 @@ internal enum BlockKind
 	/// 表格的分割行。
 	/// </summary>
 	TableDelimiterRow,
+	/// <summary>
+	/// 脚注的起始。
+	/// </summary>
+	FootnoteStart,
 
 	/// <summary>
 	/// 块级节点。

@@ -304,4 +304,19 @@ public abstract partial class BaseTest
 		MathSpan mathSnap = (MathSpan)node!;
 		Assert.AreEqual(content, mathSnap.Content);
 	}
+
+	/// <summary>
+	/// 验证是脚注引用。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="label">预期的脚注标签。</param>
+	protected void FootnoteRef(TextSpan span, string label)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.FootnoteRef, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		FootnoteRef footnoteRef = (FootnoteRef)node!;
+		Assert.AreEqual(label, footnoteRef.Footnote.Label);
+	}
 }

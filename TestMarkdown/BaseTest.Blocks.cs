@@ -358,4 +358,28 @@ public abstract partial class BaseTest
 		Assert.AreEqual(content, math.Content);
 		Assert.AreEqual(info, math.Info);
 	}
+
+	/// <summary>
+	/// 验证是脚注。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="label">脚注的标签。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void Footnote(TextSpan span, string label, Action? validator = null)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.Footnote, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		Footnote footnote = (Footnote)node!;
+		Assert.AreEqual(label, footnote.Label);
+		if (validator == null)
+		{
+			Assert.AreEqual(0, footnote.Children.Count);
+		}
+		else
+		{
+			AssertChildren(node, footnote.Children, validator);
+		}
+	}
 }

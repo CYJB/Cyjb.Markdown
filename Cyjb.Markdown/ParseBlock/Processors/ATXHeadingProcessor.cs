@@ -8,7 +8,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// ATX 标题的解析器。
 /// </summary>
-internal sealed class ATXHeadingProcessor : BlockProcessor, IHeadingProcessor
+internal sealed class ATXHeadingProcessor : BlockProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -62,9 +62,11 @@ internal sealed class ATXHeadingProcessor : BlockProcessor, IHeadingProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
+		HeadingUtils.ProcessHeading(parser, heading, LinkUtil.NormalizeLabel(text.ToString()));
 		heading.Span = new TextSpan(heading.Span.Start, end);
 		return heading;
 	}
@@ -76,15 +78,6 @@ internal sealed class ATXHeadingProcessor : BlockProcessor, IHeadingProcessor
 	public override void ParseInline(InlineParser parser)
 	{
 		parser.Parse(Enumerable.Repeat(text, 1), heading.Children);
-	}
-
-	/// <summary>
-	/// 返回标题的链接标签。
-	/// </summary>
-	/// <returns>当前标题的链接标签。</returns>
-	public string GetIdentifier()
-	{
-		return LinkUtil.NormalizeLabel(text.ToString());
 	}
 
 	/// <summary>

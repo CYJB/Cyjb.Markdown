@@ -123,8 +123,9 @@ internal sealed class ListProcessor : BlockProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override Node? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		// 使用最后一个列表项的位置。
 		list.Span = list.Span with

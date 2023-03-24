@@ -81,7 +81,7 @@ internal sealed class LineInfo
 	/// </summary>
 	public bool IsCodeIndent => GetIndent().Width >= CodeIndent;
 	/// <summary>
-	/// 获取是否是空行。
+	/// 获取是否是空行或只包含空白。
 	/// </summary>
 	public bool IsBlank => !tokens.Any(HasContent);
 	/// <summary>
@@ -208,10 +208,12 @@ internal sealed class LineInfo
 			Token<BlockKind> token = tokens.Peek();
 			if (token.Kind == BlockKind.Indent)
 			{
+				// 是缩进，提取相关信息。
 				indent = (IndentInfo)tokens.Dequeue().Value!;
 			}
 			else
 			{
+				// 其它，使用空缩进。
 				indent = new IndentInfo(token.Span.Start, locator);
 			}
 		}

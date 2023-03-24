@@ -1,4 +1,5 @@
 using Cyjb.Markdown;
+using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

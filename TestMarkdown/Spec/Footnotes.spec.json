@@ -1,0 +1,68 @@
+[
+  {
+    "markdown": "Here is a simple footnote[^1].\n\nA footnote can also have multiple lines[^2].\n\nYou can also use words, to fit your writing style more closely[^note].\n\n[^1]:        My reference.\n[^2]: New line can prefixed with any spaces.\n  This allows you to have a footnote with multiple lines.\n[^note]:\n    Named footnotes will still render with numbers instead of the text but allow easier identification and linking.\n    This footnote also has been made with a different syntax using 4 spaces for new lines.",
+    "html": "<p>Here is a simple footnote<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>.</p>\n<p>A footnote can also have multiple lines<sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup>.</p>\n<p>You can also use words, to fit your writing style more closely<sup><a href=\"#fn-note\" id=\"fnref-note\">3</a></sup>.</p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>My reference. <a href=\"#fnref-1\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<p>New line can prefixed with any spaces.\nThis allows you to have a footnote with multiple lines. <a href=\"#fnref-2\">↩</a></p>\n</li>\n<li id=\"fn-note\">\n<p>Named footnotes will still render with numbers instead of the text but allow easier identification and linking.\nThis footnote also has been made with a different syntax using 4 spaces for new lines. <a href=\"#fnref-note\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 1,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "[^first]: note 1\n> [^second]: note 2\n>\n> foo[^second][^first].",
+    "html": "<blockquote>\n<p>foo<sup><a href=\"#fn-second\" id=\"fnref-second\">1</a></sup><sup><a href=\"#fn-first\" id=\"fnref-first\">2</a></sup>.</p>\n</blockquote>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-second\">\n<p>note 2 <a href=\"#fnref-second\">↩</a></p>\n</li>\n<li id=\"fn-first\">\n<p>note 1 <a href=\"#fnref-first\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 2,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "normalize: [^ẞ]\n\n[^SS]: first\n[^ss]: second",
+    "html": "<p>normalize: <sup><a href=\"#fn-SS\" id=\"fnref-SS\">1</a></sup></p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-SS\">\n<p>first <a href=\"#fnref-SS\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 3,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo[^1] and bar[^1].\n\n[^1]: note",
+    "html": "<p>foo<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> and bar<sup><a href=\"#fn-1\" id=\"fnref-1-1\">1</a></sup>.</p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>note <a href=\"#fnref-1\">↩</a> <a href=\"#fnref-1-1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 4,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "note[^1][^2].\n\n[^1]: line1\nline1-2\n\n    line2\n  line2-2\n\n    line3\n\n        code\n    line4\n\n  line5\n  [^2]:\n        code\n",
+    "html": "<p>note<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup><sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup>.</p>\n<p>line5</p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>line1\nline1-2</p>\n<p>line2\nline2-2</p>\n<p>line3</p>\n<pre><code>code\n</code></pre>\n<p>line4 <a href=\"#fnref-1\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<pre><code>code\n</code></pre>\n<p><a href=\"#fnref-2\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 5,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo [^1][link] [link][^1] [[^1]][link].\n\n[^1]: note\n\n[link]:/url",
+    "html": "<p>foo <a href=\"/url\">^1</a> [link]<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> <a href=\"/url\"><sup><a href=\"#fn-1\" id=\"fnref-1-1\">1</a></sup></a>.</p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>note <a href=\"#fnref-1\">↩</a> <a href=\"#fnref-1-1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 6,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo [link] [^1][^2].\n\n[^1]: [link]: /url\nnote1[^1][^2]\n    [^2]: note2\n\n    note1-end",
+    "html": "<p>foo <a href=\"/url\">link</a> <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup><sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup>.</p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>note1<sup><a href=\"#fn-1\" id=\"fnref-1-1\">1</a></sup><sup><a href=\"#fn-2\" id=\"fnref-2-1\">2</a></sup></p>\n<p>note1-end <a href=\"#fnref-1\">↩</a> <a href=\"#fnref-1-1\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<p>note2 <a href=\"#fnref-2\">↩</a> <a href=\"#fnref-2-1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 7,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo [^1]\n\n[^1]:",
+    "html": "<p>foo <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p><a href=\"#fnref-1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 8,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo [^1][^2]\n\n[^1]: paragraph\n[^2]: > block",
+    "html": "<p>foo <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup><sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup></p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>paragraph <a href=\"#fnref-1\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<blockquote>\n<p>block</p>\n</blockquote>\n<p><a href=\"#fnref-2\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 9,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "foo[^中文&<tag>]\n\n[^中文&<tag>]: note",
+    "html": "<p>foo<sup><a href=\"#fn-%E4%B8%AD%E6%96%87&%3Ctag%3E\" id=\"fnref-%E4%B8%AD%E6%96%87&%3Ctag%3E\">1</a></sup></p>\n<section id=\"footnotes\">\n<ol>\n<li id=\"fn-%E4%B8%AD%E6%96%87&%3Ctag%3E\">\n<p>note <a href=\"#fnref-%E4%B8%AD%E6%96%87&%3Ctag%3E\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 10,
+    "section": "Footnotes"
+  },
+  {
+    "markdown": "[^1]:note1 [^1]\n[^2]:note2 [^3]\n[^3]:note3 [^2]",
+    "html": "<section id=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p>note1 <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> <a href=\"#fnref-1\">↩</a></p>\n</li>\n<li id=\"fn-3\">\n<p>note3 <sup><a href=\"#fn-2\" id=\"fnref-2\">3</a></sup> <a href=\"#fnref-3\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<p>note2 <sup><a href=\"#fn-3\" id=\"fnref-3\">2</a></sup> <a href=\"#fnref-2\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "example": 11,
+    "section": "Footnotes"
+  }
+]

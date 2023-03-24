@@ -159,6 +159,15 @@ public abstract class SyntaxVisitor
 		DefaultVisit(node);
 	}
 
+	/// <summary>
+	/// 访问指定的脚注节点。
+	/// </summary>
+	/// <param name="node">要访问的脚注节点。</param>
+	public virtual void VisitFootnote(Footnote node)
+	{
+		DefaultVisit(node);
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点
@@ -240,6 +249,15 @@ public abstract class SyntaxVisitor
 	/// </summary>
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	public virtual void VisitMathSpan(MathSpan node)
+	{
+		DefaultVisit(node);
+	}
+
+	/// <summary>
+	/// 访问指定的脚注引用节点。
+	/// </summary>
+	/// <param name="node">要访问的脚注引用节点。</param>
+	public virtual void VisitFootnoteRef(FootnoteRef node)
 	{
 		DefaultVisit(node);
 	}

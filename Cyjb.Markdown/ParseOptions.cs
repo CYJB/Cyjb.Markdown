@@ -1,3 +1,5 @@
+using Cyjb.Markdown.Syntax;
+
 namespace Cyjb.Markdown;
 
 /// <summary>
@@ -28,6 +30,7 @@ public readonly struct ParseOptions
 		UseLinkAttributes = false,
 		UseAutoIdentifier = false,
 		UseHeaderReferences = false,
+		UseFootnotes = false,
 	};
 
 	/// <summary>
@@ -105,4 +108,9 @@ public readonly struct ParseOptions
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/header-references.md"/>
 	public bool UseHeaderReferences { get; init; } = true;
+	/// <summary>
+	/// 是否支持脚注，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/footnotes.md"/>
+	public bool UseFootnotes { get; init; } = true;
 }

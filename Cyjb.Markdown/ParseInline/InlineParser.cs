@@ -18,6 +18,10 @@ internal sealed class InlineParser
 	/// </summary>
 	private readonly IReadOnlyDictionary<string, LinkDefinition> linkDefines;
 	/// <summary>
+	/// 脚注定义。
+	/// </summary>
+	private readonly IReadOnlyDictionary<string, Footnote> footnotes;
+	/// <summary>
 	/// 解析选项。
 	/// </summary>
 	private readonly ParseOptions options;
@@ -32,7 +36,7 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 要添加到的行级节点列表。
 	/// </summary>
-	private IList<InlineNode> children = Array.Empty<InlineNode>();
+	private NodeList<InlineNode> children;
 	/// <summary>
 	/// 分隔符链表。
 	/// </summary>
@@ -52,11 +56,14 @@ internal sealed class InlineParser
 	/// 使用指定的解析选项初始化 <see cref="InlineParser"/> 类的新实例。
 	/// </summary>
 	/// <param name="linkDefines">链接定义。</param>
+	/// <param name="footnotes">脚注定义。</param>
 	/// <param name="options">解析的选项。</param>
 	internal InlineParser(IReadOnlyDictionary<string, LinkDefinition> linkDefines,
+		IReadOnlyDictionary<string, Footnote> footnotes,
 		ParseOptions options)
 	{
 		this.linkDefines = linkDefines;
+		this.footnotes = footnotes;
 		this.options = options;
 	}
 
@@ -76,7 +83,7 @@ internal sealed class InlineParser
 	/// </summary>
 	/// <param name="texts">要解析的文本列表。</param>
 	/// <param name="children">子节点列表。</param>
-	public void Parse(IEnumerable<MappedText> texts, IList<InlineNode> children)
+	public void Parse(IEnumerable<MappedText> texts, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
 		reader = new SourceReader(TextReaderUtil.Combine(
@@ -201,6 +208,15 @@ internal sealed class InlineParser
 			// 包含链接标签。
 			link = new Link(opener.IsImage, linkDefine, span);
 		}
+		else if (TryParseFootnote(opener, out Footnote? footnote))
+		{
+			FootnoteRef footnoteRef = new(footnote, span);
+			// 移除起始括号以及之后的所有内容。
+			children.RemoveRange(opener.Node, null);
+			children.Add(footnoteRef);
+			PopBracket();
+			return true;
+		}
 		else if (!opener.BracketAfter && reader.Peek() != '[' &&
 			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(reader.Index - 1)!), out LinkDefinition? linkDefine2))
 		{
@@ -237,6 +253,27 @@ internal sealed class InlineParser
 		}
 		PopBracket();
 		return true;
+	}
+
+	/// <summary>
+	/// 尝试解析脚注。
+	/// </summary>
+	/// <param name="opener">起始中括号。</param>
+	/// <param name="footnote">解析得到的脚注。</param>
+	/// <returns>如果成功解析脚注，则为 <c>true</c>；否则为 <c>false</c>。</returns>
+	private bool TryParseFootnote(BracketInfo opener, [MaybeNullWhen(false)] out Footnote footnote)
+	{
+		footnote = null;
+		if (opener.BracketAfter || footnotes.Count == 0)
+		{
+			return false;
+		}
+		string label = GetCurrentLinkText(reader.Index - 1)!;
+		if (!MarkdownUtil.IsFootnotesLabel(label))
+		{
+			return false;
+		}
+		return footnotes.TryGetValue(LinkUtil.NormalizeLabel(label.AsSpan(1)), out footnote);
 	}
 
 	/// <summary>

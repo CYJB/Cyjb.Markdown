@@ -9,7 +9,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// Setext 标题的解析器。
 /// </summary>
-internal sealed class SetextHeadingProcessor : BlockProcessor, IHeadingProcessor
+internal sealed class SetextHeadingProcessor : BlockProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -63,9 +63,12 @@ internal sealed class SetextHeadingProcessor : BlockProcessor, IHeadingProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
+		string label = LinkUtil.NormalizeLabel(string.Join("", text.Select(text => text.ToString())));
+		HeadingUtils.ProcessHeading(parser, heading, label);
 		heading.Span = new TextSpan(heading.Span.Start, end);
 		return heading;
 	}
@@ -77,15 +80,6 @@ internal sealed class SetextHeadingProcessor : BlockProcessor, IHeadingProcessor
 	public override void ParseInline(InlineParser parser)
 	{
 		parser.Parse(text, heading.Children);
-	}
-
-	/// <summary>
-	/// 返回标题的链接标签。
-	/// </summary>
-	/// <returns>当前标题的链接标签。</returns>
-	public string GetIdentifier()
-	{
-		return LinkUtil.NormalizeLabel(string.Join("", text.Select(text => text.ToString())));
 	}
 
 	/// <summary>

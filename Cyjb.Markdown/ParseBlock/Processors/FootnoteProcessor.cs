@@ -4,9 +4,9 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.ParseBlock;
 
 /// <summary>
-/// 块引用的解析器。
+/// 脚注的解析器。
 /// </summary>
-internal sealed class BlockquoteProcessor : BlockProcessor
+internal class FootnoteProcessor : BlockProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -14,17 +14,25 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	public static readonly IBlockFactory Factory = new BlockFactory();
 
 	/// <summary>
-	/// 块引用节点。
+	/// 脚注节点。
 	/// </summary>
-	private readonly Blockquote blockquote;
+	private readonly Footnote footnote;
+	/// <summary>
+	/// 结束索引。
+	/// </summary>
+	private int end;
 
 	/// <summary>
-	/// 使用块引用的起始位置初始化 <see cref="BlockquoteProcessor"/> 类的新实例。
+	/// 初始化 <see cref="FootnoteProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">块引用的起始位置。</param>
-	private BlockquoteProcessor(int start) : base(MarkdownKind.Blockquote)
+	/// <param name="start">脚注的起始位置。</param>
+	/// <param name="end">脚注的结束位置。</param>
+	/// <param name="label">脚注的标签。</param>
+	private FootnoteProcessor(int start, int end, string label)
+		: base(MarkdownKind.Footnote)
 	{
-		blockquote = new Blockquote(new TextSpan(start, start));
+		footnote = new Footnote(label, new TextSpan(start, end));
+		this.end = end;
 	}
 
 	/// <summary>
@@ -39,7 +47,17 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
 	public override BlockContinue TryContinue(LineInfo line)
 	{
-		return CheckQuoteStart(line) ? BlockContinue.Continue : BlockContinue.None;
+		if (line.IsCodeIndent || line.IsBlank)
+		{
+			// 缩进会被认为是脚注的一部分，这时要吃掉 4 个缩进。
+			// 空白行也是脚注的一部分。
+			line.SkipIndent(LineInfo.CodeIndent);
+			return BlockContinue.Continue;
+		}
+		else
+		{
+			return BlockContinue.None;
+		}
 	}
 
 	/// <summary>
@@ -58,7 +76,8 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	/// <param name="node">要添加的节点。</param>
 	public override void AddNode(Node node)
 	{
-		blockquote.Children.Add((BlockNode)node);
+		footnote.Children.Add((BlockNode)node);
+		end = node.Span.End;
 	}
 
 	/// <summary>
@@ -69,31 +88,13 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		blockquote.Span = blockquote.Span with
+		parser.Footnotes.TryAdd(footnote.Identifier, footnote);
+		// 这里忽略空行的位置。
+		footnote.Span = footnote.Span with
 		{
-			End = end,
+			End = this.end,
 		};
-		return blockquote;
-	}
-
-	/// <summary>
-	/// 检查块引用起始标记。
-	/// </summary>
-	/// <param name="line">要检查的行。</param>
-	/// <returns>如果找到了块引用起始标记，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	private static bool CheckQuoteStart(LineInfo line)
-	{
-		if (line.IsCodeIndent || line.Peek().Kind != BlockKind.QuoteStart)
-		{
-			return false;
-		}
-		else
-		{
-			line.Read();
-			// > 之后允许跳过一个空格。
-			line.SkipIndent(1);
-			return true;
-		}
+		return footnote;
 	}
 
 	/// <summary>
@@ -109,11 +110,19 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
 		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
 		{
-			int start = line.Peek().Span.Start;
-			if (CheckQuoteStart(line))
+			if (line.IsCodeIndent)
 			{
-				yield return new BlockquoteProcessor(start);
+				yield break;
 			}
+			Token<BlockKind> token = line.Read();
+			// 跳过之后的空白。
+			line.SkipIndent();
+			// 如果达到了行尾，那么消费整行，确保在空脚注时能够拿到正确的结束位置。
+			if (line.IsBlank)
+			{
+				line.Skip();
+			}
+			yield return new FootnoteProcessor(token.Span.Start, line.Start, (string)token.Value!);
 		}
 	}
 }

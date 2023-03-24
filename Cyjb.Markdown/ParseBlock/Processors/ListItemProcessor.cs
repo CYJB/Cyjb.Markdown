@@ -130,8 +130,9 @@ internal sealed class ListItemProcessor : BlockProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override Node? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		// 优先使用列表项内容的结束位置。
 		// 这样能够忽略未被添加到列表项内的空行位置。

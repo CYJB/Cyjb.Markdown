@@ -24,11 +24,6 @@ internal sealed class DocumentProcessor : BlockProcessor
 	public override bool IsContainer => true;
 
 	/// <summary>
-	/// 获取是否可以延迟延伸。
-	/// </summary>
-	public override bool CanLazyContinuation => false;
-
-	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
@@ -61,8 +56,9 @@ internal sealed class DocumentProcessor : BlockProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override Node? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		return null;
 	}

@@ -1,3 +1,4 @@
+using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;

@@ -84,8 +84,9 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// 关闭当前处理器的节点。
 	/// </summary>
 	/// <param name="end">行的结束位置。</param>
+	/// <param name="parser">块解析器。</param>
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
-	public override BlockNode? CloseNode(int end)
+	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		return new HtmlBlock(builder.ToString(), new TextSpan(start, end));
 	}
