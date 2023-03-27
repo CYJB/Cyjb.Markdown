@@ -13,6 +13,16 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
+	/// <summary>
+	/// 数学公式的信息。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private string? info;
+	/// <summary>
+	/// 数学公式的属性。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private readonly HtmlAttributeList attributes = new();
 
 	/// <summary>
 	/// 使用指定的数学公式内容和文本范围初始化 <see cref="MathBlock"/> 类的新实例。
@@ -26,9 +36,28 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 	}
 
 	/// <summary>
-	/// 获取或设置数学公式的额外信息。
+	/// 获取或设置数学公式的信息。
 	/// </summary>
-	public string? Info { get; set; }
+	public string? Info
+	{
+		get => info;
+		set
+		{
+			if (value.IsNullOrWhiteSpace())
+			{
+				info = null;
+			}
+			else
+			{
+				info = value.Trim();
+			}
+		}
+	}
+
+	/// <summary>
+	/// 获取数学公式的属性列表。
+	/// </summary>
+	public HtmlAttributeList Attributes => attributes;
 
 	/// <summary>
 	/// 获取或设置数学公式的内容。

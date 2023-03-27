@@ -69,6 +69,14 @@ internal enum BlockKind
 	/// 脚注的起始。
 	/// </summary>
 	FootnoteStart,
+	/// <summary>
+	/// 自定义容器分隔符。
+	/// </summary>
+	CustomContainerFence,
+	/// <summary>
+	/// 自定义容器分隔符的起始。
+	/// </summary>
+	CustomContainerFenceStart,
 
 	/// <summary>
 	/// 块级节点。

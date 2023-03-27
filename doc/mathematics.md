@@ -594,3 +594,20 @@ $$
 <div class="math">\[$$ aaa
 \]</div>
 ```
+
+数学公式块同样支持自定义属性。
+
+<a id="example-44" href="#example-44">示例 44</a>
+
+```markdown
+$$ {
+  #my-id .class2
+  key=value
+}
+foo
+$$
+```
+```html
+<div class="math class2" id="my-id" key="value">\[foo
+\]</div>
+```

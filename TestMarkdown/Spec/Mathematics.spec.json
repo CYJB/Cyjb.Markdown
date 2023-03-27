@@ -256,5 +256,11 @@
     "html": "<div class=\"math\">\\[$$ aaa\n\\]</div>\n",
     "example": 43,
     "section": "Mathematics"
+  },
+  {
+    "markdown": "$$ {\n  #my-id .class2\n  key=value\n}\nfoo\n$$\n",
+    "html": "<div class=\"math class2\" id=\"my-id\" key=\"value\">\\[foo\n\\]</div>\n",
+    "example": 44,
+    "section": "Mathematics"
   }
 ]

@@ -1,5 +1,4 @@
 using System;
-using Cyjb.Markdown;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -348,13 +347,22 @@ public abstract partial class BaseTest
 	/// <param name="span">节点的文本范围。</param>
 	/// <param name="content">数学公式块的内容。</param>
 	/// <param name="info">数学公式块的其它信息。</param>
-	protected void MathBlock(TextSpan span, string content, string? info = null)
+	/// <param name="attrs">数学公式块的属性。</param>
+	protected void MathBlock(TextSpan span, string content, string? info = null, HtmlAttributeList? attrs = null)
 	{
 		Node node = Next();
 		Assert.AreEqual(MarkdownKind.MathBlock, node.Kind);
 		Assert.AreEqual(span, node.Span);
 
 		MathBlock math = (MathBlock)node!;
+		if (attrs == null)
+		{
+			Assert.AreEqual(0, math.Attributes.Count);
+		}
+		else
+		{
+			CollectionAssert.AreEquivalent(attrs, math.Attributes);
+		}
 		Assert.AreEqual(content, math.Content);
 		Assert.AreEqual(info, math.Info);
 	}
@@ -380,6 +388,43 @@ public abstract partial class BaseTest
 		else
 		{
 			AssertChildren(node, footnote.Children, validator);
+		}
+	}
+
+	/// <summary>
+	/// 验证是自定义容器。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="info">自定义容器的信息。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void CustomContainer(TextSpan span, string? info = null, Action? validator = null)
+	{
+		CustomContainer(span, info, new HtmlAttributeList(), validator);
+	}
+
+	/// <summary>
+	/// 验证是自定义容器。
+	/// </summary>
+	/// <param name="span">预期的文本范围。</param>
+	/// <param name="info">自定义容器的信息。</param>
+	/// <param name="attrs">自定义容器的属性。</param>
+	/// <param name="validator">子节点验证器。</param>
+	protected void CustomContainer(TextSpan span, string? info, HtmlAttributeList attrs, Action? validator = null)
+	{
+		Node node = Next();
+		Assert.AreEqual(MarkdownKind.CustomContainer, node.Kind);
+		Assert.AreEqual(span, node.Span);
+
+		CustomContainer container = (CustomContainer)node!;
+		Assert.AreEqual(info, container.Info);
+		CollectionAssert.AreEquivalent(attrs, container.Attributes);
+		if (validator == null)
+		{
+			Assert.AreEqual(0, container.Children.Count);
+		}
+		else
+		{
+			AssertChildren(node, container.Children, validator);
 		}
 	}
 }

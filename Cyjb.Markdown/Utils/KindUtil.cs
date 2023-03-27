@@ -1,3 +1,5 @@
+using Cyjb.Markdown.Syntax;
+
 namespace Cyjb.Markdown.Utils;
 
 /// <summary>

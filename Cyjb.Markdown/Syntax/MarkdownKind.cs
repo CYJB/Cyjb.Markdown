@@ -1,4 +1,4 @@
-namespace Cyjb.Markdown;
+namespace Cyjb.Markdown.Syntax;
 
 /// <summary>
 /// 表示 Markdown 的节点类型。
@@ -66,6 +66,10 @@ public enum MarkdownKind
 	/// 脚注。
 	/// </summary>
 	Footnote,
+	/// <summary>
+	/// 自定义容器。
+	/// </summary>
+	CustomContainer,
 
 	/// <summary>
 	/// 行内代码段。

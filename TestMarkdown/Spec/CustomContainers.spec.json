@@ -1,0 +1,122 @@
+[
+  {
+    "markdown": ":::\nfoo *bar*\n\nbaz\n:::\n",
+    "html": "<div>\n<p>foo <em>bar</em></p>\n<p>baz</p>\n</div>\n",
+    "example": 1,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "::\nfoo\n::\n",
+    "html": "<p>::\nfoo\n::</p>\n",
+    "example": 2,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "::::: type-1\nfoo\n:::\nbar\n:::\nbaz\n:::::\n\n:::\nfoo\n::::::: type-2\nbar\n:::::::\nbaz\n",
+    "html": "<div class=\"type-1\">\n<p>foo</p>\n<div>\n<p>bar</p>\n</div>\n<p>baz</p>\n</div>\n<div>\n<p>foo</p>\n<div class=\"type-2\">\n<p>bar</p>\n</div>\n</div>\n<p>baz</p>\n",
+    "example": 3,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::\n",
+    "html": "<div>\n</div>\n",
+    "example": 4,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::::\n\n:::\nfoo\n",
+    "html": "<div>\n<div>\n<p>foo</p>\n</div>\n</div>\n",
+    "example": 5,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "> :::::\n> foo\n:::\nbar\n",
+    "html": "<blockquote>\n<div>\n<p>foo</p>\n</div>\n</blockquote>\n<div>\n<p>bar</p>\n</div>\n",
+    "example": 6,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::\n\n  \n:::\n",
+    "html": "<div>\n</div>\n",
+    "example": 7,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::\n:::\n",
+    "html": "<div>\n</div>\n",
+    "example": 8,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "   :::\n    code\n:::\n",
+    "html": "<div>\n<pre><code>code\n</code></pre>\n</div>\n",
+    "example": 9,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "    :::\nfoo\n:::\n",
+    "html": "<pre><code>:::\n</code></pre>\n<p>foo</p>\n<div>\n</div>\n",
+    "example": 10,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": " :::\nfoo\n  :::\n",
+    "html": "<div>\n<p>foo</p>\n</div>\n",
+    "example": 11,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::\nfoo\n    :::\n",
+    "html": "<div>\n<p>foo\n:::</p>\n</div>\n",
+    "example": 12,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "::::::\nfoo\n::: :::\n",
+    "html": "<div>\n<p>foo</p>\n<div class=\":::\">\n</div>\n</div>\n",
+    "example": 13,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "foo\n:::\nbar\n:::\nbaz\n",
+    "html": "<p>foo</p>\n<div>\n<p>bar</p>\n</div>\n<p>baz</p>\n",
+    "example": 14,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "foo\n---\n:::\nbar\n:::\n# baz\n",
+    "html": "<h2>foo</h2>\n<div>\n<p>bar</p>\n</div>\n<h1>baz</h1>\n",
+    "example": 15,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::detail\nfoo\n:::\n",
+    "html": "<div class=\"detail\">\n<p>foo</p>\n</div>\n",
+    "example": 16,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "::: detail other info $%@:#$ \nfoo\n:::\n",
+    "html": "<div class=\"detail\">\n<p>foo</p>\n</div>\n",
+    "example": 17,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": ":::\nfoo\n::: detail\n",
+    "html": "<div>\n<p>foo</p>\n<div class=\"detail\">\n</div>\n</div>\n",
+    "example": 18,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "::: detail {\n  #my-id .class2\n  key=value\n}\nfoo\n:::\n",
+    "html": "<div class=\"detail class2\" id=\"my-id\" key=\"value\">\n<p>foo</p>\n</div>\n",
+    "example": 19,
+    "section": "CustomContainers"
+  },
+  {
+    "markdown": "- list1\n  ::: detail\n  - foo\n  > bar\n  :::\n- list2\n",
+    "html": "<ul>\n<li>list1\n<div class=\"detail\">\n<ul>\n<li>foo</li>\n</ul>\n<blockquote>\n<p>bar</p>\n</blockquote>\n</div>\n</li>\n<li>list2</li>\n</ul>\n",
+    "example": 20,
+    "section": "CustomContainers"
+  }
+]

@@ -662,13 +662,30 @@ public partial class UnitTestMath : BaseTest
 	/// <summary>
 	/// 结束分隔符不能包含信息字符串。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md#example-42"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md#example-43"/>
 	[TestMethod]
 	public void Test43()
 	{
 		AssertMarkdown("$$\r\n$$ aaa\r\n$$\r\n", () =>
 		{
 			MathBlock(0..16, "$$ aaa\r\n");
+		});
+	}
+	/// <summary>
+	/// 数学公式块同样支持自定义属性。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md#example-44"/>
+	[TestMethod]
+	public void Test44()
+	{
+		AssertMarkdown("$$ {\r\n  #my-id .class2\r\n  key=value\r\n}\r\nfoo\r\n$$\r\n", () =>
+		{
+			MathBlock(0..49, "foo\r\n", null, new HtmlAttributeList()
+			{
+				{ "id", "my-id" },
+				{ "class", "class2" },
+				{ "key", "value" },
+			});
 		});
 	}
 	/// <summary>

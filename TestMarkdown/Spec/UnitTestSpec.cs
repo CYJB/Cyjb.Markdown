@@ -147,6 +147,17 @@ public class UnitTestRender
 	}
 
 	/// <summary>
+	/// 测试自定义容器规范。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/custom-containers.md"/>
+	[TestMethod]
+	public void TestCustomContainers()
+	{
+		SpecItem[] items = ReadSpec("CustomContainers.spec.json");
+		TestRender(items, new ParseOptions() { UseAutoIdentifier = false });
+	}
+
+	/// <summary>
 	/// 读取指定的规范。
 	/// </summary>
 	/// <param name="name">规范的名称。</param>

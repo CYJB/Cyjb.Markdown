@@ -330,6 +330,26 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	}
 
 	/// <summary>
+	/// 带有额外属性的数学公式分隔符起始。
+	/// </summary>
+	[LexerSymbol(@"\${2,}[^$\r\n]+{ExtAttr}$", Kind = BlockKind.MathFenceStart)]
+	private void MathFenceStartWithAttributesAction()
+	{
+		if (Options.UseMath && Options.UseMathAttributes)
+		{
+			ReadOnlySpan<char> text = Text;
+			HtmlAttributeList attrs = new();
+			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
+			{
+				Text = text.ToString();
+				Accept(attrs);
+				return;
+			}
+		}
+		Reject(RejectOptions.State);
+	}
+
+	/// <summary>
 	/// 脚注起始的动作。
 	/// </summary>
 	[LexerSymbol(@"\[^([^ \t\r\n\[\]]|\\.)+\]:", Kind = BlockKind.FootnoteStart, UseShortest = true)]
@@ -343,6 +363,43 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		{
 			Reject(RejectOptions.State);
 		}
+	}
+
+	/// <summary>
+	/// 自定义容器分隔符的动作。
+	/// </summary>
+	[LexerSymbol(@"\:{3,}{WS_O}$", Kind = BlockKind.CustomContainerFence)]
+	[LexerSymbol(@"\:{3,}.+$", Kind = BlockKind.CustomContainerFenceStart)]
+	private void CustomContainerFenceAction()
+	{
+		if (Options.UseCustomContainers)
+		{
+			Accept();
+		}
+		else
+		{
+			Reject(RejectOptions.State);
+		}
+	}
+
+	/// <summary>
+	/// 带有额外属性的自定义容器分隔符起始。
+	/// </summary>
+	[LexerSymbol(@":{3,}.+{ExtAttr}$", Kind = BlockKind.CustomContainerFenceStart)]
+	private void CustomContainerFenceStartWithAttributesAction()
+	{
+		if (Options.UseCustomContainers && Options.UseCustomContainerAttributes)
+		{
+			ReadOnlySpan<char> text = Text;
+			HtmlAttributeList attrs = new();
+			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
+			{
+				Text = text.ToString();
+				Accept(attrs);
+				return;
+			}
+		}
+		Reject(RejectOptions.State);
 	}
 
 	/// <summary>

@@ -14,6 +14,11 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 	private string content;
 	/// <summary>
+	/// 代码块的信息。
+	/// </summary>
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	private string? info;
+	/// <summary>
 	/// 代码块的属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -31,9 +36,23 @@ public sealed class CodeBlock : BlockNode, IEquatable<CodeBlock>
 	}
 
 	/// <summary>
-	/// 获取或设置代码的额外信息。
+	/// 获取或设置代码的信息。
 	/// </summary>
-	public string? Info { get; set; }
+	public string? Info
+	{
+		get => info;
+		set
+		{
+			if (value.IsNullOrWhiteSpace())
+			{
+				info = null;
+			}
+			else
+			{
+				info = value.Trim();
+			}
+		}
+	}
 
 	/// <summary>
 	/// 获取代码块的属性列表。

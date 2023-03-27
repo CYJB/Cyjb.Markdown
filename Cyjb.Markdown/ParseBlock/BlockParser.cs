@@ -34,6 +34,8 @@ internal sealed class BlockParser
 			SetextHeadingProcessor.Factory, ThematicBreakProcessor.Factory } },
 		{ BlockKind.TableDelimiterRow, new IBlockFactory[] { TableProcessor.Factory } },
 		{ BlockKind.FootnoteStart, new IBlockFactory[] { FootnoteProcessor.Factory } },
+		{ BlockKind.CustomContainerFence, new IBlockFactory[] { CustomContainerProcessor.Factory } },
+		{ BlockKind.CustomContainerFenceStart, new IBlockFactory[] { CustomContainerProcessor.Factory } },
 	};
 
 	/// <summary>
@@ -209,8 +211,10 @@ internal sealed class BlockParser
 			}
 			else if (result == BlockContinue.Closed)
 			{
-				// 关闭当前节点。
-				CloseProcessor(openedProcessors[i + 1], line.End);
+				// 在当前行之前关闭子节点
+				CloseProcessor(openedProcessors[i], lineStart);
+				// 在当前行之后关闭当前节点。
+				CloseLastProcessor(line.End);
 				return;
 			}
 		}

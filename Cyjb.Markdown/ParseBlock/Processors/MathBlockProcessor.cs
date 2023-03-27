@@ -20,9 +20,9 @@ internal class MathBlockProcessor : BlockProcessor
 	/// </summary>
 	private readonly StringBuilder builder = new();
 	/// <summary>
-	/// 数学公式块的起始位置。
+	/// 数学公式节点。
 	/// </summary>
-	private readonly int start;
+	private readonly MathBlock math;
 	/// <summary>
 	/// 数学公式块的分割符长度。
 	/// </summary>
@@ -31,10 +31,6 @@ internal class MathBlockProcessor : BlockProcessor
 	/// 数学公式块的缩进。
 	/// </summary>
 	private readonly int indent;
-	/// <summary>
-	/// 数学公式块的信息。
-	/// </summary>
-	private readonly string? info;
 
 	/// <summary>
 	/// 初始化 <see cref="MathBlockProcessor"/> 类的新实例。
@@ -43,13 +39,20 @@ internal class MathBlockProcessor : BlockProcessor
 	/// <param name="fenceLength">数学公式块的分隔符长度。</param>
 	/// <param name="indent">数学公式块的缩进。</param>
 	/// <param name="info">数学公式块的信息。</param>
-	private MathBlockProcessor(int start, int fenceLength, int indent, string? info)
+	/// <param name="attrs">数学公式块的属性。</param>
+	private MathBlockProcessor(int start, int fenceLength, int indent, string? info, HtmlAttributeList? attrs)
 		: base(MarkdownKind.MathBlock)
 	{
-		this.start = start;
 		this.fenceLength = fenceLength;
 		this.indent = indent;
-		this.info = info;
+		math = new MathBlock(string.Empty, new TextSpan(start, start))
+		{
+			Info = info
+		};
+		if (attrs != null)
+		{
+			math.Attributes.AddRange(attrs);
+		}
 	}
 
 	/// <summary>
@@ -63,7 +66,7 @@ internal class MathBlockProcessor : BlockProcessor
 		{
 			Token<BlockKind> token = line.Peek();
 			if (token.Kind == BlockKind.MathFence &&
-				GetFenceLength(token.Text) >= fenceLength)
+				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}
@@ -90,30 +93,9 @@ internal class MathBlockProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		return new MathBlock(builder.ToString(), new TextSpan(start, end))
-		{
-			Info = info
-		};
-	}
-
-	/// <summary>
-	/// 返回分隔符的长度。
-	/// </summary>
-	/// <param name="text">要检查的字符串。</param>
-	/// <returns>分隔符的长度。</returns>
-	private static int GetFenceLength(string text)
-	{
-		char fence = text[0];
-		// 在词法分析中已确保分隔符长度至少为 2。
-		int i = 2;
-		for (; i < text.Length; i++)
-		{
-			if (text[i] != fence)
-			{
-				return i;
-			}
-		}
-		return i;
+		math.Span = math.Span with { End = end };
+		math.Content = builder.ToString();
+		return math;
 	}
 
 	/// <summary>
@@ -133,24 +115,9 @@ internal class MathBlockProcessor : BlockProcessor
 			{
 				yield break;
 			}
-			// 数学公式块的起始位置包含分隔符位置。
-			int start = line.Start;
-			// 跳过空白部分。
-			int indent = line.Indent;
-			line.SkipIndent();
-			// 解析数学公式块的信息。
-			Token<BlockKind> token = line.Peek();
-			int fenceLength = GetFenceLength(token.Text);
-			string? info = null;
-			if (token.Kind == BlockKind.MathFenceStart)
-			{
-				ReadOnlySpan<char> text = token.Text.AsSpan()[fenceLength..];
-				MarkdownUtil.Trim(ref text);
-				info = text.Unescape();
-			}
-			// 标记当前行已处理完毕。
-			line.Skip();
-			yield return new MathBlockProcessor(start, fenceLength, indent, info);
+			MarkdownUtil.ParseFenceStart(line, out int start, out int indent,
+				out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
+			yield return new MathBlockProcessor(start, fenceLength, indent, info, attrs);
 		}
 	}
 }

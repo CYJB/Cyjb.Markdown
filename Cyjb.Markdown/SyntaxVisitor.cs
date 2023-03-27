@@ -168,6 +168,15 @@ public abstract class SyntaxVisitor
 		DefaultVisit(node);
 	}
 
+	/// <summary>
+	/// 访问指定的自定义容器节点。
+	/// </summary>
+	/// <param name="node">要访问的自定义容器节点。</param>
+	public virtual void VisitCustomContainer(CustomContainer node)
+	{
+		DefaultVisit(node);
+	}
+
 	#endregion // 块节点
 
 	#region 行内节点

@@ -24,6 +24,7 @@ public readonly struct ParseOptions
 		UseTable = false,
 		UseEmoji = false,
 		UseMath = false,
+		UseMathAttributes = false,
 		UseExtAutolink = false,
 		UseHeaderAttributes = false,
 		UseCodeAttributes = false,
@@ -31,6 +32,8 @@ public readonly struct ParseOptions
 		UseAutoIdentifier = false,
 		UseHeaderReferences = false,
 		UseFootnotes = false,
+		UseCustomContainers = false,
+		UseCustomContainerAttributes = false,
 	};
 
 	/// <summary>
@@ -75,6 +78,11 @@ public readonly struct ParseOptions
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md"/>
 	public bool UseMath { get; init; } = true;
 	/// <summary>
+	/// 是否支持数学公式的属性，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md"/>
+	public bool UseMathAttributes { get; init; } = true;
+	/// <summary>
 	/// 是否支持扩展自动链接，默认为 <c>true</c>。
 	/// </summary>
 	/// <see href="https://docs.github.com/zh/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls#url"/>
@@ -113,4 +121,14 @@ public readonly struct ParseOptions
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/footnotes.md"/>
 	public bool UseFootnotes { get; init; } = true;
+	/// <summary>
+	/// 是否支持自定义容器，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/custom-containers.md"/>
+	public bool UseCustomContainers { get; init; } = true;
+	/// <summary>
+	/// 是否支持自定义容器的属性，默认为 <c>true</c>。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/custom-containers.md"/>
+	public bool UseCustomContainerAttributes { get; init; } = true;
 }

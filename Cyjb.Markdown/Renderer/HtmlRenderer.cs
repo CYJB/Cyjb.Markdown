@@ -93,19 +93,9 @@ public class HtmlRenderer : BaseRenderer
 	public override void VisitCodeBlock(CodeBlock node)
 	{
 		HtmlAttributeList attrs = new();
-		string? info = node.Info;
-		if (!info.IsNullOrEmpty())
+		string? lang = GetInfoFirstWord(node.Info);
+		if (lang != null)
 		{
-			int idx = info.IndexOf(" ");
-			string lang;
-			if (idx == -1)
-			{
-				lang = info;
-			}
-			else
-			{
-				lang = info[0..idx];
-			}
 			attrs.AddClass(CodeBlockLanguagePrefix + lang);
 		}
 		attrs.AddRange(node.Attributes);
@@ -346,10 +336,38 @@ public class HtmlRenderer : BaseRenderer
 	public override void VisitMathBlock(MathBlock node)
 	{
 		HtmlAttributeList attrs = new() { { "class", "math" } };
+		if (node.Attributes != null)
+		{
+			attrs.AddRange(node.Attributes);
+		}
 		WriteStartTag(node, "div", attrs);
 		Write("\\[");
 		Write(node.Content);
 		Write("\\]");
+		WriteEndTag("div");
+		WriteLine();
+	}
+
+	/// <summary>
+	/// 访问指定的自定义容器节点。
+	/// </summary>
+	/// <param name="node">要访问的自定义容器节点。</param>
+	public override void VisitCustomContainer(CustomContainer node)
+	{
+		HtmlAttributeList attrs = new();
+		string? type = GetInfoFirstWord(node.Info);
+		if (type != null)
+		{
+			attrs.AddClass(type);
+		}
+		if (node.Attributes != null)
+		{
+			attrs.AddRange(node.Attributes);
+		}
+		WriteLine();
+		WriteStartTag(node, "div", attrs);
+		WriteLine();
+		DefaultVisit(node);
 		WriteEndTag("div");
 		WriteLine();
 	}
@@ -487,8 +505,7 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	public override void VisitMathSpan(MathSpan node)
 	{
-		HtmlAttributeList attrs = new() { { "class", "math" } };
-		WriteStartTag(node, "span", attrs);
+		WriteStartTag(node, "span", new HtmlAttributeList() { { "class", "math" } });
 		Write("\\(");
 		Write(node.Content);
 		Write("\\)");
@@ -544,6 +561,28 @@ public class HtmlRenderer : BaseRenderer
 	}
 
 	#endregion // 行内节点
+
+	/// <summary>
+	/// 返回信息字符串的首个单词。
+	/// </summary>
+	/// <param name="info">信息字符串。</param>
+	/// <returns>信息字符串的首个单词，或者返回 <c>null</c> 如果不存在信息字符串。</returns>
+	private static string? GetInfoFirstWord(string? info)
+	{
+		if (info.IsNullOrEmpty())
+		{
+			return null;
+		}
+		int idx = info.IndexOf(" ");
+		if (idx < 0)
+		{
+			return info;
+		}
+		else
+		{
+			return info[0..idx];
+		}
+	}
 
 	/// <summary>
 	/// 写入脚注段。

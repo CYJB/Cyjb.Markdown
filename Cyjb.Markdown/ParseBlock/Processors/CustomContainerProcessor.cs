@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
@@ -6,9 +5,9 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.ParseBlock;
 
 /// <summary>
-/// 分隔符代码块的解析器。
+/// 自定义容器的解析器。
 /// </summary>
-internal class FencedCodeBlockProcessor : BlockProcessor
+internal class CustomContainerProcessor : BlockProcessor
 {
 	/// <summary>
 	/// 工厂实例。
@@ -16,51 +15,40 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	public static readonly IBlockFactory Factory = new BlockFactory();
 
 	/// <summary>
-	/// 代码的文本。
+	/// 自定义容器节点。
 	/// </summary>
-	private readonly StringBuilder builder = new();
-	/// <summary>
-	/// 代码块。
-	/// </summary>
-	private readonly CodeBlock code;
-	/// <summary>
-	/// 代码块的分割字符。
-	/// </summary>
-	private readonly char fence;
+	private readonly CustomContainer container;
 	/// <summary>
 	/// 代码块的分割符长度。
 	/// </summary>
 	private readonly int fenceLength;
-	/// <summary>
-	/// 代码块的缩进。
-	/// </summary>
-	private readonly int indent;
 
 	/// <summary>
-	/// 初始化 <see cref="FencedCodeBlockProcessor"/> 类的新实例。
+	/// 初始化 <see cref="CustomContainerProcessor"/> 类的新实例。
 	/// </summary>
 	/// <param name="start">代码块的起始索引。</param>
-	/// <param name="fence">代码块的分割字符。</param>
 	/// <param name="fenceLength">代码块的分隔符长度。</param>
-	/// <param name="indent">代码块的缩进。</param>
 	/// <param name="info">代码块的信息。</param>
 	/// <param name="attrs">代码块的属性。</param>
-	private FencedCodeBlockProcessor(int start,
-		char fence, int fenceLength, int indent, string? info, HtmlAttributeList? attrs)
+	private CustomContainerProcessor(int start, int fenceLength, string? info, HtmlAttributeList? attrs)
 		: base(MarkdownKind.CodeBlock)
 	{
-		this.fence = fence;
 		this.fenceLength = fenceLength;
-		this.indent = indent;
-		code = new CodeBlock(string.Empty, new TextSpan(start, start))
+		container = new CustomContainer(new TextSpan(start, start))
 		{
-			Info = info,
+			Info = info
 		};
 		if (attrs != null)
 		{
-			code.Attributes.AddRange(attrs);
+			container.Attributes.AddRange(attrs);
 		}
 	}
+
+
+	/// <summary>
+	/// 获取是否是容器节点。
+	/// </summary>
+	public override bool IsContainer => true;
 
 	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
@@ -72,24 +60,32 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 		if (!line.IsCodeIndent)
 		{
 			Token<BlockKind> token = line.Peek();
-			if (token.Kind == BlockKind.CodeFence && token.Text[0] == fence &&
+			if (token.Kind == BlockKind.CustomContainerFence &&
 				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}
 		}
-		// 允许跳过部分空白。
-		line.SkipIndent(indent);
 		return BlockContinue.Continue;
 	}
 
 	/// <summary>
-	/// 添加一个新行。
+	/// 返回当前节点是否可以包含指定类型的子节点。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public override void AddLine(MappedText text)
+	/// <param name="kind">要检查的节点类型。</param>
+	/// <returns>如果当前节点可以包含指定类型的子节点，则为 <c>true</c>；否则为 <c>false</c>。</returns>
+	public override bool CanContains(MarkdownKind kind)
 	{
-		builder.Append(text.ToString());
+		return true;
+	}
+
+	/// <summary>
+	/// 添加一个新节点。
+	/// </summary>
+	/// <param name="node">要添加的节点。</param>
+	public override void AddNode(Node node)
+	{
+		container.Children.Add((BlockNode)node);
 	}
 
 	/// <summary>
@@ -100,9 +96,8 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		code.Span = code.Span with { End = end };
-		code.Content = builder.ToString();
-		return code;
+		container.Span = container.Span with { End = end };
+		return container;
 	}
 
 	/// <summary>
@@ -122,9 +117,9 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 			{
 				yield break;
 			}
-			MarkdownUtil.ParseFenceStart(line, out int start, out int indent,
-				out char fenceChar, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
-			yield return new FencedCodeBlockProcessor(start, fenceChar, fenceLength, indent, info, attrs);
+			MarkdownUtil.ParseFenceStart(line, out int start, out int _,
+				out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
+			yield return new CustomContainerProcessor(start, fenceLength, info, attrs);
 		}
 	}
 }
