@@ -1,4 +1,4 @@
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
@@ -18,7 +18,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 代码的文本。
 	/// </summary>
-	private readonly StringBuilder builder = new();
+	private readonly PooledList<char> builder = new();
 	/// <summary>
 	/// 代码块。
 	/// </summary>
@@ -73,7 +73,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 		{
 			Token<BlockKind> token = line.Peek();
 			if (token.Kind == BlockKind.CodeFence && token.Text[0] == fence &&
-				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
+				MarkdownUtil.GetFenceLength(token.Text.AsSpan()) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}
@@ -89,7 +89,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// <param name="text">行的文本。</param>
 	public override void AddLine(MappedText text)
 	{
-		builder.Append(text.ToString());
+		text.AppendTo(builder);
 	}
 
 	/// <summary>
@@ -102,6 +102,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	{
 		code.Span = code.Span with { End = end };
 		code.Content = builder.ToString();
+		builder.Dispose();
 		return code;
 	}
 

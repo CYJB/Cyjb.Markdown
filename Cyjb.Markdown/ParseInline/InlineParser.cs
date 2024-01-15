@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Cyjb.IO;
+using Cyjb.Collections;
 using Cyjb.Markdown.ParseBlock;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -32,7 +32,7 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 行级词法分析器。
 	/// </summary>
-	private MappedTokenizer<InlineKind> tokenizer;
+	private ITokenizer<InlineKind> tokenizer;
 	/// <summary>
 	/// 要添加到的行级节点列表。
 	/// </summary>
@@ -49,6 +49,10 @@ internal sealed class InlineParser
 	/// 当前字面量文本的起始位置。
 	/// </summary>
 	private int literalStart;
+	/// <summary>
+	/// 位置映射关系。
+	/// </summary>
+	private LocationMap locationMap;
 
 #pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
 
@@ -86,19 +90,22 @@ internal sealed class InlineParser
 	public void Parse(IEnumerable<MappedText> texts, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
-		reader = new SourceReader(TextReaderUtil.Combine(
-			texts.Select(text => (Variant<TextReader, string>)text.ToString())));
-		// 将词法单元重新映射成源码位置。
-		tokenizer = new MappedTokenizer<InlineKind>(InlineLexer.Factory.CreateTokenizer(reader),
-			GetMap(texts))
+		ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+		foreach (MappedText text in texts)
 		{
-			SharedContext = this
-		};
+			text.AppendTo(ref list);
+		}
+		reader = new SourceReader(new StringReader(list.ToString()));
+		list.Dispose();
+		locationMap = new LocationMap(GetMaps(texts), LocationMapType.Offset);
+		// 将词法单元重新映射成源码位置。
+		tokenizer = InlineLexer.Factory.CreateTokenizer(reader);
+		tokenizer.SharedContext = this;
 		// 重置状态。
 		this.children = children;
 		delimiterInfo = null;
 		brackets.Clear();
-		literalStart = texts.First().Map[0].Item2;
+		literalStart = locationMap.MapLocation(0);
 		// 解析行级节点。
 		while (true)
 		{
@@ -111,27 +118,12 @@ internal sealed class InlineParser
 			switch (token.Kind)
 			{
 				case InlineKind.Node:
-					{
-						InlineNode node = (InlineNode)token.Value!;
-						// 词法分析器内部拿到的 Span 是映射前的，
-						// 这里的 token.Span 才是正确的映射后的范围。
-						node.Span = token.Span;
-						// 子节点也需要重新映射。
-						if (node is INodeContainer<InlineNode> container)
-						{
-							foreach (InlineNode subNode in container.Children)
-							{
-								subNode.Span = new TextSpan(tokenizer.MapLocation(subNode.Span.Start),
-								tokenizer.MapLocation(subNode.Span.End));
-							}
-						}
-						children.Add(node);
-					}
+					children.Add((InlineNode)token.Value!);
 					break;
 				case InlineKind.LinkStart:
 					{
 						bool isImage = (bool)token.Value!;
-						Literal node = new(token.Text, token.Span);
+						Literal node = new(token.Text.ToString(), token.Span);
 						children.Add(node);
 						if (brackets.Count > 0)
 						{
@@ -149,7 +141,7 @@ internal sealed class InlineParser
 					if (!ParseCloseBracket(token))
 					{
 						// 链接匹配失败，作为字面量字符添加。
-						children.Add(new Literal(token.Text, token.Span));
+						children.Add(new Literal(token.Text.ToString(), token.Span));
 					}
 					break;
 				case InlineKind.Delimiter:
@@ -171,6 +163,16 @@ internal sealed class InlineParser
 		}
 		ProcessDelimiter(null);
 		MergeText(children);
+	}
+
+	/// <summary>
+	/// 映射指定的文本范围。
+	/// </summary>
+	/// <param name="span">要映射的文本范围。</param>
+	/// <returns>映射后的文本范围。</returns>
+	internal TextSpan MapSpan(TextSpan span)
+	{
+		return new TextSpan(locationMap.MapLocation(span.Start), locationMap.MapLocation(span.End));
 	}
 
 	/// <summary>
@@ -460,7 +462,7 @@ internal sealed class InlineParser
 			return null;
 		}
 		BracketInfo info = brackets.Peek();
-		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
+		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index).ToString();
 	}
 
 	/// <summary>
@@ -468,16 +470,33 @@ internal sealed class InlineParser
 	/// </summary>
 	/// <param name="texts">文本序列。</param>
 	/// <returns>提取的映射信息。</returns>
-	private static IEnumerable<Tuple<int, int>> GetMap(IEnumerable<MappedText> texts)
+	private static IEnumerable<Tuple<int, int>> GetMaps(IEnumerable<MappedText> texts)
 	{
-		int start = 0;
+		int lastMappedIndex = 0;
 		foreach (MappedText text in texts)
 		{
-			foreach (Tuple<int, int> map in text.Map)
+			int length = text.Length;
+			int curLen = 0;
+			bool isFirst = true;
+			foreach (Tuple<int, int> map in text.Maps)
 			{
-				yield return new Tuple<int, int>(map.Item1 + start, map.Item2);
+				var(index, mappedIndex) = map;
+				curLen += index;
+				if (curLen >= length)
+				{
+					break;
+				}
+				if (isFirst)
+				{
+					mappedIndex -= lastMappedIndex;
+					isFirst = false;
+				}
+				yield return new Tuple<int, int>(index, mappedIndex);
+				lastMappedIndex += mappedIndex;
 			}
-			start += text.Length;
+			int restLen = length - curLen;
+			yield return new Tuple<int, int>(restLen, restLen);
+			lastMappedIndex += restLen;
 		}
 	}
 

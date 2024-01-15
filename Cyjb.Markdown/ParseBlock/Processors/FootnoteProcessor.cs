@@ -122,7 +122,7 @@ internal class FootnoteProcessor : BlockProcessor
 			{
 				line.Skip();
 			}
-			yield return new FootnoteProcessor(token.Span.Start, line.Start, (string)token.Value!);
+			yield return new FootnoteProcessor(token.Span.Start, line.Start, ((StringView)token.Value!).ToString());
 		}
 	}
 }

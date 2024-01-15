@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using Cyjb.Collections;
 
 namespace Cyjb.Markdown.Utils;
 
@@ -39,7 +40,9 @@ internal static class LinkUtil
 		{
 			return string.Empty;
 		}
-		StringBuilder text = new(label.Length);
+		using ValueList<char> text = label.Length <= ValueList.StackallocCharSizeLimit
+			? new ValueList<char>(stackalloc char[label.Length])
+			: new ValueList<char>(label.Length);
 		bool isWhitespace = false;
 		foreach (char ch in label)
 		{
@@ -49,13 +52,13 @@ internal static class LinkUtil
 				if (!isWhitespace)
 				{
 					isWhitespace = true;
-					text.Append(' ');
+					text.Add(' ');
 				}
 			}
 			else
 			{
 				isWhitespace = false;
-				text.Append(UnicodeCaseFolding.GetCaseFolding(ch));
+				text.Add(UnicodeCaseFolding.GetCaseFolding(ch));
 			}
 		}
 		return text.ToString();
@@ -68,6 +71,7 @@ internal static class LinkUtil
 	/// <returns>编码后的 URL。</returns>
 	public static string EncodeURL(string url)
 	{
+		// TODO: 改为非正则表达式实现。
 		return EncodeURLRegex.Replace(url, (Match match) =>
 		{
 			string value = match.Value;
@@ -75,7 +79,7 @@ internal static class LinkUtil
 			{
 				if (value.Length == 3)
 				{
-					// 已经是转移后的字符，直接返回。
+					// 已经是转义后的字符，直接返回。
 					return value;
 				}
 				else
@@ -86,10 +90,11 @@ internal static class LinkUtil
 			}
 			else
 			{
-				StringBuilder text = new();
+				using ValueList<char> text = new(stackalloc char[10]);
 				foreach (byte v in Encoding.Default.GetBytes(value))
 				{
-					text.AppendFormat("%{0:X}", v);
+					text.Add('%');
+					text.Add(v.ToString("X"));
 				}
 				return text.ToString();
 			}

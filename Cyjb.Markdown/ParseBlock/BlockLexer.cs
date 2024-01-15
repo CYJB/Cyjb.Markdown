@@ -37,11 +37,11 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseHeaderAttributes)
 		{
-			ReadOnlySpan<char> text = Text;
+			StringView text = Text;
 			HtmlAttributeList attrs = new();
 			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
 			{
-				Text = text.ToString();
+				Text = text;
 				Accept(attrs);
 				return;
 			}
@@ -65,11 +65,11 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseCodeAttributes)
 		{
-			ReadOnlySpan<char> text = Text;
+			StringView text = Text;
 			HtmlAttributeList attrs = new();
 			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
 			{
-				Text = text.ToString();
+				Text = text;
 				Accept(attrs);
 				return;
 			}
@@ -337,11 +337,11 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseMath && Options.UseMathAttributes)
 		{
-			ReadOnlySpan<char> text = Text;
+			StringView text = Text;
 			HtmlAttributeList attrs = new();
 			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
 			{
-				Text = text.ToString();
+				Text = text;
 				Accept(attrs);
 				return;
 			}
@@ -390,11 +390,11 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseCustomContainers && Options.UseCustomContainerAttributes)
 		{
-			ReadOnlySpan<char> text = Text;
+			StringView text = Text;
 			HtmlAttributeList attrs = new();
 			if (MarkdownUtil.TryParseAttributes(ref text, attrs))
 			{
-				Text = text.ToString();
+				Text = text;
 				Accept(attrs);
 				return;
 			}

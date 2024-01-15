@@ -1,4 +1,5 @@
 using System.Text;
+using Cyjb.Collections;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -155,32 +156,35 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				// 未找到起始 {。
 				return null;
 			}
-			StringBuilder builder = new();
+			ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
 			for (int i = lineIdx; i < lines.Count; i++)
 			{
 				if (i == lineIdx)
 				{
-					builder.Append(lines[i].ToString()[startIdx..]);
+					lines[i].AppendTo(ref list, startIdx);
 				}
 				else
 				{
-					builder.Append(lines[i].ToString());
+					lines[i].AppendTo(ref list);
 				}
 			}
-			ReadOnlySpan<char> span = builder.ToString();
+			ReadOnlySpan<char> span = list.AsSpan();
 			HtmlAttributeList attrs = new();
 			if (MarkdownUtil.TryParseAttributes(ref span, attrs))
 			{
+				list.Dispose();
 				// 移除行中不需要的部分。
 				for (int i = lines.Count - 1; i > lineIdx; i--)
 				{
 					lines.RemoveAt(i);
 				}
-				lines[^1] = lines[^1][0..startIdx];
+				MappedText lastLine = lines[^1];
+				lastLine.RemoteEnd(lastLine.Length - startIdx);
 				return attrs;
 			}
 			else
 			{
+				list.Dispose();
 				return null;
 			}
 		}

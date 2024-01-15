@@ -1,3 +1,4 @@
+using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -103,8 +104,8 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 			// 计算标题的深度。
 			int depth = 0;
 			for (; depth < text.Length && text[depth] == '#'; depth++) ;
+			text.RemoteStart(depth);
 			// 忽略内容前后的空白
-			text = text[depth..];
 			text.TrimStart();
 			text.TrimEnd();
 			// 检查闭合 #
@@ -115,7 +116,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 				// 要求闭合 # 前包含空格或 Tab。
 				if (end == 0 || (end > 0 && MarkdownUtil.IsWhitespace(text[end - 1])))
 				{
-					text = text[0..end];
+					text.RemoteEnd(text.Length - end);
 					// 忽略结尾 # 前的空白。
 					text.TrimEnd();
 				}

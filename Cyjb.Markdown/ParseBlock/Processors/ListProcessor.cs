@@ -320,8 +320,9 @@ internal sealed class ListProcessor : BlockProcessor
 				return null;
 			}
 			// 检查任务列表项宽度为 3（处理方括号内为 Tab，但宽度为 3 的场景）。
-			LinePositionSpan span = token.LinePositionSpan;
-			if (span.End.Column - span.Start.Column != 3)
+			int startColumn = line.GetPosition(token.Span.Start).Column;
+			int endColumn = line.GetPosition(token.Span.End).Column;
+			if (endColumn - startColumn != 3)
 			{
 				return null;
 			}

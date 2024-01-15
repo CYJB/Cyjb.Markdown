@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Collections;
 using Cyjb.Text;
 
@@ -65,6 +64,16 @@ internal sealed class LineInfo
 	}
 
 	/// <summary>
+	/// 返回指定索引的行列位置。
+	/// </summary>
+	/// <param name="index">要检查行列位置的索引。</param>
+	/// <returns>指定索引的行列位置。</returns>
+	public LinePosition GetPosition(int index)
+	{
+		return locator.GetPosition(index);
+	}
+
+	/// <summary>
 	/// 获取当前缩进宽度。
 	/// </summary>
 	public int Indent => GetIndent().Width;
@@ -106,15 +115,22 @@ internal sealed class LineInfo
 		{
 			if (text == null)
 			{
-				StringBuilder builder = new();
+				List<StringView> texts = new();
+				int length = 0;
+				int lastLength = 0;
+				int lastMappedIndex = 0;
 				TextSpanBuilder spanBuilder = new();
-				List<Tuple<int, int>> map = new();
+				List<Tuple<int, int>> maps = new();
 				// 添加缩进。
 				if (indent != null && indent.Width > 0)
 				{
-					map.Add(new Tuple<int, int>(0, indent.Start));
-					spanBuilder.Add(indent.Start);
-					builder.Append(indent.GetText());
+					lastMappedIndex = indent.Start;
+					maps.Add(new Tuple<int, int>(0, lastMappedIndex));
+					spanBuilder.Add(lastMappedIndex);
+					StringView text = indent.GetText();
+					lastLength = text.Length;
+					length += lastLength;
+					texts.Add(text);
 				}
 				// 添加剩余词法单元。
 				bool isFirst = true;
@@ -123,13 +139,20 @@ internal sealed class LineInfo
 					// 首个缩进可能会存在 Tab 部分替换为空格的情况，因此之后的词法单元也需要添加索引。
 					if (isFirst)
 					{
-						map.Add(new Tuple<int, int>(builder.Length, token.Span.Start));
+						int offset = token.Span.Start - lastMappedIndex;
+						if (lastLength != offset)
+						{
+							maps.Add(new Tuple<int, int>(lastLength, offset));
+						}
 						isFirst = false;
 					}
-					builder.Append(token.Text);
+					lastMappedIndex = token.Span.Start;
+					lastLength = token.Text.Length;
+					length += lastLength;
+					texts.Add(token.Text);
 					spanBuilder.Add(token.Span);
 				}
-				text = new MappedText(builder.ToString(), spanBuilder.GetSpan(), map.ToArray());
+				text = new MappedText(texts, length, spanBuilder.GetSpan(), maps);
 			}
 			return text;
 		}

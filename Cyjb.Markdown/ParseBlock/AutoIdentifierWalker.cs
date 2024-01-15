@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 
@@ -8,7 +8,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// 自动生成标识符的遍历器。
 /// </summary>
-internal sealed class AutoIdentifierWalker : SyntaxWalker
+internal sealed class AutoIdentifierWalker : SyntaxWalker, IDisposable
 {
 	/// <summary>
 	/// 唯一标识符。
@@ -18,10 +18,6 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker
 	/// Alt 文本的渲染器。
 	/// </summary>
 	private readonly AltTextRenderer altTextRenderer = new();
-	/// <summary>
-	/// 标识符的构造器。
-	/// </summary>
-	private readonly StringBuilder identifierBuilder = new(128);
 
 	/// <summary>
 	/// 初始化 <see cref="AutoIdentifierWalker"/> 类的新实例。
@@ -49,9 +45,9 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker
 	/// </summary>
 	/// <param name="text">原始文本。</param>
 	/// <returns>从文本生成的标识符。</returns>
-	private string GetIdentifier(StringBuilder text)
+	private string GetIdentifier(ReadOnlySpan<char> text)
 	{
-		identifierBuilder.Clear();
+		using ValueList<char> identifierBuilder = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
 		for (int i = 0; i < text.Length; i++)
 		{
 			char ch = text[i];
@@ -83,17 +79,18 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker
 					continue;
 				}
 			}
-			identifierBuilder.Append(ch);
+			identifierBuilder.Add(ch);
 		}
-		for (; identifierBuilder.Length > 0 && IsPunctuation(identifierBuilder[^1]); identifierBuilder.Length--) ;
+		int end = identifierBuilder.Length - 1;
+		for (; end >= 0 && IsPunctuation(identifierBuilder[end]); end--) ;
 		// 7. 如果结果是空字符串，那么使用 `section` 作为标识符。
-		if (identifierBuilder.Length == 0)
+		if (end < 0)
 		{
 			return "section";
 		}
 		else
 		{
-			return identifierBuilder.ToString();
+			return identifierBuilder.AsSpan(0, end + 1).ToString();
 		}
 	}
 
@@ -129,5 +126,14 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker
 	private static bool IsPunctuation(char ch)
 	{
 		return ch is '_' or '-' or '.';
+	}
+
+	/// <summary>
+	/// 释放非托管资源。
+	/// </summary>
+	public void Dispose()
+	{
+		altTextRenderer.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }

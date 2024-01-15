@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -243,7 +244,7 @@ internal sealed class TableProcessor : BlockProcessor
 				yield break;
 			}
 			MappedText heading = lines[0];
-			List<TableAlign> aligns = ParseDelimiterRow(line.Peek().Text);
+			List<TableAlign> aligns = ParseDelimiterRow(line.Peek().Text.ToString());
 			// 标题行与分割行必须具有相同的单元格数。
 			if (aligns.Count != CountCell(heading))
 			{

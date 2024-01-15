@@ -44,6 +44,25 @@ internal static partial class MarkdownUtil
 	/// <summary>
 	/// 尝试从文本中解析属性。
 	/// </summary>
+	/// <param name="text">要检查的字符串视图。</param>
+	/// <param name="attrs">保存属性的列表。</param>
+	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool TryParseAttributes(ref StringView text, HtmlAttributeList attrs)
+	{
+		ReadOnlySpan<char> span = text;
+		if (TryParseAttributes(ref span, attrs))
+		{
+			text = text[0..span.Length];
+			return true;
+		} else
+		{
+			return false;
+		}
+	}
+
+	/// <summary>
+	/// 尝试从文本中解析属性。
+	/// </summary>
 	/// <param name="text">要检查的文本。</param>
 	/// <param name="attrs">保存属性的列表。</param>
 	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
@@ -57,7 +76,7 @@ internal static partial class MarkdownUtil
 		}
 		int start = idx;
 		ReadOnlySpan<char> attrText = text[(start + 1)..];
-		MarkdownUtil.TrimEnd(ref attrText);
+		TrimEnd(ref attrText);
 		// 要求最后一个非空白字符是 }。
 		if (attrText.IsEmpty || attrText[^1] != '}')
 		{

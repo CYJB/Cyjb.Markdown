@@ -11,6 +11,11 @@ internal static partial class MarkdownUtil
 	public const string Whitespace = " \t\r\n";
 
 	/// <summary>
+	/// Markdown 的空白字符。
+	/// </summary>
+	public static readonly char[] WhitespaceChars = new char[]{ ' ', '\t', '\r', '\n' };
+
+	/// <summary>
 	/// 返回指定字符是否表示 Markdown 空白。
 	/// </summary>
 	/// <param name="ch">要检查的字符。</param>
@@ -55,16 +60,6 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
-	/// 寻找指定文本中空白字符首次出现的位置。
-	/// </summary>
-	/// <param name="text">要检查的文本。</param>
-	/// <returns>如果找到了任何空白字符，则为字符的索引；否则为 <c>-1</c>。</returns>
-	public static int IndexOfWhitespace(ReadOnlySpan<char> text)
-	{
-		return text.IndexOfAny(Whitespace);
-	}
-
-	/// <summary>
 	/// 移除指定文本的起始空白。
 	/// </summary>
 	/// <param name="text">要移除起始空白的文本。</param>
@@ -73,6 +68,18 @@ internal static partial class MarkdownUtil
 	{
 		int len = text.Length;
 		text = text.TrimStart(Whitespace);
+		return text.Length < len;
+	}
+
+	/// <summary>
+	/// 移除指定文本的起始空白。
+	/// </summary>
+	/// <param name="text">要移除起始空白的文本。</param>
+	/// <returns>如果移除了任何起始空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool TrimStart(ref StringView text)
+	{
+		int len = text.Length;
+		text = text.TrimStart(WhitespaceChars);
 		return text.Length < len;
 	}
 

@@ -1,4 +1,4 @@
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 
 namespace Cyjb.Markdown.Utils;
@@ -6,12 +6,12 @@ namespace Cyjb.Markdown.Utils;
 /// <summary>
 /// Alt 文本的渲染器。
 /// </summary>
-internal sealed class AltTextRenderer : SyntaxWalker
+internal sealed class AltTextRenderer : SyntaxWalker, IDisposable
 {
 	/// <summary>
-	/// 文本构造器。
+	/// 文本列表。
 	/// </summary>
-	private readonly StringBuilder text = new();
+	private readonly PooledList<char> text = new();
 
 	/// <summary>
 	/// 初始化 <see cref="AltTextRenderer"/> 类的新实例。
@@ -19,9 +19,9 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	public AltTextRenderer() { }
 
 	/// <summary>
-	/// 返回内部的文本构造器。
+	/// 返回 Alt 文本内容。
 	/// </summary>
-	public StringBuilder Text => text;
+	public ReadOnlySpan<char> Text => text.AsSpan();
 
 	/// <summary>
 	/// 清除已生成的 HTML 文本。
@@ -37,7 +37,7 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// <param name="node">要访问的行内代码段节点。</param>
 	public override void VisitCodeSpan(CodeSpan node)
 	{
-		text.Append(node.Content);
+		text.Add(node.Content);
 	}
 
 	/// <summary>
@@ -46,7 +46,7 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// <param name="node">要访问的换行节点。</param>
 	public override void VisitBreak(Break node)
 	{
-		text.Append(' ');
+		text.Add(' ');
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// <param name="node">要访问的文本节点。</param>
 	public override void VisitLiteral(Literal node)
 	{
-		text.Append(node.Content);
+		text.Add(node.Content);
 	}
 
 	/// <summary>
@@ -64,9 +64,9 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	/// <param name="node">要访问的表情符号节点。</param>
 	public override void VisitEmoji(Emoji node)
 	{
-		text.Append(':');
-		text.Append(node.Code);
-		text.Append(':');
+		text.Add(':');
+		text.Add(node.Code);
+		text.Add(':');
 	}
 
 	/// <summary>
@@ -76,5 +76,14 @@ internal sealed class AltTextRenderer : SyntaxWalker
 	public override string ToString()
 	{
 		return text.ToString();
+	}
+
+	/// <summary>
+	/// 释放非托管资源。
+	/// </summary>
+	public void Dispose()
+	{
+		text.Dispose();
+		GC.SuppressFinalize(this);
 	}
 }

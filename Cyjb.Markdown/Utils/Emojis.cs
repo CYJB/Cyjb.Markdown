@@ -17,7 +17,7 @@ internal static class Emojis
 	/// <summary>
 	/// emoji ÐÅÏ¢×Öµä¡£
 	/// </summary>
-	public static readonly Dictionary<string, EmojiInfo> Infos = new()
+	public static readonly Dictionary<StringView, EmojiInfo> Infos = new()
 	{
 		{ "+1", new GitHubEmojiInfo("\U0001f44d", "1f44d") },
 		{ "-1", new GitHubEmojiInfo("\U0001f44e", "1f44e") },
@@ -33,6 +33,7 @@ internal static class Emojis
 		{ "abc", new GitHubEmojiInfo("\U0001f524", "1f524") },
 		{ "abcd", new GitHubEmojiInfo("\U0001f521", "1f521") },
 		{ "accept", new GitHubEmojiInfo("\U0001f251", "1f251") },
+		{ "accessibility", new GitHubEmojiInfo("accessibility") },
 		{ "accordion", new GitHubEmojiInfo("\U0001fa97", "1fa97") },
 		{ "adhesive_bandage", new GitHubEmojiInfo("\U0001fa79", "1fa79") },
 		{ "adult", new GitHubEmojiInfo("\U0001f9d1", "1f9d1") },

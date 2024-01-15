@@ -1,4 +1,4 @@
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
@@ -23,7 +23,7 @@ internal class IndentInfo
 	/// <summary>
 	/// 缩进文本。
 	/// </summary>
-	private readonly string text;
+	private readonly StringView text;
 	/// <summary>
 	/// 原始起始位置。
 	/// </summary>
@@ -47,7 +47,7 @@ internal class IndentInfo
 		this.start = end = start;
 		originalStart = start;
 		this.locator = locator;
-		text = string.Empty;
+		text = StringView.Empty;
 		startColumn = endColumn = 0;
 	}
 
@@ -57,7 +57,7 @@ internal class IndentInfo
 	/// <param name="span">缩进文本范围。</param>
 	/// <param name="locator">行定位器。</param>
 	/// <param name="text">缩进文本。</param>
-	public IndentInfo(TextSpan span, LineLocator locator, string text)
+	public IndentInfo(TextSpan span, LineLocator locator, StringView text)
 	{
 		start = span.Start;
 		end = span.End;
@@ -131,12 +131,12 @@ internal class IndentInfo
 	/// 返回剩余的缩进文本。
 	/// </summary>
 	/// <returns>缩进文本。</returns>
-	public string GetText()
+	public StringView GetText()
 	{
 		if (startColumn == endColumn)
 		{
 			// 所有缩进均已消费。
-			return string.Empty;
+			return StringView.Empty;
 		}
 		int column = locator.GetPosition(start).Column;
 		if (column == startColumn)
@@ -147,13 +147,13 @@ internal class IndentInfo
 		{
 			// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
 			column = locator.GetPosition(start + 1).Column;
-			StringBuilder result = new();
-			result.Append(' ', column - startColumn);
+			using ValueList<char> result = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+			result.Add(' ', column - startColumn);
 			int idx = start + 1 - originalStart;
 			// 存在 Tab 时，可能会出现列数超出字符数的场景。
 			if (idx < text.Length)
 			{
-				result.Append(text, idx, text.Length - idx);
+				result.Add(text.AsSpan(idx));
 			}
 			return result.ToString();
 		}

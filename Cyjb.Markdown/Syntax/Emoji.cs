@@ -18,11 +18,11 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 	/// <remarks>有关可用表情符号和代码的完整列表，请查看
 	/// [Emoji-Cheat-Sheet](https://github.com/ikatyang/emoji-cheat-sheet/)。</remarks>
 	/// <see href="https://github.com/ikatyang/emoji-cheat-sheet/"/>
-	public static Emoji? GetEmoji(string code, TextSpan span = default)
+	public static Emoji? GetEmoji(StringView code, TextSpan span = default)
 	{
 		if (Emojis.Infos.TryGetValue(code, out EmojiInfo? info))
 		{
-			return new Emoji(code, info, span);
+			return new Emoji(code.ToString(), info, span);
 		}
 		else
 		{

@@ -1,4 +1,4 @@
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
@@ -18,7 +18,7 @@ internal class MathBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 数学公式的文本。
 	/// </summary>
-	private readonly StringBuilder builder = new();
+	private readonly PooledList<char> builder = new();
 	/// <summary>
 	/// 数学公式节点。
 	/// </summary>
@@ -82,7 +82,7 @@ internal class MathBlockProcessor : BlockProcessor
 	/// <param name="text">行的文本。</param>
 	public override void AddLine(MappedText text)
 	{
-		builder.Append(text.ToString());
+		text.AppendTo(builder);
 	}
 
 	/// <summary>
@@ -95,6 +95,7 @@ internal class MathBlockProcessor : BlockProcessor
 	{
 		math.Span = math.Span with { End = end };
 		math.Content = builder.ToString();
+		builder.Dispose();
 		return math;
 	}
 

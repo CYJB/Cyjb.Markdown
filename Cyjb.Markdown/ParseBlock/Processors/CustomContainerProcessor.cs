@@ -61,7 +61,7 @@ internal class CustomContainerProcessor : BlockProcessor
 		{
 			Token<BlockKind> token = line.Peek();
 			if (token.Kind == BlockKind.CustomContainerFence &&
-				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
+				MarkdownUtil.GetFenceLength(token.Text.AsSpan()) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}

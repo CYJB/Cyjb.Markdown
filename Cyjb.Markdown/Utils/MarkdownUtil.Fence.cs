@@ -11,7 +11,7 @@ internal static partial class MarkdownUtil
 	/// </summary>
 	/// <param name="text">要检查的字符串。</param>
 	/// <returns>分隔符的长度。</returns>
-	public static int GetFenceLength(string text)
+	public static int GetFenceLength(ReadOnlySpan<char> text)
 	{
 		char fence = text[0];
 		// 在词法分析中已确保分隔符长度至少为 2。
@@ -48,10 +48,10 @@ internal static partial class MarkdownUtil
 		// 解析自定义容器的信息。
 		Token<BlockKind> token = line.Peek();
 		fenceChar = token.Text[0];
-		fenceLength = GetFenceLength(token.Text);
+		fenceLength = GetFenceLength(token.Text.AsSpan());
 		if (token.Kind is BlockKind.CodeFenceStart or BlockKind.MathFenceStart or BlockKind.CustomContainerFenceStart)
 		{
-			ReadOnlySpan<char> text = token.Text.AsSpan()[fenceLength..];
+			ReadOnlySpan<char> text = token.Text.AsSpan(fenceLength);
 			Trim(ref text);
 			info = text.Unescape();
 			if (info.Length == 0)

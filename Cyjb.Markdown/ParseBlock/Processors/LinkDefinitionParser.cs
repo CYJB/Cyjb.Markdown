@@ -2,6 +2,7 @@ using System.Text;
 using Cyjb.Text;
 using Cyjb.Markdown.Utils;
 using Cyjb.Markdown.Syntax;
+using Cyjb.Collections;
 
 namespace Cyjb.Markdown.ParseBlock;
 
@@ -61,7 +62,7 @@ internal sealed class LinkDefinitionParser
 	/// <summary>
 	/// 字符串构造器。
 	/// </summary>
-	private readonly StringBuilder builder = new();
+	private readonly PooledList<char> builder = new();
 	/// <summary>
 	/// 解析选项。
 	/// </summary>
@@ -133,7 +134,9 @@ internal sealed class LinkDefinitionParser
 	/// <param name="text">行的文本。</param>
 	public void Parse(MappedText text)
 	{
-		ReadOnlySpan<char> textSpan = text.ToString();
+		ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+		text.AppendTo(ref list);
+		ReadOnlySpan<char> textSpan = list.AsSpan();
 		while (!textSpan.IsEmpty)
 		{
 			bool success = false;
@@ -167,9 +170,11 @@ internal sealed class LinkDefinitionParser
 			if (!success)
 			{
 				state = State.Failed;
+				list.Dispose();
 				return;
 			}
 		}
+		list.Dispose();
 	}
 
 	/// <summary>
@@ -222,7 +227,7 @@ internal sealed class LinkDefinitionParser
 		{
 			idx = text.Length;
 		}
-		builder.Append(text[0..idx]);
+		builder.Add(text[..idx]);
 		text = text[idx..];
 		if (text.Length == 0)
 		{
@@ -238,14 +243,14 @@ internal sealed class LinkDefinitionParser
 		{
 			return false;
 		}
-		label = builder.ToString();
 		// 链接定义中不允许使用空白的标签。
-		ReadOnlySpan<char> labelSpan = label;
+		ReadOnlySpan<char> labelSpan = builder.AsSpan();
 		MarkdownUtil.TrimStart(ref labelSpan);
 		if (labelSpan.Length == 0)
 		{
 			return false;
 		}
+		label = builder.ToString();
 		text = text[2..];
 		state = State.Destination;
 		// 移除后面的空白，避免空白字符串进入到解析链接定义的流程中。
@@ -372,7 +377,7 @@ internal sealed class LinkDefinitionParser
 		{
 			idx = text.Length;
 		}
-		builder.Append(text[0..idx]);
+		builder.Add(text[..idx]);
 		text = text[idx..];
 		if (text.Length == 0)
 		{
@@ -389,7 +394,7 @@ internal sealed class LinkDefinitionParser
 			end = span.End;
 			if (builder.Length > 0)
 			{
-				title = MarkdownUtil.Unescape(builder.ToString());
+				title = MarkdownUtil.Unescape(builder.AsSpan());
 			}
 			clearLines();
 			if (options.UseLinkAttributes)
@@ -409,7 +414,7 @@ internal sealed class LinkDefinitionParser
 		{
 			if (builder.Length > 0)
 			{
-				title = MarkdownUtil.Unescape(builder.ToString());
+				title = MarkdownUtil.Unescape(builder.AsSpan());
 			}
 			// 继续解析属性，如果属性解析失败，标题也不被识别。
 			EnterAttribute(ref text);

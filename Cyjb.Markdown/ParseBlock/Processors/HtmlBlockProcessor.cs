@@ -1,5 +1,5 @@
-using System.Text;
 using System.Text.RegularExpressions;
+using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
 
@@ -18,7 +18,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// <summary>
 	/// HTML 文本。
 	/// </summary>
-	private readonly StringBuilder builder = new();
+	private readonly PooledList<char> builder = new();
 	/// <summary>
 	/// 块的起始位置。
 	/// </summary>
@@ -73,7 +73,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 	public override void AddLine(MappedText text)
 	{
 		string lineText = text.ToString();
-		builder.Append(lineText);
+		builder.Add(lineText);
 		if (closeRegex != null && closeRegex.IsMatch(lineText))
 		{
 			finished = true;

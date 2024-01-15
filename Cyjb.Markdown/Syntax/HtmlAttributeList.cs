@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Text;
+using Cyjb.Collections;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Markdown.Syntax;
@@ -264,7 +264,7 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	/// <returns>当前对象的字符串表示形式。</returns>
 	public override string ToString()
 	{
-		StringBuilder text = new();
+		using ValueList<char> text = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
 		bool isFirst = true;
 		foreach (KeyValuePair<string, string> item in list)
 		{
@@ -274,12 +274,12 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 			}
 			else
 			{
-				text.Append(' ');
+				text.Add(' ');
 			}
-			text.Append(item.Key);
-			text.Append("=\"");
-			text.Append(item.Value.Replace("\"", "&quot;"));
-			text.Append('\"');
+			text.Add(item.Key);
+			text.Add("=\"");
+			text.Add(item.Value.Replace("\"", "&quot;"));
+			text.Add('\"');
 		}
 		return text.ToString();
 	}

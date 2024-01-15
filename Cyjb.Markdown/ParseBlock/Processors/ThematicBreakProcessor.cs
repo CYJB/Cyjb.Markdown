@@ -127,7 +127,13 @@ internal sealed class ThematicBreakProcessor : BlockProcessor
 						}
 						break;
 					case BlockKind.DashLine:
-						dashes += token.Text.Count((ch) => ch == '-');
+						foreach (char dch in token.Text)
+						{
+							if (dch == '-')
+							{
+								dashes++;
+							}
+						}
 						break;
 					case BlockKind.ThematicBreak:
 						ch = token.Text[0];
