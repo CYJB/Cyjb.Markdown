@@ -66,7 +66,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		{
 			return string.Empty;
 		}
-		ReadOnlySpan<char> span = literalBuffer.AsSpan();
+		Span<char> span = literalBuffer.AsSpan();
 		string result = span.Unescape();
 		literalBuffer.Clear();
 		return result;

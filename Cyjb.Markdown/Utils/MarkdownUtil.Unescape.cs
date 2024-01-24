@@ -1,4 +1,3 @@
-using System.Buffers;
 using System.Globalization;
 using Cyjb.Collections;
 
@@ -10,16 +9,6 @@ internal static partial class MarkdownUtil
 	/// 允许被转义的字符。
 	/// </summary>
 	private static readonly CharSet Escapable = new("!\"#$%&'()*+,./:;<=>?@[\\]^_`{|}~-");
-
-	/// <summary>
-	/// 返回当前字符是否可以被转义。
-	/// </summary>
-	/// <param name="ch">要检查的字符。</param>
-	/// <returns>如果当前字符可以被转义，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	public static bool IsEscapable(this char ch)
-	{
-		return Escapable.Contains(ch);
-	}
 
 	/// <summary>
 	/// 返回指定字符序列中，指定字符首次出现（非转义）的索引。
@@ -116,89 +105,165 @@ internal static partial class MarkdownUtil
 	/// <summary>
 	/// 反转义指定字符串，并返回其结果。
 	/// </summary>
-	/// <param name="text">要反转义的字符串。</param>
+	/// <param name="text">要反转义的字符串，可能会修改字符串的内容。</param>
 	/// <return>反转义后的字符串。</return>
-	public static string Unescape(this ReadOnlySpan<char> text)
+	public static string Unescape(this Span<char> text)
 	{
-		if (text.IndexOfAny("\\&\0") < 0)
+		int idx = text.IndexOfAny("\\&\0");
+		if (idx < 0)
 		{
 			return text.ToString();
 		}
-		char[] chars = ArrayPool<char>.Shared.Rent(text.Length);
-		int i = 0;
-		int idx = 0;
-		// 注意这要保证 i 之后至少有一个有效字符。
-		for (; i < text.Length - 1; i++)
+		int dst = idx;
+		// 注意这要保证 idx 之后至少有一个有效字符。
+		int end = text.Length - 1;
+		for (; idx < end; idx++)
 		{
-			char ch = text[i];
+			char ch = text[idx];
 			if (ch == '\0')
 			{
 				// \0 要被转换成 \uFFFD
-				chars[idx++] = '\uFFFD';
+				text[dst++] = '\uFFFD';
 				continue;
 			}
 			else if (ch == '\\')
 			{
 				// 反斜杠转义。
-				if (Escapable.Contains(text[i + 1]))
+				if (Escapable.Contains(text[idx + 1]))
 				{
-					chars[idx++] = text[i + 1];
-					i++;
+					text[dst++] = text[idx + 1];
+					idx++;
 					continue;
 				}
 			}
 			else if (ch == '&')
 			{
-				int end = text.IndexOf(';', i + 1);
-				if (end >= 0 && i + 2 < end)
+				if (text[idx + 1] == '#')
 				{
-					string? str;
-					if (text[i + 1] == '#')
+					// 查找 HTML 数字转义。
+					string? value = ParseNumericCharacter(text.Slice(idx + 2), ref idx);
+					if (value != null)
 					{
-						// HTML 数字转义
-						str = ParseNumericCharacter(text[(i + 2)..end]);
+						// 跳过 # 字符。
+						idx++;
+						value.CopyTo(text.Slice(dst));
+						dst += value.Length;
+						continue;
 					}
-					else
+				}
+				else
+				{
+					// 查找 HTML 实体转义。
+					if (HtmlEntity.Entities.TryMatchShortest(text.Slice(idx + 1), out var pair))
 					{
-						// 实体转义
-						HtmlEntity.Entities.TryGetValue(text[(i + 1)..end].ToString(), out str);
-					}
-					if (str != null)
-					{
-						str.CopyTo(chars.AsSpan(idx));
-						idx += str.Length;
-						i = end;
+						idx += pair.Key.Length;
+						pair.Value.CopyTo(text.Slice(dst));
+						dst += pair.Value.Length;
 						continue;
 					}
 				}
 			}
-			chars[idx++] = ch;
+			text[dst++] = ch;
 		}
-		if (i < text.Length)
+		// 复制最后的字符。
+		if (idx < text.Length)
 		{
-			chars[idx++] = text[i];
+			text[dst++] = text[idx];
 		}
-		string result = new(chars, 0, idx);
-		ArrayPool<char>.Shared.Return(chars);
-		return result;
+		return text.Slice(0, dst).ToString();
 	}
 
 	/// <summary>
-	/// 解析指定的数字字符。
+	/// 反转义指定字符串，并返回其结果。
+	/// </summary>
+	/// <param name="text">要反转义的字符串。</param>
+	/// <return>反转义后的字符串。</return>
+	public static string Unescape(this ReadOnlySpan<char> text)
+	{
+		int idx = text.IndexOfAny("\\&\0");
+		if (idx < 0)
+		{
+			return text.ToString();
+		}
+		using ValueList<char> chars = text.Length <= ValueList.StackallocCharSizeLimit
+			? new ValueList<char>(stackalloc char[text.Length])
+			: new ValueList<char>(text.Length);
+		chars.Add(text.Slice(0, idx));
+		// 注意这要保证 idx 之后至少有一个有效字符。
+		int end = text.Length - 1;
+		for (; idx < end; idx++)
+		{
+			char ch = text[idx];
+			if (ch == '\0')
+			{
+				// \0 要被转换成 \uFFFD
+				chars.Add('\uFFFD');
+				continue;
+			}
+			else if (ch == '\\')
+			{
+				// 反斜杠转义。
+				if (Escapable.Contains(text[idx + 1]))
+				{
+					chars.Add(text[idx + 1]);
+					idx++;
+					continue;
+				}
+			}
+			else if (ch == '&')
+			{
+				if (text[idx + 1] == '#')
+				{
+					// 查找 HTML 数字转义。
+					string? value = ParseNumericCharacter(text.Slice(idx + 2), ref idx);
+					if (value != null)
+					{
+						// 跳过 # 字符。
+						idx++;
+						chars.Add(value);
+						continue;
+					}
+				}
+				else
+				{
+					// 查找 HTML 实体转义。
+					if (HtmlEntity.Entities.TryMatchShortest(text.Slice(idx + 1), out var pair))
+					{
+						idx += pair.Key.Length;
+						chars.Add(pair.Value);
+						continue;
+					}
+				}
+			}
+			chars.Add(ch);
+		}
+		if (idx < text.Length)
+		{
+			chars.Add(text[idx]);
+
+		}
+		return chars.ToString();
+	}
+
+	/// <summary>
+	/// 尝试解析指定的数字字符。
 	/// </summary>
 	/// <param name="text">要解析的文本。</param>
+	/// <param name="srcIdx">文本的起始索引。</param>
 	/// <returns>解析结果，如果未能成功解析则为 <c>null</c>。</returns>
-	private static string? ParseNumericCharacter(ReadOnlySpan<char> text)
+	private static string? ParseNumericCharacter(ReadOnlySpan<char> text, ref int srcIdx)
 	{
+		int idx = text.IndexOf(';');
 		// 长度最多为 7。
-		if (text.IsEmpty || text.Length > 7)
+		if (idx <= 0 || idx > 7)
 		{
 			return null;
 		}
+		text = text.Slice(0, idx);
 		int value;
 		if (text[0] == 'X' || text[0] == 'x')
 		{
-			text = text[1..];
+			text = text.Slice(1);
 			// 长度不足。
 			if (text.IsEmpty)
 			{
@@ -209,13 +274,12 @@ internal static partial class MarkdownUtil
 				return null;
 			}
 		}
-		else
+		else if (!int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value))
 		{
-			if (!int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value))
-			{
-				return null;
-			}
+			return null;
 		}
+		// 这里注意要将 ; 一起跳过。
+		srcIdx += idx + 1;
 		if (value == 0)
 		{
 			// U+0000 需要被替换为 U+FFFD
