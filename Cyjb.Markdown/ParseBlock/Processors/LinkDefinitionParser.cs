@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Text;
 using Cyjb.Markdown.Utils;
 using Cyjb.Markdown.Syntax;

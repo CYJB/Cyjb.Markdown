@@ -90,7 +90,14 @@ internal sealed class InlineParser
 	public void Parse(IEnumerable<MappedText> texts, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
-		ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+		int sumCount = 0;
+		foreach (MappedText text in texts)
+		{
+			sumCount += text.Length;
+		}
+		ValueList<char> list = sumCount <= ValueList.StackallocCharSizeLimit
+			? new(stackalloc char[sumCount])
+			: new(sumCount);
 		foreach (MappedText text in texts)
 		{
 			text.AppendTo(ref list);
@@ -480,7 +487,7 @@ internal sealed class InlineParser
 			bool isFirst = true;
 			foreach (Tuple<int, int> map in text.Maps)
 			{
-				var(index, mappedIndex) = map;
+				var (index, mappedIndex) = map;
 				curLen += index;
 				if (curLen >= length)
 				{

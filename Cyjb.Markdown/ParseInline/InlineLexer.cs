@@ -112,15 +112,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		{
 			Source.Drop();
 			Source.Index = idx;
-			// TODO: 优化
-			string content = Source.GetReadedText().ToString().ReplacePattern("[\r\n]+", " ");
-			// 如果代码两边都有一个空格（注意不是空白），那么可以移除前后各一的空格。
-			// 不要移除多个空格，也不要修改只由空格组成的代码。
-			if (content.Length >= 2 && content[0] == ' ' && content[^1] == ' ' &&
-				content.Any(ch => !MarkdownUtil.IsWhitespace(ch)))
-			{
-				content = content[1..^1];
-			}
+			string content = MarkdownUtil.ProcessCodeSpan(Source.GetReadedText());
 			// 跳过结束标志。
 			Source.Index += backtickCount;
 			Accept(InlineKind.Node, new CodeSpan(content, Span));

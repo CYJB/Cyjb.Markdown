@@ -21,7 +21,7 @@ internal sealed class AltTextRenderer : SyntaxWalker, IDisposable
 	/// <summary>
 	/// 返回 Alt 文本内容。
 	/// </summary>
-	public ReadOnlySpan<char> Text => text.AsSpan();
+	public Span<char> Text => text.AsSpan();
 
 	/// <summary>
 	/// 清除已生成的 HTML 文本。

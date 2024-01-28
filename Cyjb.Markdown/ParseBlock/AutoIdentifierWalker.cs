@@ -1,5 +1,4 @@
 using System.Globalization;
-using Cyjb.Collections;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
 
@@ -35,9 +34,9 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker, IDisposable
 		{
 			return;
 		}
-		altTextRenderer.Clear();
 		node.Accept(altTextRenderer);
 		node.Attributes.Id = uniqueIdentifier.Unique(GetIdentifier(altTextRenderer.Text));
+		altTextRenderer.Clear();
 	}
 
 	/// <summary>
@@ -45,9 +44,9 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker, IDisposable
 	/// </summary>
 	/// <param name="text">原始文本。</param>
 	/// <returns>从文本生成的标识符。</returns>
-	private string GetIdentifier(ReadOnlySpan<char> text)
+	private static string GetIdentifier(Span<char> text)
 	{
-		using ValueList<char> identifierBuilder = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+		int idx = 0;
 		for (int i = 0; i < text.Length; i++)
 		{
 			char ch = text[i];
@@ -69,28 +68,27 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker, IDisposable
 			if (IsPunctuation(ch))
 			{
 				// 5. 移除标识符首个字母或数字之前的标点（`_`、`-` 和 `.`）。
-				if (identifierBuilder.Length == 0)
+				if (idx == 0)
 				{
 					continue;
 				}
 				// 6. 连续的相同标点（`_`、`-` 和 `.`）会被合并成一个。
-				if (identifierBuilder[^1] == ch)
+				if (text[idx - 1] == ch)
 				{
 					continue;
 				}
 			}
-			identifierBuilder.Add(ch);
+			text[idx++] = ch;
 		}
-		int end = identifierBuilder.Length - 1;
-		for (; end >= 0 && IsPunctuation(identifierBuilder[end]); end--) ;
+		for (idx--; idx >= 0 && IsPunctuation(text[idx]); idx--) ;
 		// 7. 如果结果是空字符串，那么使用 `section` 作为标识符。
-		if (end < 0)
+		if (idx < 0)
 		{
 			return "section";
 		}
 		else
 		{
-			return identifierBuilder.AsSpan(0, end + 1).ToString();
+			return text[0..(idx + 1)].ToString();
 		}
 	}
 
@@ -122,7 +120,7 @@ internal sealed class AutoIdentifierWalker : SyntaxWalker, IDisposable
 	/// 返回指定字符是否是标点字符。
 	/// </summary>
 	/// <param name="ch"></param>
-	/// <returns></returns>
+	/// <returns>如果是标点字符，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 	private static bool IsPunctuation(char ch)
 	{
 		return ch is '_' or '-' or '.';

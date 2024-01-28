@@ -1,7 +1,7 @@
-using System.Text;
 using Cyjb.Collections;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
+using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
@@ -171,7 +171,7 @@ internal sealed class BlockParser
 		// 自动生成标识符。
 		if (options.UseAutoIdentifier)
 		{
-			AutoIdentifierWalker walker = new();
+			using AutoIdentifierWalker walker = new();
 			doc.Accept(walker);
 		}
 		// 填充标题的链接声明
@@ -188,6 +188,8 @@ internal sealed class BlockParser
 			LineLocatorWalker walker = new(locator);
 			doc.Accept(walker);
 		}
+		// 清空 StringBuilder 池。
+		StringBuilderPool.ReleasePool();
 		return doc;
 	}
 
