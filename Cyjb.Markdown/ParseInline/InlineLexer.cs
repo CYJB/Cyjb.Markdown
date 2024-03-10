@@ -28,15 +28,15 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// <c>*</c> 的强调分隔符处理器。
 	/// </summary>
-	private readonly EmphasisProcessor StarEmphasisProcessor = new(true);
+	private static readonly EmphasisProcessor StarEmphasisProcessor = new(true);
 	/// <summary>
 	/// <c>_</c> 的强调分隔符处理器。
 	/// </summary>
-	private readonly EmphasisProcessor UnderlineEmphasisProcessor = new(false);
+	private static readonly EmphasisProcessor UnderlineEmphasisProcessor = new(false);
 	/// <summary>
 	/// <c>~</c> 的删除线分隔符处理器。
 	/// </summary>
-	private readonly StrikethroughProcessor StrikethroughProcessor = new();
+	private static readonly StrikethroughProcessor StrikethroughProcessor = new();
 
 	/// <summary>
 	/// 解析选项。

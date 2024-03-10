@@ -91,7 +91,7 @@ public abstract class Node
 	/// <param name="visitor">节点访问器。</param>
 	/// <returns>返回的结果。</returns>
 	/// <typeparam name="TResult">返回结果的类型。</typeparam>
-	public abstract TResult? Accept<TResult>(SyntaxVisitor<TResult> visitor);
+	public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
 
 	/// <summary>
 	/// 将当前节点从父节点中移除。
