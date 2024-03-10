@@ -58,6 +58,18 @@ public sealed class TableRow : Node, INodeContainer<TableCell>
 	}
 
 	/// <summary>
+	/// 初始化 <see cref="TableRow"/> 类的新实例。
+	/// </summary>
+	/// <param name="span">文本范围。</param>
+	/// <remarks>表格行不包含单元格的状态是非法的，必须在创建后正确填充单元格。</remarks>
+	private TableRow(TextSpan span = default)
+		: base(MarkdownKind.TableRow)
+	{
+		children = new NodeList<TableCell>(this);
+		Span = span;
+	}
+
+	/// <summary>
 	/// 获取所属表格。
 	/// </summary>
 	public new Table? Parent => base.Parent as Table;
@@ -118,5 +130,33 @@ public sealed class TableRow : Node, INodeContainer<TableCell>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
 		return visitor.VisitTableRow(this)!;
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal override Node CloneNode(bool deep, NodeCloneContext context)
+	{
+		if (deep)
+		{
+			// 深度复制。
+			TableRow node = new(Span)
+			{
+				Locator = Locator,
+			};
+			children.CloneTo(node.children, context);
+			return node;
+		}
+		else
+		{
+			// 非深度复制，创建含有一个单元格的行。
+			return new TableRow(new TableCell(), Span)
+			{
+				Locator = Locator,
+			};
+		}
 	}
 }

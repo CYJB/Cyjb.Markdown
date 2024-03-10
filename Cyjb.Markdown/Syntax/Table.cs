@@ -33,6 +33,18 @@ public sealed class Table : BlockNode, INodeContainer<TableRow>
 	}
 
 	/// <summary>
+	/// 初始化 <see cref="Table"/> 类的新实例。
+	/// </summary>
+	/// <param name="span">文本范围。</param>
+	/// <remarks>表格不包含行的状态是非法的，必须在创建后正确填充行。</remarks>
+	private Table(TextSpan span = default) : base(MarkdownKind.Table)
+	{
+		children = new NodeList<TableRow>(this);
+		Aligns = new TableAlignList(this);
+		Span = span;
+	}
+
+	/// <summary>
 	/// 获取行列表。
 	/// </summary>
 	public NodeList<TableRow> Children => children;
@@ -76,5 +88,34 @@ public sealed class Table : BlockNode, INodeContainer<TableRow>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
 		return visitor.VisitTable(this)!;
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal override Node CloneNode(bool deep, NodeCloneContext context)
+	{
+		if (deep)
+		{
+			// 深度复制。
+			Table node = new(Span)
+			{
+				Locator = Locator,
+			};
+			children.CloneTo(node.children, context);
+			Aligns.CloneTo(node.Aligns);
+			return node;
+		}
+		else
+		{
+			// 非深度复制，创建含有一个标题单元格的表格。
+			return new Table(new TableRow(new TableCell()), Span)
+			{
+				Locator = Locator,
+			};
+		}
 	}
 }

@@ -281,6 +281,19 @@ public sealed class NodeList<T> : ListBase<T>
 	}
 
 	/// <summary>
+	/// 将当前列表的子节点复制到指定列表。
+	/// </summary>
+	/// <param name="list">要复制到的列表。</param>
+	/// <param name="context">节点复制上下文。</param>
+	internal void CloneTo(NodeList<T> list, NodeCloneContext context)
+	{
+		foreach (T node in nodes)
+		{
+			list.Add((T)node.CloneNode(true, context));
+		}
+	}
+
+	/// <summary>
 	/// 移除指定范围的子节点。
 	/// </summary>
 	/// <param name="index">要移除的节点起始索引。</param>

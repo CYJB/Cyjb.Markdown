@@ -8,7 +8,7 @@ namespace Cyjb.Markdown.Syntax;
 /// 表示 Markdown 的节点。
 /// </summary>
 [DebuggerDisplay("{ToString()}")]
-public abstract class Node
+public abstract class Node : ICloneable
 {
 	/// <summary>
 	/// 节点的类型。
@@ -127,6 +127,43 @@ public abstract class Node
 			throw CommonExceptions.Unreachable();
 		}
 	}
+
+	/// <summary>
+	/// 复制当前节点以及所有子节点。
+	/// </summary>
+	/// <returns>复制的结果。</returns>
+	public Node Clone()
+	{
+		return CloneNode(true);
+	}
+
+	/// <summary>
+	/// 复制当前节点以及所有子节点。
+	/// </summary>
+	/// <returns>复制的结果。</returns>
+	object ICloneable.Clone()
+	{
+		return CloneNode(true);
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <returns>复制的结果。</returns>
+	public Node CloneNode(bool deep)
+	{
+		NodeCloneContext context = new();
+		return CloneNode(deep, context);
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal abstract Node CloneNode(bool deep, NodeCloneContext context);
 
 	/// <summary>
 	/// 重置与其它节点的连接。

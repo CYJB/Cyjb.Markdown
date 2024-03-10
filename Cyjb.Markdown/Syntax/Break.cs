@@ -19,6 +19,17 @@ public sealed class Break : InlineNode, IEquatable<Break>
 	}
 
 	/// <summary>
+	/// 使用指定的节点类型和文本范围初始化 <see cref="Break"/> 类的新实例。
+	/// </summary>
+	/// <param name="kind">节点类型。</param>
+	/// <param name="span">文本的范围。</param>
+	public Break(MarkdownKind kind, TextSpan span = default)
+		: base(kind)
+	{
+		Span = span;
+	}
+
+	/// <summary>
 	/// 应用指定的访问器。
 	/// </summary>
 	/// <param name="visitor">节点访问器。</param>
@@ -36,6 +47,20 @@ public sealed class Break : InlineNode, IEquatable<Break>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
 		return visitor.VisitBreak(this)!;
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal override Node CloneNode(bool deep, NodeCloneContext context)
+	{
+		return new Break(Kind, Span)
+		{
+			Locator = Locator,
+		};
 	}
 
 	#region IEquatable<Break> 成员

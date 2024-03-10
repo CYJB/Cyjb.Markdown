@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Markdown.Syntax;
@@ -53,6 +54,15 @@ public sealed class TableAlignList : ReadOnlyListBase<TableAlign>
 			}
 			aligns[index] = value;
 		}
+	}
+
+	/// <summary>
+	/// 将当前列表的子节点复制到指定列表。
+	/// </summary>
+	/// <param name="list">要复制到的列表。</param>
+	internal void CloneTo(TableAlignList list)
+	{
+		list.aligns.AddRange(aligns);
 	}
 
 	#region ReadOnlyListBase<TableAlign> 成员

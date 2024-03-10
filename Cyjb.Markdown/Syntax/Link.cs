@@ -42,13 +42,8 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// <param name="title">链接的标题。</param>
 	/// <param name="span">文本的范围。</param>
 	public Link(bool isImage, string url, string? title = null, TextSpan span = default)
-		: base(isImage ? MarkdownKind.Image : MarkdownKind.Link)
-	{
-		children = new NodeList<InlineNode>(this);
-		this.url = url ?? string.Empty;
-		this.title = title;
-		Span = span;
-	}
+		: this(isImage ? MarkdownKind.Image : MarkdownKind.Link, url, title, span)
+	{ }
 
 	/// <summary>
 	/// 使用指定的链接定义和文本范围初始化 <see cref="Link"/> 类的新实例。
@@ -64,6 +59,21 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 		children = new NodeList<InlineNode>(this);
 		this.definition = definition;
 		url = definition.URL;
+		Span = span;
+	}
+
+	/// <summary>
+	/// 使用指定的类型、URL、标题和文本范围初始化 <see cref="Link"/> 类的新实例。
+	/// </summary>
+	/// <param name="kind">链接的类型。</param>
+	/// <param name="url">链接的 URL。</param>
+	/// <param name="title">链接的标题。</param>
+	/// <param name="span">文本的范围。</param>
+	private Link(MarkdownKind kind, string url, string? title, TextSpan span) : base(kind)
+	{
+		children = new NodeList<InlineNode>(this);
+		this.url = url;
+		this.title = title;
 		Span = span;
 	}
 
@@ -158,6 +168,24 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
 	{
 		return visitor.VisitLink(this)!;
+	}
+
+	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal override Node CloneNode(bool deep, NodeCloneContext context)
+	{
+		Link node = new(Kind, url, title, Span)
+		{
+			definition = definition?.CloneNode(deep, context) as LinkDefinition,
+			Locator = Locator,
+		};
+		attributes.CloneTo(node.attributes);
+		children.CloneTo(node.children, context);
+		return node;
 	}
 
 	/// <summary>

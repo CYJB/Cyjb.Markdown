@@ -114,7 +114,7 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 		{
 			if (attr.Key.ToLowerInvariant() == "class")
 			{
-				this.AddClass(attr.Value);
+				AddClass(attr.Value);
 			}
 			else
 			{
@@ -217,6 +217,15 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 				list[i] = new KeyValuePair<string, string>(prefix + key, list[i].Value);
 			}
 		}
+	}
+
+	/// <summary>
+	/// 将当前属性列表复制到指定列表中。
+	/// </summary>
+	/// <param name="other">要复制到的列表，会假设该列表是空的。</param>
+	internal void CloneTo(HtmlAttributeList other)
+	{
+		other.list.AddRange(list);
 	}
 
 	#region ReadOnlyListBase<KeyValuePair<string, string>> 成员

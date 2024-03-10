@@ -130,6 +130,20 @@ public class Emoji : InlineNode, IEquatable<Emoji>
 	}
 
 	/// <summary>
+	/// 复制当前节点。
+	/// </summary>
+	/// <param name="deep">是仅复制当前节点还是需要复制所有子节点。</param>
+	/// <param name="context">节点复制上下文。</param>
+	/// <returns>复制的结果。</returns>
+	internal override Node CloneNode(bool deep, NodeCloneContext context)
+	{
+		return new Emoji(Code, info, Span)
+		{
+			Locator = Locator,
+		};
+	}
+
+	/// <summary>
 	/// 返回当前对象的字符串表示形式。
 	/// </summary>
 	/// <returns>当前对象的字符串表示形式。</returns>
