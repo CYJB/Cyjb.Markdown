@@ -84,14 +84,7 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// </summary>
 	/// <remarks>对于 <see cref="MarkdownKind.HtmlStartTag"/> 会返回其属性；
 	/// 其它 Html 类型会返回空数组。</remarks>
-	public HtmlAttributeList Attributes
-	{
-		get
-		{
-			attributes ??= GetAttributes(Kind, content);
-			return attributes;
-		}
-	}
+	public HtmlAttributeList Attributes => attributes ??= GetAttributes(Kind, content);
 
 	/// <summary>
 	/// 应用指定的访问器。
@@ -121,11 +114,16 @@ public sealed class Html : InlineNode, IEquatable<Html>
 	/// <returns>复制的结果。</returns>
 	internal override Node CloneNode(bool deep, NodeCloneContext context)
 	{
-		return new Html(Kind, content, Span)
+		Html node = new(Kind, content, Span)
 		{
 			value = value,
 			Locator = Locator,
 		};
+		if (attributes != null && attributes.Count > 0)
+		{
+			attributes.CloneTo(node.Attributes);
+		}
+		return node;
 	}
 
 	/// <summary>

@@ -28,7 +28,7 @@ public sealed class LinkDefinition : BlockNode
 	/// 定义的属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private readonly HtmlAttributeList attributes = new();
+	internal HtmlAttributeList? attributes;
 
 	/// <summary>
 	/// 使用指定的链接定义信息和文本范围初始化 <see cref="LinkDefinition"/> 类的新实例。
@@ -91,7 +91,7 @@ public sealed class LinkDefinition : BlockNode
 	/// <summary>
 	/// 获取链接定义的属性列表。
 	/// </summary>
-	public HtmlAttributeList Attributes => attributes;
+	public HtmlAttributeList Attributes => attributes ??= new HtmlAttributeList();
 
 	/// <summary>
 	/// 应用指定的访问器。
@@ -131,7 +131,10 @@ public sealed class LinkDefinition : BlockNode
 			identifier = identifier,
 			Locator = Locator,
 		};
-		attributes.CloneTo(node.attributes);
+		if (attributes != null && attributes.Count > 0)
+		{
+			attributes.CloneTo(node.Attributes);
+		}
 		context.LinkDefinitions.Add(this, node);
 		return node;
 	}

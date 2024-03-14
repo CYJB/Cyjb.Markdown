@@ -22,7 +22,7 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 	/// 数学公式的属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private readonly HtmlAttributeList attributes = new();
+	private HtmlAttributeList? attributes;
 
 	/// <summary>
 	/// 使用指定的数学公式内容和文本范围初始化 <see cref="MathBlock"/> 类的新实例。
@@ -57,7 +57,7 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 	/// <summary>
 	/// 获取数学公式的属性列表。
 	/// </summary>
-	public HtmlAttributeList Attributes => attributes;
+	public HtmlAttributeList Attributes => attributes ??= new HtmlAttributeList();
 
 	/// <summary>
 	/// 获取或设置数学公式的内容。
@@ -101,7 +101,10 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 			info = info,
 			Locator = Locator,
 		};
-		attributes.CloneTo(node.attributes);
+		if (attributes != null && attributes.Count > 0)
+		{
+			attributes.CloneTo(node.Attributes);
+		}
 		return node;
 	}
 

@@ -32,7 +32,7 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// 链接的属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private readonly HtmlAttributeList attributes = new();
+	private HtmlAttributeList? attributes;
 
 	/// <summary>
 	/// 使用指定的 URL、标题和文本范围初始化 <see cref="Link"/> 类的新实例。
@@ -119,7 +119,20 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 	/// <summary>
 	/// 获取链接的属性列表。
 	/// </summary>
-	public HtmlAttributeList Attributes => definition?.Attributes ?? attributes;
+	public HtmlAttributeList Attributes
+	{
+		get
+		{
+			if (definition == null)
+			{
+				return attributes ??= new HtmlAttributeList();
+			}
+			else
+			{
+				return definition.Attributes;
+			}
+		}
+	}
 	/// <summary>
 	/// 获取子节点列表。
 	/// </summary>
@@ -145,8 +158,11 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 		}
 		url = definition.URL;
 		title = definition.Title;
-		attributes.Clear();
-		attributes.AddRange(definition.Attributes);
+		attributes?.Clear();
+		if (definition.attributes != null && definition.attributes.Count > 0)
+		{
+			Attributes.AddRange(definition.attributes);
+		}
 		definition = null;
 	}
 
@@ -183,7 +199,10 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 			definition = definition?.CloneNode(deep, context) as LinkDefinition,
 			Locator = Locator,
 		};
-		attributes.CloneTo(node.attributes);
+		if (attributes != null && attributes.Count > 0)
+		{
+			attributes.CloneTo(node.Attributes);
+		}
 		children.CloneTo(node.children, context);
 		return node;
 	}

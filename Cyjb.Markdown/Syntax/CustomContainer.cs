@@ -22,7 +22,7 @@ public sealed class CustomContainer : BlockNode, INodeContainer<BlockNode>
 	/// 自定义容器的属性。
 	/// </summary>
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-	private readonly HtmlAttributeList attributes = new();
+	private HtmlAttributeList? attributes;
 
 	/// <summary>
 	/// 使用指定的文本范围初始化 <see cref="CustomContainer"/> 类的新实例。
@@ -56,7 +56,7 @@ public sealed class CustomContainer : BlockNode, INodeContainer<BlockNode>
 	/// <summary>
 	/// 获取自定义容器的属性列表。
 	/// </summary>
-	public HtmlAttributeList Attributes => attributes;
+	public HtmlAttributeList Attributes => attributes ??= new HtmlAttributeList();
 
 	/// <summary>
 	/// 获取子节点列表。
@@ -105,7 +105,10 @@ public sealed class CustomContainer : BlockNode, INodeContainer<BlockNode>
 			info = info,
 			Locator = Locator,
 		};
-		attributes.CloneTo(node.attributes);
+		if (attributes != null && attributes.Count > 0)
+		{
+			attributes.CloneTo(node.Attributes);
+		}
 		if (deep)
 		{
 			children.CloneTo(node.children, context);
