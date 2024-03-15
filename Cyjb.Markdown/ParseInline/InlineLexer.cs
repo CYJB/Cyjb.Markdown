@@ -49,7 +49,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 字面量缓冲区。
 	/// </summary>
-	private readonly PooledList<char> literalBuffer = new (0x1000);
+	private readonly PooledList<char> literalBuffer = new(0x1000);
 
 	/// <summary>
 	/// 获取当前词法单元的文本范围。
@@ -697,5 +697,14 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			lastChar = Text[^1];
 		}
 		return base.CreateToken();
+	}
+
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			literalBuffer.Dispose();
+		}
+		base.Dispose(disposing);
 	}
 }

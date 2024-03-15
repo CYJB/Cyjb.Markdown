@@ -125,9 +125,11 @@ internal sealed class BlockParser
 	public Document Parse()
 	{
 		Token<BlockKind> token;
+		LineInfo line = new(this, locator);
 		while (true)
 		{
-			LineInfo line = new(this, locator);
+			// 清除行的旧数据。
+			line.Clear();
 			// 添加所有换行符前的 Token。
 			while (!(token = tokenizer.Read()).IsEndOfFile)
 			{
@@ -282,7 +284,7 @@ internal sealed class BlockParser
 		// 检查延迟延伸。
 		if (!startedNewBlock && !line.IsBlank && openedProcessors.Peek().CanLazyContinuation)
 		{
-			ActivatedProcessor.AddLine(line.Text);
+			ActivatedProcessor.AddLine(line);
 			return;
 		}
 		// 闭合之前未延伸的块。
@@ -292,7 +294,7 @@ internal sealed class BlockParser
 			// 只有行非空或者并不是由于开始新块而清空的，才添加到处理器。
 			if (!line.IsEmpty || !startedNewBlock)
 			{
-				ActivatedProcessor.AddLine(line.Text);
+				ActivatedProcessor.AddLine(line);
 			}
 			return;
 		}
@@ -306,7 +308,7 @@ internal sealed class BlockParser
 			{
 				line.SkipIndent();
 			}
-			ActivatedProcessor.AddLine(line.Text);
+			ActivatedProcessor.AddLine(line);
 		}
 	}
 

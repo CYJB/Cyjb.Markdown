@@ -1,3 +1,4 @@
+using System.Text;
 using Cyjb.Collections;
 using Cyjb.Text;
 
@@ -203,6 +204,36 @@ internal sealed class LineInfo
 	}
 
 	/// <summary>
+	/// 将当前行添加到指定字符串。
+	/// </summary>
+	/// <param name="builder">字符串构造器。</param>
+	public void AppendTo(StringBuilder builder)
+	{
+		// 添加缩进。
+		if (indent != null && indent.Width > 0)
+		{
+			indent.AppendTo(builder);
+		}
+		// 添加剩余词法单元。
+		foreach (Token<BlockKind> token in tokens)
+		{
+			builder.Append(token.Text.AsSpan());
+		}
+	}
+
+	/// <summary>
+	/// 清除行的数据。
+	/// </summary>
+	public void Clear()
+	{
+		tokens.Clear();
+		indent = null;
+		text = null;
+		start = -1;
+		end = 0;
+	}
+
+	/// <summary>
 	/// 添加新的词法单元。
 	/// </summary>
 	/// <param name="token">要添加的词法单元。</param>
@@ -232,7 +263,7 @@ internal sealed class LineInfo
 			if (token.Kind == BlockKind.Indent)
 			{
 				// 是缩进，提取相关信息。
-				indent = (IndentInfo)tokens.Dequeue().Value!;
+				indent = (IndentInfo)Read().Value!;
 			}
 			else
 			{

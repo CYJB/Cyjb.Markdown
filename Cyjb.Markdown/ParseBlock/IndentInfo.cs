@@ -1,3 +1,4 @@
+using System.Text;
 using Cyjb.Collections;
 using Cyjb.Text;
 
@@ -156,6 +157,36 @@ internal class IndentInfo
 				result.Add(text.AsSpan(idx));
 			}
 			return result.ToString();
+		}
+	}
+
+	/// <summary>
+	/// 将缩进文本添加到指定字符串。
+	/// </summary>
+	/// <param name="builder">字符串构造器。</param>
+	public void AppendTo(StringBuilder builder)
+	{
+		if (startColumn == endColumn)
+		{
+			// 所有缩进均已消费。
+			return;
+		}
+		int column = locator.GetPosition(start).Column;
+		if (column == startColumn)
+		{
+			builder.Append(text.AsSpan(start - originalStart));
+		}
+		else
+		{
+			// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
+			column = locator.GetPosition(start + 1).Column;
+			builder.Append(' ', column - startColumn);
+			int idx = start + 1 - originalStart;
+			// 存在 Tab 时，可能会出现列数超出字符数的场景。
+			if (idx < text.Length)
+			{
+				builder.Append(text.AsSpan(idx));
+			}
 		}
 	}
 }

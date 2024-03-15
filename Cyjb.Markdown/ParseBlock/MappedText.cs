@@ -24,7 +24,7 @@ internal sealed class MappedText
 	/// <summary>
 	/// 源码映射表。
 	/// </summary>
-	private List<Tuple<int, int>> maps;
+	private readonly List<Tuple<int, int>> maps;
 	/// <summary>
 	/// 位置映射器。
 	/// </summary>
@@ -287,27 +287,6 @@ internal sealed class MappedText
 		int spanStart = span.Start + originStart;
 		TextSpan newSpan = new(spanStart, spanStart + originLength);
 		return new MappedText(newTexts, originLength, newSpan, GetMaps(start, length));
-	}
-
-	/// <summary>
-	/// 将当前文本添加到指定字符串后。
-	/// </summary>
-	/// <param name="list">要添加到的字符串。</param>
-	/// <param name="startIndex">添加的起始索引。</param>
-	public void AppendTo(PooledList<char> list, int startIndex = 0)
-	{
-		foreach (StringView text in texts)
-		{
-			if (startIndex >= text.Length)
-			{
-				startIndex -= text.Length;
-			}
-			else
-			{
-				list.Add(text[startIndex..].AsSpan());
-				startIndex = 0;
-			}
-		}
 	}
 
 	/// <summary>

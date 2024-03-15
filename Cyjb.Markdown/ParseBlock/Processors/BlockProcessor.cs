@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 
@@ -83,8 +82,8 @@ internal abstract class BlockProcessor
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public virtual void AddLine(MappedText text) { }
+	/// <param name="line">新添加的行。</param>
+	public virtual void AddLine(LineInfo line) { }
 
 	/// <summary>
 	/// 返回当前节点是否可以包含指定类型的子节点。

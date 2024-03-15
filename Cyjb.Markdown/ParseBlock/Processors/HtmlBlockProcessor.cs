@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
-using Cyjb.Collections;
+using System.Text;
 using Cyjb.Markdown.Syntax;
+using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
@@ -18,15 +18,15 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// <summary>
 	/// HTML 文本。
 	/// </summary>
-	private readonly PooledList<char> builder = new();
+	private readonly StringBuilder builder = new();
 	/// <summary>
 	/// 块的起始位置。
 	/// </summary>
 	private readonly int start;
 	/// <summary>
-	/// 结束的正则表达式。
+	/// HTML 的信息。
 	/// </summary>
-	private readonly Regex? closeRegex;
+	private readonly HtmlInfo info;
 	/// <summary>
 	/// 是否已完成 HTML 块的识别。
 	/// </summary>
@@ -36,12 +36,12 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// 初始化 <see cref="HtmlBlockProcessor"/> 类的新实例。
 	/// </summary>
 	/// <param name="start">块的起始索引。</param>
-	/// <param name="closeRegex">结束的正则表达式。</param>
-	private HtmlBlockProcessor(int start, Regex? closeRegex)
+	/// <param name="info">HTML 的信息。</param>
+	private HtmlBlockProcessor(int start, HtmlInfo info)
 		: base(MarkdownKind.CodeBlock)
 	{
 		this.start = start;
-		this.closeRegex = closeRegex;
+		this.info = info;
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 		{
 			return BlockContinue.None;
 		}
-		if (line.IsBlank && closeRegex == null)
+		if (line.IsBlank && info.CloseByBlankLine)
 		{
 			// 遇到空行结束。
 			return BlockContinue.None;
@@ -69,15 +69,12 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public override void AddLine(MappedText text)
+	/// <param name="line">新添加的行。</param>
+	public override void AddLine(LineInfo line)
 	{
-		string lineText = text.ToString();
-		builder.Add(lineText);
-		if (closeRegex != null && closeRegex.IsMatch(lineText))
-		{
-			finished = true;
-		}
+		int start = builder.Length;
+		line.AppendTo(builder);
+		finished = info.IsClosed(builder, start);
 	}
 
 	/// <summary>
@@ -88,7 +85,9 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		return new HtmlBlock(builder.ToString(), new TextSpan(start, end));
+		HtmlBlock node = new(builder.ToString(), new TextSpan(start, end));
+		StringBuilderPool.Return(builder);
+		return node;
 	}
 
 	/// <summary>
@@ -116,7 +115,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 				yield break;
 			}
 			// HTML 块的起始位置包含前面的空白。
-			yield return new HtmlBlockProcessor(line.Start, info.CloseRegex);
+			yield return new HtmlBlockProcessor(line.Start, info);
 		}
 	}
 }

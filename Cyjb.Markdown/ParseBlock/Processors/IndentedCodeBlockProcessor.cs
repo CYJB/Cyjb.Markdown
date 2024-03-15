@@ -1,4 +1,6 @@
+using System.Text;
 using Cyjb.Markdown.Syntax;
+using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
@@ -30,7 +32,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 代码行。
 	/// </summary>
-	private readonly List<MappedText> lines = new();
+	private readonly StringBuilder builder = StringBuilderPool.Rent(16);
 	/// <summary>
 	/// 代码块的起始位置。
 	/// </summary>
@@ -39,6 +41,10 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// 代码块内容的结束位置。
 	/// </summary>
 	private int end;
+	/// <summary>
+	/// 非空白内容的长度。
+	/// </summary>
+	private int notBlankLength;
 
 	/// <summary>
 	/// 初始化 <see cref="IndentedCodeBlockProcessor"/> 类的新实例。
@@ -80,10 +86,14 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public override void AddLine(MappedText text)
+	/// <param name="line">新添加的行。</param>
+	public override void AddLine(LineInfo line)
 	{
-		lines.Add(text);
+		line.AppendTo(builder);
+		if (!line.IsBlank)
+		{
+			notBlankLength = builder.Length;
+		}
 	}
 
 	/// <summary>
@@ -95,10 +105,8 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		// 忽略末尾的空行。
-		while (lines.Count > 0 && lines[^1].IsBlank)
-		{
-			lines.RemoveAt(lines.Count - 1);
-		}
-		return new CodeBlock(string.Concat(lines), new TextSpan(start, this.end));
+		CodeBlock node = new(builder.ToString(0, notBlankLength), new TextSpan(start, this.end));
+		StringBuilderPool.Return(builder);
+		return node;
 	}
 }

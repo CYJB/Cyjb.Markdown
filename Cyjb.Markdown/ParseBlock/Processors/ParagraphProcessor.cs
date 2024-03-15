@@ -80,19 +80,20 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public override void AddLine(MappedText text)
+	/// <param name="line">新添加的行。</param>
+	public override void AddLine(LineInfo line)
 	{
 		// 在之前的文本被识别为链接声明后，需要移除新的行首空白。
 		if (trimStart)
 		{
-			text.TrimStart();
+			line.SkipIndent();
 			trimStart = false;
 		}
 		if (start < 0)
 		{
-			start = text.Span.Start;
+			start = line.Start;
 		}
+		MappedText text = line.Text;
 		lines.Add(text);
 		if (linkDefinitionParser.CanContinue)
 		{

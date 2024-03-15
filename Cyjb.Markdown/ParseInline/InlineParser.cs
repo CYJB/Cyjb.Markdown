@@ -170,6 +170,7 @@ internal sealed class InlineParser
 		}
 		ProcessDelimiter(null);
 		MergeText(children);
+		tokenizer.Dispose();
 	}
 
 	/// <summary>

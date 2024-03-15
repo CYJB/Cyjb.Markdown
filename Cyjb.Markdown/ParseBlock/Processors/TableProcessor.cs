@@ -71,10 +71,10 @@ internal sealed class TableProcessor : BlockProcessor
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
-	/// <param name="text">行的文本。</param>
-	public override void AddLine(MappedText text)
+	/// <param name="line">新添加的行。</param>
+	public override void AddLine(LineInfo line)
 	{
-		table.Children.Add(ParseRow(text));
+		table.Children.Add(ParseRow(line.Text));
 	}
 
 	/// <summary>
@@ -111,21 +111,20 @@ internal sealed class TableProcessor : BlockProcessor
 		TextSpan rowSpan = text.Span;
 		text.TrimStart();
 		text.TrimEnd();
-		string str = text.ToString();
 		List<TableCell> cells = new();
 		List<MappedText> texts = new();
 		int spanStart = 0;
 		int start = 0;
-		int len = str.Length;
+		int len = text.Length;
 		for (int i = 0; i < len; i++)
 		{
-			char ch = str[i];
+			char ch = text[i];
 			switch (ch)
 			{
 				case '\\':
 					if (i + 1 < len)
 					{
-						if (str[i + 1] == '|')
+						if (text[i + 1] == '|')
 						{
 							// 需要特殊处理竖划线，转义后的竖划线不会产生新单元格，
 							// 但在后续解析行级元素时，需要当作一个竖划线看待，不会包含前面的转义字符。
