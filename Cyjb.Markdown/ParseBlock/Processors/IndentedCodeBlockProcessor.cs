@@ -18,7 +18,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	public static IEnumerable<BlockProcessor> TryStart(LineInfo line)
 	{
 		// 缩进代码块不会中断段落。
-		if (line.IsCodeIndent && !line.IsBlank &&
+		if (line.IsCodeIndent && !line.IsBlank() &&
 			line.ActivatedProcessor.Kind != MarkdownKind.Paragraph)
 		{
 			// 代码块的起始位置包含缩进位置。
@@ -71,7 +71,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 			end = line.End;
 			return BlockContinue.Continue;
 		}
-		else if (line.IsBlank)
+		else if (line.IsBlank())
 		{
 			// 跳过空白部分，但暂时不计入结尾。
 			line.SkipIndent(LineInfo.CodeIndent);
@@ -90,7 +90,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	public override void AddLine(LineInfo line)
 	{
 		line.AppendTo(builder);
-		if (!line.IsBlank)
+		if (!line.IsBlank())
 		{
 			notBlankLength = builder.Length;
 		}

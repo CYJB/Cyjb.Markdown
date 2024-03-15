@@ -47,7 +47,7 @@ internal class FootnoteProcessor : BlockProcessor
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
 	public override BlockContinue TryContinue(LineInfo line)
 	{
-		if (line.IsCodeIndent || line.IsBlank)
+		if (line.IsCodeIndent || line.IsBlank())
 		{
 			// 缩进会被认为是脚注的一部分，这时要吃掉 4 个缩进。
 			// 空白行也是脚注的一部分。
@@ -118,7 +118,7 @@ internal class FootnoteProcessor : BlockProcessor
 			// 跳过之后的空白。
 			line.SkipIndent();
 			// 如果达到了行尾，那么消费整行，确保在空脚注时能够拿到正确的结束位置。
-			if (line.IsBlank)
+			if (line.IsBlank())
 			{
 				line.Skip();
 			}

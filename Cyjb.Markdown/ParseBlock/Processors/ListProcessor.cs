@@ -76,7 +76,7 @@ internal sealed class ListProcessor : BlockProcessor
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
 	public override BlockContinue TryContinue(LineInfo line)
 	{
-		if (line.IsBlank)
+		if (line.IsBlank())
 		{
 			hadBlankLine = true;
 			blankLines = 0;
@@ -183,7 +183,7 @@ internal sealed class ListProcessor : BlockProcessor
 			}
 			Token<BlockKind> token = line.Peek();
 			ListStyleType styleType = (ListStyleType)token.Value!;
-			bool hasContent = line.Tokens.Skip(1).Any(LineInfo.HasContent);
+			bool hasContent = !line.IsBlank(1);
 			if (matchedProcessor.ParagraphLines?.Count > 0)
 			{
 				// 空列表不能中断段落。
@@ -310,7 +310,7 @@ internal sealed class ListProcessor : BlockProcessor
 		private static bool? CheckTaskListItem(LineInfo line)
 		{
 			// 检查包含任务列表项标志
-			if (line.Indent >= 4 || line.IsBlank)
+			if (line.Indent >= 4 || line.IsBlank())
 			{
 				return null;
 			}
@@ -327,8 +327,7 @@ internal sealed class ListProcessor : BlockProcessor
 				return null;
 			}
 			// 右方括号后面至少包含一个空白，也包含内容。
-			if (line.Tokens.Count <= 2 || line.Tokens[1].Kind != BlockKind.Indent ||
-				!line.Tokens.Skip(2).Any(LineInfo.HasContent))
+			if (line.Tokens.Count <= 2 || line.Tokens[1].Kind != BlockKind.Indent || line.IsBlank(2))
 			{
 				return null;
 			}

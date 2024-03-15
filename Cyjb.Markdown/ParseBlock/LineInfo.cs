@@ -15,16 +15,6 @@ internal sealed class LineInfo
 	public const int CodeIndent = 4;
 
 	/// <summary>
-	/// 返回指定词法单元是否包含内容。
-	/// </summary>
-	/// <param name="token">要检查的词法单元。</param>
-	/// <returns>如果指定词法单元包含内容，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	internal static bool HasContent(Token<BlockKind> token)
-	{
-		return token.Kind != BlockKind.Indent && token.Kind != BlockKind.NewLine;
-	}
-
-	/// <summary>
 	/// 词法单元队列。
 	/// </summary>
 	private readonly ListQueue<Token<BlockKind>> tokens = new();
@@ -90,10 +80,6 @@ internal sealed class LineInfo
 	/// 获取是否是代码缩进。
 	/// </summary>
 	public bool IsCodeIndent => GetIndent().Width >= CodeIndent;
-	/// <summary>
-	/// 获取是否是空行或只包含空白。
-	/// </summary>
-	public bool IsBlank => !tokens.Any(HasContent);
 	/// <summary>
 	/// 获取行的起始位置。
 	/// </summary>
@@ -173,6 +159,24 @@ internal sealed class LineInfo
 	/// 获取词法单元列表。
 	/// </summary>
 	internal IReadOnlyList<Token<BlockKind>> Tokens => tokens;
+
+	/// <summary>
+	/// 返回当前行是否是空的或只包含空白。
+	/// </summary>
+	/// <param name="start">要检查的起始词法单元索引。</param>
+	public bool IsBlank(int start = 0)
+	{
+		int count = tokens.Count;
+		for (int i = start; i < count; i++)
+		{
+			BlockKind kind = tokens[i].Kind;
+			if (kind != BlockKind.Indent && kind != BlockKind.NewLine)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/// <summary>
 	/// 跳过指定个数的空白。

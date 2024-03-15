@@ -55,7 +55,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 		{
 			return BlockContinue.None;
 		}
-		if (line.IsBlank && info.CloseByBlankLine)
+		if (line.IsBlank() && info.CloseByBlankLine)
 		{
 			// 遇到空行结束。
 			return BlockContinue.None;

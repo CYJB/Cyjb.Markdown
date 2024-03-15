@@ -283,7 +283,7 @@ internal sealed class BlockParser
 			processor = openedProcessors.Peek();
 		}
 		// 检查延迟延伸。
-		if (!startedNewBlock && !line.IsBlank && openedProcessors.Peek().CanLazyContinuation)
+		if (!startedNewBlock && !line.IsBlank() && openedProcessors.Peek().CanLazyContinuation)
 		{
 			ActivatedProcessor.AddLine(line);
 			return;
@@ -299,7 +299,7 @@ internal sealed class BlockParser
 			}
 			return;
 		}
-		if (!line.IsBlank)
+		if (!line.IsBlank())
 		{
 			// 为行添加一个新的段落。
 			processor = new ParagraphProcessor(options);

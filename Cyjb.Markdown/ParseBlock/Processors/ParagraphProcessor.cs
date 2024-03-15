@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
@@ -74,7 +73,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
 	public override BlockContinue TryContinue(LineInfo line)
 	{
-		return line.IsBlank ? BlockContinue.None : BlockContinue.Continue;
+		return line.IsBlank() ? BlockContinue.None : BlockContinue.Continue;
 	}
 
 	/// <summary>

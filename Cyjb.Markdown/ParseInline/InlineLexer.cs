@@ -687,6 +687,15 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 重新加载源读取器。
+	/// </summary>
+	protected override void SourceLoaded()
+	{
+		base.SourceLoaded();
+		lastChar = '\n';
+	}
+
+	/// <summary>
 	/// 根据当前词法分析接受结果创建 <see cref="Token{InlineKind}"/> 的新实例。
 	/// </summary>
 	/// <returns><see cref="Token{InlineKind}"/> 的新实例。</returns>

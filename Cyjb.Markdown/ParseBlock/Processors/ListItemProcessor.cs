@@ -73,7 +73,7 @@ internal sealed class ListItemProcessor : BlockProcessor
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
 	public override BlockContinue TryContinue(LineInfo line)
 	{
-		if (line.IsBlank)
+		if (line.IsBlank())
 		{
 			if (item.Children.Count == 0 && line.ActivatedProcessor.Kind == MarkdownKind.ListItem)
 			{
