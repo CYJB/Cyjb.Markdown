@@ -1,4 +1,5 @@
 using Cyjb.Collections;
+using Cyjb.Compilers.Lexers;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -42,7 +43,7 @@ internal sealed class BlockParser
 	/// <summary>
 	/// 块级词法分析器。
 	/// </summary>
-	private readonly ITokenizer<BlockKind> tokenizer;
+	private readonly LexerTokenizer<BlockKind> tokenizer = BlockLexer.Factory.CreateTokenizer();
 	/// <summary>
 	/// 行列定位器。
 	/// </summary>
@@ -92,8 +93,8 @@ internal sealed class BlockParser
 		reader = new SourceReader(text);
 		reader.UseLineLocator();
 		locator = reader.Locator!;
-		tokenizer = BlockLexer.Factory.CreateTokenizer(reader);
 		this.options = options ?? ParseOptions.Default;
+		tokenizer.Load(reader);
 		tokenizer.SharedContext = this.options;
 		openedProcessors.Push(document);
 	}

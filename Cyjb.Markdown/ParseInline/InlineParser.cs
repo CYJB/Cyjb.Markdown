@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Cyjb.Collections;
+using Cyjb.Compilers.Lexers;
 using Cyjb.Markdown.ParseBlock;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -26,13 +27,13 @@ internal sealed class InlineParser
 	/// </summary>
 	private readonly ParseOptions options;
 	/// <summary>
+	/// 行级词法分析器。
+	/// </summary>
+	private readonly LexerTokenizer<InlineKind> tokenizer = InlineLexer.Factory.CreateTokenizer();
+	/// <summary>
 	/// 源文件读取器。
 	/// </summary>
 	private SourceReader reader;
-	/// <summary>
-	/// 行级词法分析器。
-	/// </summary>
-	private ITokenizer<InlineKind> tokenizer;
 	/// <summary>
 	/// 要添加到的行级节点列表。
 	/// </summary>
@@ -106,7 +107,7 @@ internal sealed class InlineParser
 		list.Dispose();
 		locationMap = new LocationMap(GetMaps(texts), LocationMapType.Offset);
 		// 将词法单元重新映射成源码位置。
-		tokenizer = InlineLexer.Factory.CreateTokenizer(reader);
+		tokenizer.Load(reader);
 		tokenizer.SharedContext = this;
 		// 重置状态。
 		this.children = children;
