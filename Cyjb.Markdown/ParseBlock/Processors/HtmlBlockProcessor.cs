@@ -18,7 +18,7 @@ internal class HtmlBlockProcessor : BlockProcessor
 	/// <summary>
 	/// HTML 文本。
 	/// </summary>
-	private readonly StringBuilder builder = new();
+	private readonly StringBuilder builder = StringBuilderPool.Rent(16);
 	/// <summary>
 	/// 块的起始位置。
 	/// </summary>

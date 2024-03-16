@@ -169,8 +169,8 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				}
 			}
 			ReadOnlySpan<char> span = list.AsSpan();
-			HtmlAttributeList? attrs = null;
-			if (MarkdownUtil.TryParseAttributes(ref span, ref attrs))
+			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref span);
+			if (attrs != null)
 			{
 				list.Dispose();
 				// 移除行中不需要的部分。
@@ -180,13 +180,12 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				}
 				MappedText lastLine = lines[^1];
 				lastLine.RemoteEnd(lastLine.Length - startIdx);
-				return attrs;
 			}
 			else
 			{
 				list.Dispose();
-				return null;
 			}
+			return attrs;
 		}
 	}
 }

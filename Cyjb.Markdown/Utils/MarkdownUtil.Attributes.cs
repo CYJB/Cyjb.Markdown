@@ -42,68 +42,64 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
-	/// 尝试从文本中解析属性。
+	/// 从文本中解析属性。
 	/// </summary>
 	/// <param name="text">要检查的字符串视图。</param>
-	/// <param name="attrs">保存属性的列表。</param>
-	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseAttributes(ref StringView text, ref HtmlAttributeList? attrs)
+	/// <returns>如果成功解析属性，则返回属性列表；否则返回 <c>null</c>。</returns>
+	public static HtmlAttributeList? ParseAttributes(ref StringView text)
 	{
 		ReadOnlySpan<char> span = text;
-		if (TryParseAttributes(ref span, ref attrs))
+		HtmlAttributeList? attrs = ParseAttributes(ref span);
+		if (attrs != null)
 		{
 			text = text[0..span.Length];
-			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return attrs;
 	}
 
 	/// <summary>
-	/// 尝试从文本中解析属性。
+	/// 从文本中解析属性。
 	/// </summary>
 	/// <param name="text">要检查的文本。</param>
-	/// <param name="attrs">保存属性的列表。</param>
-	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseAttributes(ref ReadOnlySpan<char> text, ref HtmlAttributeList? attrs)
+	/// <returns>如果成功解析属性，则返回属性列表；否则返回 <c>null</c>。</returns>
+	public static HtmlAttributeList? ParseAttributes(ref ReadOnlySpan<char> text)
 	{
 		// 找到属性的起始索引。
 		int idx = FindAttributeStart(text);
 		if (idx < 0)
 		{
-			return false;
+			return null;
 		}
 		int start = idx;
-		ReadOnlySpan<char> attrText = text[(start + 1)..];
+		ReadOnlySpan<char> attrText = text.Slice(start + 1);
 		TrimEnd(ref attrText);
 		// 要求最后一个非空白字符是 }。
 		if (attrText.IsEmpty || attrText[^1] != '}')
 		{
 			// 未找到最后一个 }。
-			return false;
+			return null;
 		}
 		attrText = attrText[0..^1];
 		if (!TrimAttributeSeperator(ref attrText))
 		{
 			// 错误的分隔符。
-			return false;
+			return null;
 		}
+		HtmlAttributeList? attrs = null;
 		while (!attrText.IsEmpty)
 		{
 			if (!TryParseAttribute(ref attrText, ref attrs).IsSuccess)
 			{
-				return false;
+				return null;
 			}
 			if (!TrimAttributeSeperator(ref attrText))
 			{
 				// 错误的分隔符。
-				return false;
+				return null;
 			}
 		}
 		text = text[0..start];
-		return true;
+		return attrs;
 	}
 
 	/// <summary>
@@ -223,7 +219,7 @@ internal static partial class MarkdownUtil
 		int lineCount = 0;
 		int i = 0;
 		bool isLastReturn = false;
-		for (; i < text.Length && MarkdownUtil.IsWhitespace(text[i]); i++)
+		for (; i < text.Length && IsWhitespace(text[i]); i++)
 		{
 			if (text[i] == '\r')
 			{
