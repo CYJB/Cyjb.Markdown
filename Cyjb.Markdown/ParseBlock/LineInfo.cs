@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using Cyjb.Collections;
 using Cyjb.Text;

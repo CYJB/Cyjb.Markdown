@@ -97,7 +97,7 @@ internal sealed class LinkDefinitionParser
 	/// <summary>
 	/// 属性列表。
 	/// </summary>
-	private readonly HtmlAttributeList attributes = new();
+	private HtmlAttributeList? attributes;
 	/// <summary>
 	/// 属性解析结果。
 	/// </summary>
@@ -347,7 +347,7 @@ internal sealed class LinkDefinitionParser
 		// 移除掉行首的空白，避免被识别为空行。
 		MarkdownUtil.TrimStart(ref text);
 		state = State.Attributes;
-		attributes.Clear();
+		attributes?.Clear();
 	}
 
 	/// <summary>
@@ -462,7 +462,7 @@ internal sealed class LinkDefinitionParser
 			// 属性解析过程中的空白行会导致链接解析失败。
 			return false;
 		}
-		AttributeParseResult result = MarkdownUtil.TryParseAttribute(ref text, attributes);
+		AttributeParseResult result = MarkdownUtil.TryParseAttribute(ref text, ref attributes);
 		if (!result.IsSuccess && result.IsMissingQuote)
 		{
 			attributeResult = result;
@@ -493,6 +493,7 @@ internal sealed class LinkDefinitionParser
 		}
 		attributeResult!.Value += text[0..idx].ToString();
 		text = text[(idx + 1)..];
+		attributes ??= new HtmlAttributeList();
 		attributes[attributeResult.Key] = attributeResult.Value;
 		return ParseAttributeEnd(ref text, span);
 	}
@@ -509,7 +510,7 @@ internal sealed class LinkDefinitionParser
 			// 属性间缺少分隔符，或错误的属性结束字符。
 			// 如果有 title，也不能正常使用。
 			title = null;
-			attributes.Clear();
+			attributes?.Clear();
 			return false;
 		}
 		if (text.Length > 0 && text[0] == '}')
@@ -521,7 +522,7 @@ internal sealed class LinkDefinitionParser
 			{
 				// 后面有非空白字符，清理失效数据。
 				title = null;
-				attributes.Clear();
+				attributes?.Clear();
 				return false;
 			}
 			end = span.End;
@@ -547,10 +548,13 @@ internal sealed class LinkDefinitionParser
 		if (hasDefinition)
 		{
 			LinkDefinition definition = new(label!, destination!, title, new TextSpan(start, end));
-			definition.Attributes.AddRange(attributes);
+			if (attributes != null && attributes.Count > 0)
+			{
+				definition.Attributes.AddRange(attributes);
+				attributes.Clear();
+			}
 			definitions.Add(definition);
 			hasDefinition = false;
-			attributes.Clear();
 		}
 	}
 }

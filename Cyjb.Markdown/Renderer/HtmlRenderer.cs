@@ -17,6 +17,10 @@ public class HtmlRenderer : BaseRenderer
 	/// 文本构造器。
 	/// </summary>
 	private readonly StringBuilder text = new();
+	/// <summary>
+	/// 临时的 HTML 属性列表。
+	/// </summary>
+	private readonly HtmlAttributeList tempHtmlAttributeList = new();
 
 	/// <summary>
 	/// 初始化 <see cref="HtmlRenderer"/> 类的新实例。
@@ -686,7 +690,11 @@ public class HtmlRenderer : BaseRenderer
 	{
 		text.Append('<');
 		text.Append(tagName);
-		attrs ??= new HtmlAttributeList();
+		if (attrs == null)
+		{
+			attrs = tempHtmlAttributeList;
+			attrs.Clear();
+		}
 		foreach (IAttributeModifier modifier in attributeModifiers)
 		{
 			modifier.UpdateAttributes(node, tagName, attrs);

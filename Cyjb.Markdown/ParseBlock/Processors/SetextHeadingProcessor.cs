@@ -169,8 +169,8 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				}
 			}
 			ReadOnlySpan<char> span = list.AsSpan();
-			HtmlAttributeList attrs = new();
-			if (MarkdownUtil.TryParseAttributes(ref span, attrs))
+			HtmlAttributeList? attrs = null;
+			if (MarkdownUtil.TryParseAttributes(ref span, ref attrs))
 			{
 				list.Dispose();
 				// 移除行中不需要的部分。

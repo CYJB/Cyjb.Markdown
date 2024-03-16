@@ -172,20 +172,18 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		// 解析属性。
 		StringView attrText = Text[(idx + 1)..];
 		int attrLen = attrText.Length;
+		attrs = null;
 		if (options.UseLinkAttributes && attrText.Length > 0 &&
 			attrText[0] == '{' && attrText[^1] == '}')
 		{
-			attrs = new HtmlAttributeList();
-			if (!MarkdownUtil.TryParseAttributes(ref attrText, attrs) || attrText.Length > 0)
+			if (!MarkdownUtil.TryParseAttributes(ref attrText, ref attrs) || attrText.Length > 0)
 			{
 				// 如果属性解析失败，或者并未正确解析所有属性，那么同样需要回滚属性。
-				attrs = null;
 				Source.Index -= attrLen;
 			}
 		}
 		else
 		{
-			attrs = null;
 			Source.Index -= attrLen;
 		}
 		return url;
@@ -373,11 +371,19 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		if (options.UseLinkAttributes && text.Length > 0 &&
 			text[0] == '{' && text[^1] == '}')
 		{
-			if (!MarkdownUtil.TryParseAttributes(ref text, body.Attributes) || text.Length > 0)
+			HtmlAttributeList? attrs = null;
+			if (!MarkdownUtil.TryParseAttributes(ref text, ref attrs) || text.Length > 0)
 			{
 				// 如果属性解析失败，或者并未正确解析所有属性，那么同样需要回滚属性。
-				body.Attributes.Clear();
 				Source.Index -= attrLen;
+			}
+			else
+			{
+				// 复制 HTML 属性。
+				if (attrs?.Count > 0)
+				{
+					body.Attributes.AddRange(attrs);
+				}
 			}
 		}
 		else

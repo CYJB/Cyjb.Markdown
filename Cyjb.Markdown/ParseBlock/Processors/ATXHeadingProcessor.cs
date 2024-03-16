@@ -36,7 +36,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
-		if (attrs != null)
+		if (attrs != null && attrs.Count > 0)
 		{
 			heading.Attributes.AddRange(attrs);
 		}

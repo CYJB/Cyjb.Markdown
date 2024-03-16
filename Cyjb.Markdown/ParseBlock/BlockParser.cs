@@ -81,6 +81,10 @@ internal sealed class BlockParser
 	/// 待解析行内节点的处理器。
 	/// </summary>
 	private readonly List<BlockProcessor> pendingInlineProcessors = new();
+	/// <summary>
+	/// 当前行内节点的处理器。
+	/// </summary>
+	private readonly List<BlockProcessor> currentInlineProcessors = new();
 
 	/// <summary>
 	/// 使用要解析的文本初始化 <see cref="BlockParser"/> 类的新实例。
@@ -240,7 +244,7 @@ internal sealed class BlockParser
 			}
 			processor.IsNeedReplaced = false;
 			token = line.Peek();
-			List<BlockProcessor> processors = new();
+			currentInlineProcessors.Clear();
 			if (token.Kind == BlockKind.NewLine)
 			{
 				// 是空行，不需要继续解析块起始。
@@ -250,19 +254,19 @@ internal sealed class BlockParser
 			{
 				foreach (IBlockFactory factory in factories)
 				{
-					processors.AddRange(factory.TryStart(line, processor));
-					if (processors.Count > 0)
+					currentInlineProcessors.AddRange(factory.TryStart(line, processor));
+					if (currentInlineProcessors.Count > 0)
 					{
 						break;
 					}
 				};
 			}
 			// 尝试检查缩进代码块
-			if (processors.Count == 0)
+			if (currentInlineProcessors.Count == 0)
 			{
-				processors.AddRange(IndentedCodeBlockProcessor.TryStart(line));
+				currentInlineProcessors.AddRange(IndentedCodeBlockProcessor.TryStart(line));
 			}
-			if (processors.Count == 0)
+			if (currentInlineProcessors.Count == 0)
 			{
 				// 未找到合适的处理器，返回。
 				break;
@@ -275,7 +279,7 @@ internal sealed class BlockParser
 			{
 				paragraphProcessor.AddDefinitions(this);
 			}
-			foreach (BlockProcessor newProcessor in processors)
+			foreach (BlockProcessor newProcessor in currentInlineProcessors)
 			{
 				AddProcessor(newProcessor, lineStart);
 			}

@@ -47,14 +47,15 @@ internal static partial class MarkdownUtil
 	/// <param name="text">要检查的字符串视图。</param>
 	/// <param name="attrs">保存属性的列表。</param>
 	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseAttributes(ref StringView text, HtmlAttributeList attrs)
+	public static bool TryParseAttributes(ref StringView text, ref HtmlAttributeList? attrs)
 	{
 		ReadOnlySpan<char> span = text;
-		if (TryParseAttributes(ref span, attrs))
+		if (TryParseAttributes(ref span, ref attrs))
 		{
 			text = text[0..span.Length];
 			return true;
-		} else
+		}
+		else
 		{
 			return false;
 		}
@@ -66,7 +67,7 @@ internal static partial class MarkdownUtil
 	/// <param name="text">要检查的文本。</param>
 	/// <param name="attrs">保存属性的列表。</param>
 	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseAttributes(ref ReadOnlySpan<char> text, HtmlAttributeList attrs)
+	public static bool TryParseAttributes(ref ReadOnlySpan<char> text, ref HtmlAttributeList? attrs)
 	{
 		// 找到属性的起始索引。
 		int idx = FindAttributeStart(text);
@@ -91,7 +92,7 @@ internal static partial class MarkdownUtil
 		}
 		while (!attrText.IsEmpty)
 		{
-			if (!TryParseAttribute(ref attrText, attrs).IsSuccess)
+			if (!TryParseAttribute(ref attrText, ref attrs).IsSuccess)
 			{
 				return false;
 			}
@@ -111,7 +112,7 @@ internal static partial class MarkdownUtil
 	/// <param name="text">要检查的文本。</param>
 	/// <param name="attrs">保存属性的列表。</param>
 	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static AttributeParseResult TryParseAttribute(ref ReadOnlySpan<char> text, HtmlAttributeList attrs)
+	public static AttributeParseResult TryParseAttribute(ref ReadOnlySpan<char> text, ref HtmlAttributeList? attrs)
 	{
 		if (text.Length == 0)
 		{
@@ -131,6 +132,7 @@ internal static partial class MarkdownUtil
 			{
 				return AttributeParseResult.Failed;
 			}
+			attrs ??= new HtmlAttributeList();
 			if (text[0] == '#')
 			{
 				attrs["id"] = value.ToString();
@@ -160,6 +162,7 @@ internal static partial class MarkdownUtil
 				{
 					return AttributeParseResult.Failed;
 				}
+				attrs ??= new HtmlAttributeList();
 				attrs[key.ToString()] = string.Empty;
 			}
 			else
@@ -201,6 +204,7 @@ internal static partial class MarkdownUtil
 						return AttributeParseResult.Failed;
 					}
 				}
+				attrs ??= new HtmlAttributeList();
 				attrs[key.ToString()] = value.ToString();
 			}
 		}
