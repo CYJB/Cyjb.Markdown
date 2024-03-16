@@ -161,7 +161,14 @@ internal sealed class LineInfo
 					lastMappedIndex = token.Span.Start;
 					lastLength = token.Text.Length;
 					length += lastLength;
-					texts.Add(token.Text);
+					if (texts.Count > 0 && texts[^1].TryConcat(token.Text, out var concated))
+					{
+						texts[^1] = concated;
+					}
+					else
+					{
+						texts.Add(token.Text);
+					}
 					spanBuilder.Add(token.Span);
 				}
 				text = new MappedText(texts, length, spanBuilder.GetSpan(), maps);
@@ -213,7 +220,9 @@ internal sealed class LineInfo
 		indentStartColumn += count;
 		if (indentStartColumn >= indentEndColumn)
 		{
-			SkipIndent();
+			indentStartColumn = indentEndColumn;
+			start = indentEnd;
+			text = null;
 			return;
 		}
 		int column;
@@ -273,28 +282,7 @@ internal sealed class LineInfo
 		// 添加缩进。
 		if (hasIndent && Indent > 0)
 		{
-			if (indentStartColumn == indentEndColumn)
-			{
-				// 所有缩进均已消费。
-				return;
-			}
-			int column = locator.GetPosition(start).Column;
-			if (column == indentStartColumn)
-			{
-				builder.Append(indentText.AsSpan(start - indentOriginalStart));
-			}
-			else
-			{
-				// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
-				column = locator.GetPosition(start + 1).Column;
-				builder.Append(' ', column - indentStartColumn);
-				int idx = start + 1 - indentOriginalStart;
-				// 存在 Tab 时，可能会出现列数超出字符数的场景。
-				if (idx < indentText.Length)
-				{
-					builder.Append(indentText.AsSpan(idx));
-				}
-			}
+			builder.Append(GetIndentText().AsSpan());
 		}
 		// 添加剩余词法单元。
 		int count = tokens.Count;
@@ -399,11 +387,6 @@ internal sealed class LineInfo
 	/// <returns>缩进文本。</returns>
 	private StringView GetIndentText()
 	{
-		if (indentStartColumn == indentEndColumn)
-		{
-			// 所有缩进均已消费。
-			return StringView.Empty;
-		}
 		int column = locator.GetPosition(start).Column;
 		if (column == indentStartColumn)
 		{
