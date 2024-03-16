@@ -92,7 +92,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"{WS_P}/[^ \t]", Kind = BlockKind.Indent, UseShortest = true)]
 	private void IndentAction()
 	{
-		Accept(new IndentInfo(Span, Source.Locator!, Text));
+		Accept();
 	}
 	/// <summary>
 	/// 无序列表标志的动作。

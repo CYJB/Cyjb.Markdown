@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Cyjb.Collections;
 using Cyjb.Text;
@@ -35,13 +36,33 @@ internal sealed class LineInfo
 	/// </summary>
 	private int end;
 	/// <summary>
-	/// 缩进信息。
-	/// </summary>
-	private IndentInfo? indent;
-	/// <summary>
 	/// 映射的文本。
 	/// </summary>
 	private MappedText? text;
+	/// <summary>
+	/// 是否已计算缩进信息。
+	/// </summary>
+	private bool hasIndent;
+	/// <summary>
+	/// 缩进结束位置。
+	/// </summary>
+	private int indentEnd;
+	/// <summary>
+	/// 缩进缩进文本。
+	/// </summary>
+	private StringView indentText;
+	/// <summary>
+	/// 缩进原始起始位置。
+	/// </summary>
+	private int indentOriginalStart;
+	/// <summary>
+	/// 缩进起始列号。
+	/// </summary>
+	private int indentStartColumn;
+	/// <summary>
+	/// 缩进结束列号。
+	/// </summary>
+	private int indentEndColumn;
 
 	/// <summary>
 	/// 使用指定的行定位器初始化 <see cref="LineInfo"/> 类的新实例。
@@ -67,23 +88,26 @@ internal sealed class LineInfo
 	/// <summary>
 	/// 获取当前缩进宽度。
 	/// </summary>
-	public int Indent => GetIndent().Width;
+	public int Indent
+	{
+		get
+		{
+			GetIndent();
+			return indentEndColumn - indentStartColumn;
+		}
+	}
 	/// <summary>
 	/// 是否是段落可以跳过的缩进。
 	/// </summary>
-	public bool ParagraphSkippable
-	{
-		get => GetIndent().ParagraphSkippable;
-		set => GetIndent().ParagraphSkippable = value;
-	}
+	public bool ParagraphSkippable { get; set; }
 	/// <summary>
 	/// 获取是否是代码缩进。
 	/// </summary>
-	public bool IsCodeIndent => GetIndent().Width >= CodeIndent;
+	public bool IsCodeIndent => Indent >= CodeIndent;
 	/// <summary>
 	/// 获取行的起始位置。
 	/// </summary>
-	public int Start => indent == null ? start : indent.Start;
+	public int Start => hasIndent ? start : start;
 	/// <summary>
 	/// 获取行的结束位置。
 	/// </summary>
@@ -109,20 +133,22 @@ internal sealed class LineInfo
 				TextSpanBuilder spanBuilder = new();
 				List<Tuple<int, int>> maps = new();
 				// 添加缩进。
-				if (indent != null && indent.Width > 0)
+				if (hasIndent && Indent > 0)
 				{
-					lastMappedIndex = indent.Start;
+					lastMappedIndex = start;
 					maps.Add(new Tuple<int, int>(0, lastMappedIndex));
 					spanBuilder.Add(lastMappedIndex);
-					StringView text = indent.GetText();
+					StringView text = GetIndentText();
 					lastLength = text.Length;
 					length += lastLength;
 					texts.Add(text);
 				}
 				// 添加剩余词法单元。
 				bool isFirst = true;
-				foreach (Token<BlockKind> token in tokens)
+				int count = tokens.Count;
+				for (int i = 0; i < count; i++)
 				{
+					var token = tokens[i];
 					// 首个缩进可能会存在 Tab 部分替换为空格的情况，因此之后的词法单元也需要添加索引。
 					if (isFirst)
 					{
@@ -184,7 +210,34 @@ internal sealed class LineInfo
 	/// <param name="count">要跳过的空白个数。</param>
 	public void SkipIndent(int count)
 	{
-		GetIndent().Skip(count);
+		GetIndent();
+		indentStartColumn += count;
+		if (indentStartColumn >= indentEndColumn)
+		{
+			SkipIndent();
+			return;
+		}
+		int column;
+		// 由于 Tab 可能对应多列，因此需要找到首个 index 使得 column(index)≤startColumn。
+		for (; start < indentEnd; start++)
+		{
+			column = locator.GetPosition(start).Column;
+			if (column == indentStartColumn)
+			{
+				return;
+			}
+			else if (column > indentStartColumn)
+			{
+				start--;
+				return;
+			}
+		}
+		// 避免 end 的列位置超出 startColumn
+		column = locator.GetPosition(start).Column;
+		if (column > indentStartColumn)
+		{
+			start--;
+		}
 		text = null;
 	}
 
@@ -193,7 +246,9 @@ internal sealed class LineInfo
 	/// </summary>
 	public void SkipIndent()
 	{
-		GetIndent().Skip();
+		GetIndent();
+		indentStartColumn = indentEndColumn;
+		start = indentEnd;
 		text = null;
 	}
 
@@ -203,7 +258,10 @@ internal sealed class LineInfo
 	public void Skip()
 	{
 		tokens.Clear();
-		indent = new IndentInfo(end, locator);
+		hasIndent = true;
+		start = indentOriginalStart = indentEnd = end;
+		indentText = StringView.Empty;
+		indentStartColumn = indentEndColumn = 0;
 		text = null;
 	}
 
@@ -214,14 +272,36 @@ internal sealed class LineInfo
 	public void AppendTo(StringBuilder builder)
 	{
 		// 添加缩进。
-		if (indent != null && indent.Width > 0)
+		if (hasIndent && Indent > 0)
 		{
-			indent.AppendTo(builder);
+			if (indentStartColumn == indentEndColumn)
+			{
+				// 所有缩进均已消费。
+				return;
+			}
+			int column = locator.GetPosition(start).Column;
+			if (column == indentStartColumn)
+			{
+				builder.Append(indentText.AsSpan(start - indentOriginalStart));
+			}
+			else
+			{
+				// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
+				column = locator.GetPosition(start + 1).Column;
+				builder.Append(' ', column - indentStartColumn);
+				int idx = start + 1 - indentOriginalStart;
+				// 存在 Tab 时，可能会出现列数超出字符数的场景。
+				if (idx < indentText.Length)
+				{
+					builder.Append(indentText.AsSpan(idx));
+				}
+			}
 		}
 		// 添加剩余词法单元。
-		foreach (Token<BlockKind> token in tokens)
+		int count = tokens.Count;
+		for (int i = 0; i < count; i++)
 		{
-			builder.Append(token.Text.AsSpan());
+			builder.Append(tokens[i].Text.AsSpan());
 		}
 	}
 
@@ -231,10 +311,11 @@ internal sealed class LineInfo
 	public void Clear()
 	{
 		tokens.Clear();
-		indent = null;
+		hasIndent = false;
 		text = null;
 		start = -1;
 		end = 0;
+		ParagraphSkippable = true;
 	}
 
 	/// <summary>
@@ -254,28 +335,40 @@ internal sealed class LineInfo
 	/// <summary>
 	/// 获取缩进信息。
 	/// </summary>
-	private IndentInfo GetIndent()
+	private void GetIndent()
 	{
-		if (indent == null)
+		if (hasIndent)
 		{
-			if (tokens.Count == 0)
-			{
-				indent = new IndentInfo(end, locator);
-				return indent;
-			}
-			Token<BlockKind> token = tokens.Peek();
-			if (token.Kind == BlockKind.Indent)
-			{
-				// 是缩进，提取相关信息。
-				indent = (IndentInfo)Read().Value!;
-			}
-			else
-			{
-				// 其它，使用空缩进。
-				indent = new IndentInfo(token.Span.Start, locator);
-			}
+			return;
 		}
-		return indent;
+		hasIndent = true;
+		if (tokens.Count == 0)
+		{
+			start = indentOriginalStart = indentEnd = end;
+			indentText = StringView.Empty;
+			indentStartColumn = indentEndColumn = 0;
+			return;
+		}
+		Token<BlockKind> token = tokens.Peek();
+		if (token.Kind == BlockKind.Indent)
+		{
+			// 是缩进，提取相关信息。
+			tokens.Dequeue();
+			text = null;
+			start = token.Span.Start;
+			indentEnd = token.Span.End;
+			indentOriginalStart = start;
+			indentText = token.Text;
+			indentStartColumn = locator.GetPosition(start).Column;
+			indentEndColumn = locator.GetPosition(indentEnd).Column;
+		}
+		else
+		{
+			// 其它，使用空缩进。
+			start = indentOriginalStart = indentEnd = token.Span.Start;
+			indentText = StringView.Empty;
+			indentStartColumn = indentEndColumn = 0;
+		}
 	}
 
 	/// <summary>
@@ -295,9 +388,41 @@ internal sealed class LineInfo
 	{
 		Token<BlockKind> token = tokens.Dequeue();
 		// 读取词法单元后，需要重新检查缩进、文本和位置信息。
-		indent = null;
+		hasIndent = false;
 		text = null;
 		start = token.Span.End;
 		return token;
+	}
+
+	/// <summary>
+	/// 返回剩余的缩进文本。
+	/// </summary>
+	/// <returns>缩进文本。</returns>
+	private StringView GetIndentText()
+	{
+		if (indentStartColumn == indentEndColumn)
+		{
+			// 所有缩进均已消费。
+			return StringView.Empty;
+		}
+		int column = locator.GetPosition(start).Column;
+		if (column == indentStartColumn)
+		{
+			return indentText[(start - indentOriginalStart)..];
+		}
+		else
+		{
+			// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
+			column = locator.GetPosition(start + 1).Column;
+			using ValueList<char> result = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
+			result.Add(' ', column - indentStartColumn);
+			int idx = start + 1 - indentOriginalStart;
+			// 存在 Tab 时，可能会出现列数超出字符数的场景。
+			if (idx < indentText.Length)
+			{
+				result.Add(indentText.AsSpan(idx));
+			}
+			return result.ToString();
+		}
 	}
 }

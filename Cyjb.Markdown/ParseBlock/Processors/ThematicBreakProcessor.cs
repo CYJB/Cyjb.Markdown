@@ -106,8 +106,10 @@ internal sealed class ThematicBreakProcessor : BlockProcessor
 			int dashes = 0;
 			int asterisks = 0;
 			// 计算分隔符的个数（大于等于 3），且不会出现混用。
-			foreach (Token<BlockKind> token in tokens)
+			int count = tokens.Count;
+			for (int i = 0; i < count; i++)
 			{
+				Token<BlockKind> token = tokens[i];
 				switch (token.Kind)
 				{
 					case BlockKind.UnorderedListMarker:
