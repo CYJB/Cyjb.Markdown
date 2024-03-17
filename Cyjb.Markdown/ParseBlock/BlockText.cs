@@ -7,7 +7,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// 行的信息。
 /// </summary>
-internal sealed class LineInfo
+internal sealed class BlockText
 {
 	/// <summary>
 	/// 代码缩进长度。
@@ -64,11 +64,11 @@ internal sealed class LineInfo
 	private int indentEndColumn;
 
 	/// <summary>
-	/// 使用指定的行定位器初始化 <see cref="LineInfo"/> 类的新实例。
+	/// 使用指定的行定位器初始化 <see cref="BlockText"/> 类的新实例。
 	/// </summary>
 	/// <param name="parser">块解析器。</param>
 	/// <param name="locator">行定位器。</param>
-	internal LineInfo(BlockParser parser, LineLocator locator)
+	internal BlockText(BlockParser parser, LineLocator locator)
 	{
 		this.parser = parser;
 		this.locator = locator;

@@ -77,13 +77,13 @@ internal abstract class BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public abstract BlockContinue TryContinue(LineInfo line);
+	public abstract BlockContinue TryContinue(BlockText line);
 
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public virtual void AddLine(LineInfo line) { }
+	public virtual void AddLine(BlockText line) { }
 
 	/// <summary>
 	/// 返回当前节点是否可以包含指定类型的子节点。

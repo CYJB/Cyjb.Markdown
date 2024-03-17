@@ -45,13 +45,13 @@ internal class FootnoteProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		if (line.IsCodeIndent || line.IsBlank())
 		{
 			// 缩进会被认为是脚注的一部分，这时要吃掉 4 个缩进。
 			// 空白行也是脚注的一部分。
-			line.SkipIndent(LineInfo.CodeIndent);
+			line.SkipIndent(BlockText.CodeIndent);
 			return BlockContinue.Continue;
 		}
 		else
@@ -108,7 +108,7 @@ internal class FootnoteProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{

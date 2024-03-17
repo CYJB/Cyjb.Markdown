@@ -63,7 +63,7 @@ internal sealed class TableProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		return line.IsBlank() ? BlockContinue.None : BlockContinue.Continue;
 	}
@@ -72,7 +72,7 @@ internal sealed class TableProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(LineInfo line)
+	public override void AddLine(BlockText line)
 	{
 		table.Children.Add(ParseRow(line.Text));
 	}
@@ -233,7 +233,7 @@ internal sealed class TableProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
 		{
 			// 要求分割行之前是段落，而且包含且只包含一行。
 			IList<MappedText>? lines;

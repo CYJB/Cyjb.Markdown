@@ -130,7 +130,7 @@ internal sealed class BlockParser
 	public Document Parse()
 	{
 		Token<BlockKind> token;
-		LineInfo line = new(this, locator);
+		BlockText line = new(this, locator);
 		while (true)
 		{
 			// 清除行的旧数据。
@@ -204,7 +204,7 @@ internal sealed class BlockParser
 	/// 解析指定行。
 	/// </summary>
 	/// <param name="line">要解析的行。</param>
-	private void ParseLine(LineInfo line)
+	private void ParseLine(BlockText line)
 	{
 		int lineStart = line.Start;
 		// 栈底总是 document，总是可以接受任何行，因此总是跳过。

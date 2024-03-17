@@ -71,7 +71,7 @@ internal sealed class ListItemProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		if (line.IsBlank())
 		{

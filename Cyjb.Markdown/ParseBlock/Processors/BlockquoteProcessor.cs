@@ -37,7 +37,7 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		return CheckQuoteStart(line) ? BlockContinue.Continue : BlockContinue.None;
 	}
@@ -81,7 +81,7 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>如果找到了块引用起始标记，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	private static bool CheckQuoteStart(LineInfo line)
+	private static bool CheckQuoteStart(BlockText line)
 	{
 		if (line.IsCodeIndent || line.Peek().Kind != BlockKind.QuoteStart)
 		{
@@ -107,7 +107,7 @@ internal sealed class BlockquoteProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
 		{
 			int start = line.Peek().Span.Start;
 			if (CheckQuoteStart(line))

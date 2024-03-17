@@ -74,7 +74,7 @@ internal sealed class ListProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		if (line.IsBlank())
 		{
@@ -175,7 +175,7 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
@@ -203,7 +203,7 @@ internal sealed class ListProcessor : BlockProcessor
 			line.Read();
 			int contentIndent = indentAfterMarker + line.Indent;
 			// 如果没有内容或者是代码段，那么认为内容缩进是列表项后一个字符位置。
-			if (!hasContent || contentIndent - indentAfterMarker > LineInfo.CodeIndent)
+			if (!hasContent || contentIndent - indentAfterMarker > BlockText.CodeIndent)
 			{
 				contentIndent = indentAfterMarker + 1;
 				// 只跳过 marker 后的一个空白。
@@ -307,7 +307,7 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <returns>如果当前行包含任务列表项，根据是否勾选返回 <c>true</c> 或 <c>false</c>；
 		/// 如果不包含任务列表项，返回 <c>null</c>。</returns>
-		private static bool? CheckTaskListItem(LineInfo line)
+		private static bool? CheckTaskListItem(BlockText line)
 		{
 			// 检查包含任务列表项标志
 			if (line.Indent >= 4 || line.IsBlank())

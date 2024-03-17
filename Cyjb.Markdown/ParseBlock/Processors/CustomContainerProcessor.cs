@@ -55,7 +55,7 @@ internal class CustomContainerProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		if (!line.IsCodeIndent)
 		{
@@ -111,7 +111,7 @@ internal class CustomContainerProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(LineInfo line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{

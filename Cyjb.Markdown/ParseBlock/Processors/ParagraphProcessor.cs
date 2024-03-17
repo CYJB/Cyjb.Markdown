@@ -71,7 +71,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(LineInfo line)
+	public override BlockContinue TryContinue(BlockText line)
 	{
 		return line.IsBlank() ? BlockContinue.None : BlockContinue.Continue;
 	}
@@ -80,7 +80,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(LineInfo line)
+	public override void AddLine(BlockText line)
 	{
 		// 在之前的文本被识别为链接声明后，需要移除新的行首空白。
 		if (trimStart)
