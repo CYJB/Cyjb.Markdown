@@ -24,13 +24,13 @@ public class UnitTestSyntaxVisitor : BaseTest
 		visitor1.Visit(null);
 		Assert.AreEqual("", visitor1.ToString());
 		doc.Accept(visitor1);
-		Assert.AreEqual(string.Join("", SyntaxConstants.SyntaxNames), visitor1.ToString());
+		Assert.AreEqual(string.Join(", ", SyntaxConstants.SyntaxNames), visitor1.ToString());
 
 		TestVisitor2 visitor2 = new();
 		visitor2.Visit(null);
 		Assert.AreEqual("", visitor2.ToString());
 		doc.Accept(visitor2);
-		Assert.AreEqual(string.Join("", SyntaxConstants.SyntaxNames), visitor2.ToString());
+		Assert.AreEqual(string.Join(", ", SyntaxConstants.SyntaxNames), visitor2.ToString());
 	}
 
 	private class TestVisitor1 : SyntaxVisitor
@@ -44,6 +44,10 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <returns>返回的结果。</returns>
 		public override void DefaultVisit(Node node)
 		{
+			if (text.Length > 0)
+			{
+				text.Append(", ");
+			}
 			text.Append(node.GetType().Name);
 			IReadOnlyList<Node> nodes;
 			if (node is INodeContainer<BlockNode> blockContainer)
@@ -112,7 +116,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的分割线节点。</param>
 		public override void VisitThematicBreak(ThematicBreak node)
 		{
-			text.Append("ThematicBreak");
+			text.Append(", ThematicBreak");
 		}
 
 		/// <summary>
@@ -121,7 +125,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的标题节点。</param>
 		public override void VisitHeading(Heading node)
 		{
-			text.Append("Heading");
+			text.Append(", Heading");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -134,7 +138,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的代码块节点。</param>
 		public override void VisitCodeBlock(CodeBlock node)
 		{
-			text.Append("CodeBlock");
+			text.Append(", CodeBlock");
 		}
 
 		/// <summary>
@@ -143,7 +147,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的 HTML 块节点。</param>
 		public override void VisitHtmlBlock(HtmlBlock node)
 		{
-			text.Append("HtmlBlock");
+			text.Append(", HtmlBlock");
 		}
 
 		/// <summary>
@@ -152,7 +156,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的链接定义节点。</param>
 		public override void VisitLinkDefinition(LinkDefinition node)
 		{
-			text.Append("LinkDefinition");
+			text.Append(", LinkDefinition");
 		}
 
 		/// <summary>
@@ -161,7 +165,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的段落节点。</param>
 		public override void VisitParagraph(Paragraph node)
 		{
-			text.Append("Paragraph");
+			text.Append(", Paragraph");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -174,7 +178,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的引用节点。</param>
 		public override void VisitBlockquote(Blockquote node)
 		{
-			text.Append("Blockquote");
+			text.Append(", Blockquote");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -187,7 +191,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的列表项节点。</param>
 		public override void VisitListItem(ListItem node)
 		{
-			text.Append("ListItem");
+			text.Append(", ListItem");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -200,7 +204,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的列表节点。</param>
 		public override void VisitList(List node)
 		{
-			text.Append("List");
+			text.Append(", List");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -213,7 +217,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的表格单元格节点。</param>
 		public override void VisitTableCell(TableCell node)
 		{
-			text.Append("TableCell");
+			text.Append(", TableCell");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -226,7 +230,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的表格行节点。</param>
 		public override void VisitTableRow(TableRow node)
 		{
-			text.Append("TableRow");
+			text.Append(", TableRow");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -239,7 +243,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的表格节点。</param>
 		public override void VisitTable(Table node)
 		{
-			text.Append("Table");
+			text.Append(", Table");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -252,7 +256,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的数学公式块节点。</param>
 		public override void VisitMathBlock(MathBlock node)
 		{
-			text.Append("MathBlock");
+			text.Append(", MathBlock");
 		}
 
 		#endregion // 块节点
@@ -265,7 +269,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的行内代码段节点。</param>
 		public override void VisitCodeSpan(CodeSpan node)
 		{
-			text.Append("CodeSpan");
+			text.Append(", CodeSpan");
 		}
 
 		/// <summary>
@@ -274,7 +278,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的强调节点。</param>
 		public override void VisitEmphasis(Emphasis node)
 		{
-			text.Append("Emphasis");
+			text.Append(", Emphasis");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -287,7 +291,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的加粗节点。</param>
 		public override void VisitStrong(Strong node)
 		{
-			text.Append("Strong");
+			text.Append(", Strong");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -300,7 +304,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的删除节点。</param>
 		public override void VisitStrikethrough(Strikethrough node)
 		{
-			text.Append("Strikethrough");
+			text.Append(", Strikethrough");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -313,7 +317,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的链接节点。</param>
 		public override void VisitLink(Link node)
 		{
-			text.Append("Link");
+			text.Append(", Link");
 			foreach (var child in node.Children)
 			{
 				child.Accept(this);
@@ -326,7 +330,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的行内 HTML 节点。</param>
 		public override void VisitHtml(Html node)
 		{
-			text.Append("Html");
+			text.Append(", Html");
 		}
 
 		/// <summary>
@@ -335,7 +339,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的换行节点。</param>
 		public override void VisitBreak(Break node)
 		{
-			text.Append("Break");
+			text.Append(", Break");
 		}
 
 		/// <summary>
@@ -344,7 +348,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的表情符号节点。</param>
 		public override void VisitEmoji(Emoji node)
 		{
-			text.Append("Emoji");
+			text.Append(", Emoji");
 		}
 
 		/// <summary>
@@ -353,7 +357,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的行内数学公式节点。</param>
 		public override void VisitMathSpan(MathSpan node)
 		{
-			text.Append("MathSpan");
+			text.Append(", MathSpan");
 		}
 
 		/// <summary>
@@ -362,7 +366,7 @@ public class UnitTestSyntaxVisitor : BaseTest
 		/// <param name="node">要访问的文本节点。</param>
 		public override void VisitLiteral(Literal node)
 		{
-			text.Append("Literal");
+			text.Append(", Literal");
 		}
 
 		#endregion // 行内节点
