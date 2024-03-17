@@ -75,7 +75,7 @@ internal sealed class ListItemProcessor : BlockProcessor
 	{
 		if (line.IsBlank())
 		{
-			if (item.Children.Count == 0 && line.ActivatedProcessor.Kind == MarkdownKind.ListItem)
+			if (item.Children.Count == 0 && parent.Parser.ActivatedProcessor.Kind == MarkdownKind.ListItem)
 			{
 				// 列表项最多可以包含一个起始空行，因此空列表项后的空行会闭合当前项。
 				return BlockContinue.None;
@@ -83,7 +83,7 @@ internal sealed class ListItemProcessor : BlockProcessor
 			else
 			{
 				// 记录已包含空行。
-				MarkdownKind kind = line.ActivatedProcessor.Kind;
+				MarkdownKind kind = parent.Parser.ActivatedProcessor.Kind;
 				hadBlankLine = kind == MarkdownKind.Paragraph || kind == MarkdownKind.ListItem;
 				line.SkipIndent();
 				return BlockContinue.Continue;

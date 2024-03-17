@@ -91,10 +91,11 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 		/// <summary>
 		/// 尝试开始当前块的解析。
 		/// </summary>
+		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
 		{
 			// 要求 Setext 标签之前是段落，而且包含有效内容。
 			IList<MappedText>? lines;
@@ -110,7 +111,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 			lines[^1].TrimEnd();
 			HtmlAttributeList? attrs = null;
 			// 尝试解析属性。
-			if (line.Options.UseHeaderAttributes)
+			if (parser.Options.UseHeaderAttributes)
 			{
 				attrs = ParseAttributes(lines);
 				// 移除尾行后的空白。

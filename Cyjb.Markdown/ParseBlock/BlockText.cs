@@ -5,7 +5,7 @@ using Cyjb.Text;
 namespace Cyjb.Markdown.ParseBlock;
 
 /// <summary>
-/// 行的信息。
+/// 块的文本。
 /// </summary>
 internal sealed class BlockText
 {
@@ -22,10 +22,6 @@ internal sealed class BlockText
 	/// 行定位器。
 	/// </summary>
 	private readonly LineLocator locator;
-	/// <summary>
-	/// 块解析器。
-	/// </summary>
-	private readonly BlockParser parser;
 	/// <summary>
 	/// 行的起始位置。
 	/// </summary>
@@ -66,11 +62,9 @@ internal sealed class BlockText
 	/// <summary>
 	/// 使用指定的行定位器初始化 <see cref="BlockText"/> 类的新实例。
 	/// </summary>
-	/// <param name="parser">块解析器。</param>
 	/// <param name="locator">行定位器。</param>
-	internal BlockText(BlockParser parser, LineLocator locator)
+	internal BlockText(LineLocator locator)
 	{
-		this.parser = parser;
 		this.locator = locator;
 	}
 
@@ -111,10 +105,6 @@ internal sealed class BlockText
 	/// 获取行的结束位置。
 	/// </summary>
 	public int End => end;
-	/// <summary>
-	/// 获取解析的选项。
-	/// </summary>
-	public ParseOptions Options => parser.Options;
 
 	/// <summary>
 	/// 获取当前行的文本。
@@ -176,11 +166,6 @@ internal sealed class BlockText
 			return text;
 		}
 	}
-
-	/// <summary>
-	/// 获取当前激活的节点处理器。
-	/// </summary>
-	public BlockProcessor ActivatedProcessor => parser.ActivatedProcessor;
 
 	/// <summary>
 	/// 获取行是否是空的。

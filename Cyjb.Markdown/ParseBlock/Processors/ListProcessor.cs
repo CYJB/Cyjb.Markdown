@@ -48,13 +48,20 @@ internal sealed class ListProcessor : BlockProcessor
 	/// <summary>
 	/// 使用列表的标记字符和节点初始化 <see cref="ListProcessor"/> 类的新实例。
 	/// </summary>
+	/// <param name="parser">块级语法分析器。</param>
 	/// <param name="marker">列表的标记字符。</param>
 	/// <param name="list">列表节点。</param>
-	private ListProcessor(char marker, List list) : base(MarkdownKind.List)
+	private ListProcessor(BlockParser parser, char marker, List list) : base(MarkdownKind.List)
 	{
+		Parser = parser;
 		this.marker = marker;
 		this.list = list;
 	}
+
+	/// <summary>
+	/// 获取关联到的块级语法分析器。
+	/// </summary>
+	public BlockParser Parser { get; }
 
 	/// <summary>
 	/// 获取是否是容器节点。
@@ -172,10 +179,11 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <summary>
 		/// 尝试开始当前块的解析。
 		/// </summary>
+		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
@@ -227,12 +235,12 @@ internal sealed class ListProcessor : BlockProcessor
 				{
 					Start = start
 				};
-				listProcessor = new ListProcessor(token.Text[^1], list);
+				listProcessor = new ListProcessor(parser, token.Text[^1], list);
 				yield return listProcessor;
 			}
 			ListItemProcessor itemProcessor = new(listProcessor, itemStart, contentIndent);
 			// 检查任务列表项。
-			if (line.Options.UseTaskListItem)
+			if (parser.Options.UseTaskListItem)
 			{
 				itemProcessor.Checked = CheckTaskListItem(line);
 			}

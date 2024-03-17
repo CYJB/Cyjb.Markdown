@@ -29,6 +29,7 @@ internal static partial class MarkdownUtil
 	/// <summary>
 	/// 解析分隔符的起始。
 	/// </summary>
+	/// <param name="parser">块级语法分析器。</param>
 	/// <param name="line">要解析的行信息。</param>
 	/// <param name="start">分隔符的起始索引。</param>
 	/// <param name="indent">分隔符的缩进。</param>
@@ -36,7 +37,7 @@ internal static partial class MarkdownUtil
 	/// <param name="fenceLength">分隔符的长度。</param>
 	/// <param name="info">分隔符的信息。</param>
 	/// <param name="attrs">分隔符的属性。</param>
-	public static void ParseFenceStart(BlockText line, out int start, out int indent,
+	public static void ParseFenceStart(BlockParser parser, BlockText line, out int start, out int indent,
 		out char fenceChar, out int fenceLength,
 		out string? info, out HtmlAttributeList? attrs)
 	{
@@ -59,7 +60,7 @@ internal static partial class MarkdownUtil
 				info = null;
 			}
 			attrs = token.Value as HtmlAttributeList;
-			attrs?.AddPrefix(line.Options.AttributesPrefix);
+			attrs?.AddPrefix(parser.Options.AttributesPrefix);
 		}
 		else
 		{

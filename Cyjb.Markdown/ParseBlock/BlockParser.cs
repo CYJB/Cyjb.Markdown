@@ -130,7 +130,7 @@ internal sealed class BlockParser
 	public Document Parse()
 	{
 		Token<BlockKind> token;
-		BlockText line = new(this, locator);
+		BlockText line = new(locator);
 		while (true)
 		{
 			// 清除行的旧数据。
@@ -254,7 +254,7 @@ internal sealed class BlockParser
 			{
 				foreach (IBlockFactory factory in factories)
 				{
-					currentInlineProcessors.AddRange(factory.TryStart(line, processor));
+					currentInlineProcessors.AddRange(factory.TryStart(this, line, processor));
 					if (currentInlineProcessors.Count > 0)
 					{
 						break;
@@ -264,7 +264,7 @@ internal sealed class BlockParser
 			// 尝试检查缩进代码块
 			if (currentInlineProcessors.Count == 0)
 			{
-				currentInlineProcessors.AddRange(IndentedCodeBlockProcessor.TryStart(line));
+				currentInlineProcessors.AddRange(IndentedCodeBlockProcessor.TryStart(this, line));
 			}
 			if (currentInlineProcessors.Count == 0)
 			{

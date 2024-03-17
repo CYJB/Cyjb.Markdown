@@ -13,13 +13,14 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 尝试开始新的缩进代码块处理器。
 	/// </summary>
+	/// <param name="parser">块级语法分析器。</param>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>新的块处理器数组，若未能成功解析，则返回空数组。</returns>
-	public static IEnumerable<BlockProcessor> TryStart(BlockText line)
+	public static IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line)
 	{
 		// 缩进代码块不会中断段落。
 		if (line.IsCodeIndent && !line.IsBlank() &&
-			line.ActivatedProcessor.Kind != MarkdownKind.Paragraph)
+			parser.ActivatedProcessor.Kind != MarkdownKind.Paragraph)
 		{
 			// 代码块的起始位置包含缩进位置。
 			int start = line.Start;

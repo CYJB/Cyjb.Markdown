@@ -108,16 +108,17 @@ internal class CustomContainerProcessor : BlockProcessor
 		/// <summary>
 		/// 尝试开始当前块的解析。
 		/// </summary>
+		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
 				yield break;
 			}
-			MarkdownUtil.ParseFenceStart(line, out int start, out int _,
+			MarkdownUtil.ParseFenceStart(parser, line, out int start, out int _,
 				out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
 			yield return new CustomContainerProcessor(start, fenceLength, info, attrs);
 		}
