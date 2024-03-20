@@ -96,6 +96,9 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的代码块节点。</param>
 	public override void VisitCodeBlock(CodeBlock node)
 	{
+		WriteLine();
+		WriteStartTag(node, "pre");
+
 		HtmlAttributeList attrs = GetHtmlAttributeList();
 		string? lang = GetInfoFirstWord(node.Info);
 		if (lang != null)
@@ -104,8 +107,6 @@ public class HtmlRenderer : BaseRenderer
 		}
 		attrs.AddRange(node.Attributes);
 
-		WriteLine();
-		WriteStartTag(node, "pre");
 		WriteStartTag(node, "code", attrs);
 		Write(node.Content);
 		WriteEndTag("code");
@@ -524,10 +525,12 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="backref">反向引用信息。</param>
 	protected override void VisitFootnoteRef(FootnoteRef node, FootnoteBackref backref)
 	{
+		WriteStartTag(node, "sup");
+
 		HtmlAttributeList attrs = GetHtmlAttributeList();
 		attrs.Add("href", "#" + LinkUtil.EncodeURL(backref.Info.Id));
 		attrs.Id = LinkUtil.EncodeURL(backref.Identifier);
-		WriteStartTag(node, "sup");
+
 		WriteStartTag(node, "a", attrs);
 		Write(backref.Info.Index);
 		WriteEndTag("a");
