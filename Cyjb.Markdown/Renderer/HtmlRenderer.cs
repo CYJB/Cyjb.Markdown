@@ -82,7 +82,7 @@ public class HtmlRenderer : BaseRenderer
 	{
 		string tagName = $"h{node.Depth}";
 		WriteLine();
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		attrs.AddRange(node.Attributes);
 		WriteStartTag(node, tagName, attrs);
 		DefaultVisit(node);
@@ -96,7 +96,7 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的代码块节点。</param>
 	public override void VisitCodeBlock(CodeBlock node)
 	{
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		string? lang = GetInfoFirstWord(node.Info);
 		if (lang != null)
 		{
@@ -189,7 +189,7 @@ public class HtmlRenderer : BaseRenderer
 	public override void VisitList(List node)
 	{
 		string tagName;
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		if (node.StyleType == ListStyleType.Unordered)
 		{
 			tagName = "ul";
@@ -245,7 +245,7 @@ public class HtmlRenderer : BaseRenderer
 		{
 			tagName = "td";
 		}
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		if (tableAlign != TableAlign.None)
 		{
 			// 添加对齐的样式。
@@ -339,7 +339,8 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的数学公式块节点。</param>
 	public override void VisitMathBlock(MathBlock node)
 	{
-		HtmlAttributeList attrs = new() { { "class", "math" } };
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.AddClass("math");
 		if (node.Attributes != null)
 		{
 			attrs.AddRange(node.Attributes);
@@ -358,7 +359,7 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的自定义容器节点。</param>
 	public override void VisitCustomContainer(CustomContainer node)
 	{
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		string? type = GetInfoFirstWord(node.Info);
 		if (type != null)
 		{
@@ -430,7 +431,7 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的链接节点。</param>
 	public override void VisitLink(Link node)
 	{
-		HtmlAttributeList attrs = new();
+		HtmlAttributeList attrs = GetHtmlAttributeList();
 		attrs.AddRange(node.Attributes);
 		if (node.Kind == MarkdownKind.Link)
 		{
@@ -495,10 +496,8 @@ public class HtmlRenderer : BaseRenderer
 		else if (node.FallbackUrl != null)
 		{
 			// GitHub 自定义 Emoji 转换为 img。
-			HtmlAttributeList attrs = new()
-			{
-				{ "src", node.FallbackUrl },
-			};
+			HtmlAttributeList attrs = GetHtmlAttributeList();
+			attrs.Add("src", node.FallbackUrl);
 			WriteStartTag(node, "img", attrs, true);
 		}
 	}
@@ -509,7 +508,9 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的行内数学公式节点。</param>
 	public override void VisitMathSpan(MathSpan node)
 	{
-		WriteStartTag(node, "span", new HtmlAttributeList() { { "class", "math" } });
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.AddClass("math");
+		WriteStartTag(node, "span", attrs);
 		Write("\\(");
 		Write(node.Content);
 		Write("\\)");
@@ -523,11 +524,9 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="backref">反向引用信息。</param>
 	protected override void VisitFootnoteRef(FootnoteRef node, FootnoteBackref backref)
 	{
-		HtmlAttributeList attrs = new()
-		{
-			{ "href", "#" + LinkUtil.EncodeURL(backref.Info.Id) },
-			{ "id", LinkUtil.EncodeURL(backref.Identifier) },
-		};
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.Add("href", "#" + LinkUtil.EncodeURL(backref.Info.Id));
+		attrs.Id = LinkUtil.EncodeURL(backref.Identifier);
 		WriteStartTag(node, "sup");
 		WriteStartTag(node, "a", attrs);
 		Write(backref.Info.Index);
@@ -546,10 +545,8 @@ public class HtmlRenderer : BaseRenderer
 		{
 			Write(" ");
 		}
-		HtmlAttributeList attrs = new()
-		{
-			{ "href", "#" + LinkUtil.EncodeURL(node.Identifier) },
-		};
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.Add("href", "#" + LinkUtil.EncodeURL(node.Identifier));
 		WriteStartTag(node, "a", attrs);
 		Write("↩");
 		WriteEndTag("a");
@@ -595,7 +592,9 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="footnotes">要写入的脚注列表。</param>
 	protected override void WriteFootnotes(Document doc, List<Footnote> footnotes)
 	{
-		WriteStartTag(doc, "section", new HtmlAttributeList() { Id = "footnotes" });
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.Id = "footnotes";
+		WriteStartTag(doc, "section", attrs);
 		WriteLine();
 		WriteStartTag(doc, "ol");
 		WriteLine();
@@ -613,11 +612,23 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="info">脚注的信息。</param>
 	protected override void WriteFootnote(Footnote node, FootnoteInfo info)
 	{
-		WriteStartTag(node, "li", new HtmlAttributeList() { Id = LinkUtil.EncodeURL(info.Id) });
+		HtmlAttributeList attrs = GetHtmlAttributeList();
+		attrs.Id = LinkUtil.EncodeURL(info.Id);
+		WriteStartTag(node, "li", attrs);
 		WriteLine();
 		base.WriteFootnote(node, info);
 		WriteEndTag("li");
 		WriteLine();
+	}
+
+	/// <summary>
+	/// 返回临时的 HTML 属性列表。
+	/// </summary>
+	/// <returns>临时的 HTML 属性列表。</returns>
+	private HtmlAttributeList GetHtmlAttributeList()
+	{
+		tempHtmlAttributeList.Clear();
+		return tempHtmlAttributeList;
 	}
 
 	#region 写入 HTML
@@ -690,11 +701,7 @@ public class HtmlRenderer : BaseRenderer
 	{
 		text.Append('<');
 		text.Append(tagName);
-		if (attrs == null)
-		{
-			attrs = tempHtmlAttributeList;
-			attrs.Clear();
-		}
+		attrs ??= GetHtmlAttributeList();
 		foreach (IAttributeModifier modifier in attributeModifiers)
 		{
 			modifier.UpdateAttributes(node, tagName, attrs);
