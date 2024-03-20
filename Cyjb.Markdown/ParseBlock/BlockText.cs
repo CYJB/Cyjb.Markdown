@@ -1,193 +1,106 @@
 using System.Text;
 using Cyjb.Collections;
+using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
 
 /// <summary>
-/// 块的文本。
+/// 表示块的文本。
 /// </summary>
 internal sealed class BlockText
 {
 	/// <summary>
-	/// 代码缩进长度。
-	/// </summary>
-	public const int CodeIndent = 4;
-
-	/// <summary>
 	/// 词法单元队列。
 	/// </summary>
-	private readonly ListQueue<Token<BlockKind>> tokens = new();
+	private readonly Deque<Token<BlockKind>> tokens = new();
 	/// <summary>
-	/// 行定位器。
+	/// 文本的长度。
 	/// </summary>
-	private readonly LineLocator locator;
-	/// <summary>
-	/// 行的起始位置。
-	/// </summary>
-	private int start = -1;
-	/// <summary>
-	/// 行的结束位置。
-	/// </summary>
-	private int end;
-	/// <summary>
-	/// 映射的文本。
-	/// </summary>
-	private MappedText? text;
-	/// <summary>
-	/// 是否已计算缩进信息。
-	/// </summary>
-	private bool hasIndent;
-	/// <summary>
-	/// 缩进结束位置。
-	/// </summary>
-	private int indentEnd;
-	/// <summary>
-	/// 缩进缩进文本。
-	/// </summary>
-	private StringView indentText;
-	/// <summary>
-	/// 缩进原始起始位置。
-	/// </summary>
-	private int indentOriginalStart;
-	/// <summary>
-	/// 缩进起始列号。
-	/// </summary>
-	private int indentStartColumn;
-	/// <summary>
-	/// 缩进结束列号。
-	/// </summary>
-	private int indentEndColumn;
+	private int length;
 
 	/// <summary>
-	/// 使用指定的行定位器初始化 <see cref="BlockText"/> 类的新实例。
+	/// 获取文本的起始位置。
 	/// </summary>
-	/// <param name="locator">行定位器。</param>
-	internal BlockText(LineLocator locator)
-	{
-		this.locator = locator;
-	}
-
-	/// <summary>
-	/// 返回指定索引的行列位置。
-	/// </summary>
-	/// <param name="index">要检查行列位置的索引。</param>
-	/// <returns>指定索引的行列位置。</returns>
-	public LinePosition GetPosition(int index)
-	{
-		return locator.GetPosition(index);
-	}
-
-	/// <summary>
-	/// 获取当前缩进宽度。
-	/// </summary>
-	public int Indent
+	public int Start
 	{
 		get
 		{
-			GetIndent();
-			return indentEndColumn - indentStartColumn;
-		}
-	}
-	/// <summary>
-	/// 是否是段落可以跳过的缩进。
-	/// </summary>
-	public bool ParagraphSkippable { get; set; }
-	/// <summary>
-	/// 获取是否是代码缩进。
-	/// </summary>
-	public bool IsCodeIndent => Indent >= CodeIndent;
-	/// <summary>
-	/// 获取行的起始位置。
-	/// </summary>
-	public int Start => hasIndent ? start : start;
-	/// <summary>
-	/// 获取行的结束位置。
-	/// </summary>
-	public int End => end;
-
-	/// <summary>
-	/// 获取当前行的文本。
-	/// </summary>
-	public MappedText Text
-	{
-		get
-		{
-			if (text == null)
+			if (tokens.TryPeekFront(out var token))
 			{
-				List<StringView> texts = new();
-				int length = 0;
-				int lastLength = 0;
-				int lastMappedIndex = 0;
-				TextSpanBuilder spanBuilder = new();
-				List<Tuple<int, int>> maps = new();
-				// 添加缩进。
-				if (hasIndent && Indent > 0)
-				{
-					lastMappedIndex = start;
-					maps.Add(new Tuple<int, int>(0, lastMappedIndex));
-					spanBuilder.Add(lastMappedIndex);
-					StringView text = GetIndentText();
-					lastLength = text.Length;
-					length += lastLength;
-					texts.Add(text);
-				}
-				// 添加剩余词法单元。
-				bool isFirst = true;
-				int count = tokens.Count;
-				for (int i = 0; i < count; i++)
-				{
-					var token = tokens[i];
-					// 首个缩进可能会存在 Tab 部分替换为空格的情况，因此之后的词法单元也需要添加索引。
-					if (isFirst)
-					{
-						int offset = token.Span.Start - lastMappedIndex;
-						if (lastLength != offset)
-						{
-							maps.Add(new Tuple<int, int>(lastLength, offset));
-						}
-						isFirst = false;
-					}
-					lastMappedIndex = token.Span.Start;
-					lastLength = token.Text.Length;
-					length += lastLength;
-					if (texts.Count > 0 && texts[^1].TryConcat(token.Text, out var concated))
-					{
-						texts[^1] = concated;
-					}
-					else
-					{
-						texts.Add(token.Text);
-					}
-					spanBuilder.Add(token.Span);
-				}
-				text = new MappedText(texts, length, spanBuilder.GetSpan(), maps);
+				return token.Span.Start;
 			}
-			return text;
+			else
+			{
+				return 0;
+			}
+		}
+	}
+	/// <summary>
+	/// 获取文本的结束位置。
+	/// </summary>
+	public int End
+	{
+		get
+		{
+			if (tokens.TryPeekBack(out var token))
+			{
+				return token.Span.End;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
+	/// <summary>
+	/// 获取文本的范围。
+	/// </summary>
+	public TextSpan Span
+	{
+		get
+		{
+			int count = tokens.Count;
+			if (count == 0)
+			{
+				return new TextSpan();
+			}
+			else if (count == 1)
+			{
+				return tokens.PeekFront().Span;
+			}
+			else
+			{
+				return new TextSpan(tokens.PeekFront().Span.Start, tokens.PeekBack().Span.End);
+			}
 		}
 	}
 
 	/// <summary>
-	/// 获取行是否是空的。
+	/// 获取文本的长度。
 	/// </summary>
-	internal bool IsEmpty => tokens.Count == 0;
-
+	public int Length => length;
 	/// <summary>
 	/// 获取词法单元列表。
 	/// </summary>
-	internal IReadOnlyList<Token<BlockKind>> Tokens => tokens;
+	public IReadOnlyList<Token<BlockKind>> Tokens => tokens;
 
 	/// <summary>
-	/// 返回当前行是否是空的或只包含空白。
+	/// 检查是否是单行文本。
 	/// </summary>
-	/// <param name="start">要检查的起始词法单元索引。</param>
-	public bool IsBlank(int start = 0)
+	/// <returns>如果是单行文本，会返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public bool IsSingleLine()
 	{
 		int count = tokens.Count;
-		for (int i = start; i < count; i++)
+		for (int i = 0; i < count; i++)
 		{
-			BlockKind kind = tokens[i].Kind;
-			if (kind != BlockKind.Indent && kind != BlockKind.NewLine)
+			if (tokens[i].Kind == BlockKind.NewLine)
+			{
+				return i == count - 1;
+			}
+			ReadOnlySpan<char> span = tokens[i].Text;
+			int idx = span.IndexOf('\n');
+			if (idx >= 0 && idx < span.Length - 1)
 			{
 				return false;
 			}
@@ -196,80 +109,174 @@ internal sealed class BlockText
 	}
 
 	/// <summary>
-	/// 跳过指定个数的空白。
+	/// 返回指定索引的文本。
 	/// </summary>
-	/// <param name="count">要跳过的空白个数。</param>
-	public void SkipIndent(int count)
+	/// <param name="index">要检查的索引。</param>
+	/// <returns>指定索引的文本。</returns>
+	public char this[int index]
 	{
-		GetIndent();
-		indentStartColumn += count;
-		if (indentStartColumn >= indentEndColumn)
+		get
 		{
-			indentStartColumn = indentEndColumn;
-			start = indentEnd;
-			text = null;
-			return;
-		}
-		int column;
-		// 由于 Tab 可能对应多列，因此需要找到首个 index 使得 column(index)≤startColumn。
-		for (; start < indentEnd; start++)
-		{
-			column = locator.GetPosition(start).Column;
-			if (column == indentStartColumn)
+			int count = tokens.Count;
+			for (int i = 0; i < count; i++)
 			{
-				return;
+				StringView text = tokens[i].Text;
+				int textLen = text.Length;
+				if (index >= textLen)
+				{
+					index -= textLen;
+				}
+				else
+				{
+					return text[index];
+				}
 			}
-			else if (column > indentStartColumn)
-			{
-				start--;
-				return;
-			}
+			return SourceReader.InvalidCharacter;
 		}
-		// 避免 end 的列位置超出 startColumn
-		column = locator.GetPosition(start).Column;
-		if (column > indentStartColumn)
+	}
+
+	/// <summary>
+	/// 移除起始位置的多个字符。
+	/// </summary>
+	/// <param name="length">要移除的字符个数。</param>
+	public void RemoteStart(int length)
+	{
+		this.length -= length;
+		while (tokens.TryPeekFront(out var token))
 		{
-			start--;
+			StringView text = token.Text;
+			int textLen = text.Length;
+			if (length >= textLen)
+			{
+				length -= textLen;
+				tokens.PopFront();
+			}
+			else
+			{
+				token.Text = text.Substring(length);
+				token.Span = token.Span with
+				{
+					Start = token.Span.Start + length,
+				};
+				break;
+			}
 		}
-		text = null;
 	}
 
 	/// <summary>
-	/// 跳过全部空白。
+	/// 移除结束位置的多个字符。
 	/// </summary>
-	public void SkipIndent()
+	/// <param name="length">要移除的字符个数。</param>
+	public void RemoteEnd(int length)
 	{
-		GetIndent();
-		indentStartColumn = indentEndColumn;
-		start = indentEnd;
-		text = null;
+		this.length -= length;
+		while (tokens.TryPeekBack(out var token))
+		{
+			StringView text = token.Text;
+			length -= text.Length;
+			if (length >= 0)
+			{
+				tokens.PopBack();
+			}
+			else
+			{
+				token.Text = text[..-length];
+				token.Span = token.Span with
+				{
+					End = token.Span.Start - length,
+				};
+				break;
+			}
+		}
 	}
 
 	/// <summary>
-	/// 跳过当前行。
+	/// 移除起始空白。
 	/// </summary>
-	public void Skip()
+	/// <returns>如果移除了任何起始空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public bool TrimStart()
 	{
-		tokens.Clear();
-		hasIndent = true;
-		start = indentOriginalStart = indentEnd = end;
-		indentText = StringView.Empty;
-		indentStartColumn = indentEndColumn = 0;
-		text = null;
+		int diff = 0;
+		while (tokens.TryPeekFront(out var token))
+		{
+			StringView text = token.Text;
+			int textLen = text.Length;
+			text = text.TrimStart(MarkdownUtil.WhitespaceChars);
+			textLen -= text.Length;
+			if (textLen == 0)
+			{
+				break;
+			}
+			diff += textLen;
+			if (text.IsEmpty)
+			{
+				tokens.PopFront();
+			}
+			else
+			{
+				token.Text = text;
+				token.Span = token.Span with
+				{
+					Start = token.Span.Start + textLen,
+				};
+				break;
+			}
+		}
+		if (diff == 0)
+		{
+			return false;
+		}
+		length -= diff;
+		return true;
 	}
 
 	/// <summary>
-	/// 将当前行添加到指定字符串。
+	/// 移除结尾空白。
+	/// </summary>
+	/// <returns>如果移除了任何结尾空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public bool TrimEnd(bool trimNewLine = true)
+	{
+		int diff = 0;
+		char[] chars = trimNewLine ? MarkdownUtil.WhitespaceChars : MarkdownUtil.WhitespaceCharsWithoutNewLine;
+		while (tokens.TryPeekBack(out var token))
+		{
+			StringView text = token.Text;
+			int textLen = text.Length;
+			text = text.TrimEnd(chars);
+			textLen -= text.Length;
+			if (textLen == 0)
+			{
+				break;
+			}
+			diff += textLen;
+			if (text.IsEmpty)
+			{
+				tokens.PopBack();
+			}
+			else
+			{
+				token.Text = text;
+				token.Span = token.Span with
+				{
+					End = token.Span.Start + text.Length,
+				};
+				break;
+			}
+		}
+		if (diff == 0)
+		{
+			return false;
+		}
+		length -= diff;
+		return true;
+	}
+
+	/// <summary>
+	/// 将当前文本添加到指定字符串。
 	/// </summary>
 	/// <param name="builder">字符串构造器。</param>
 	public void AppendTo(StringBuilder builder)
 	{
-		// 添加缩进。
-		if (hasIndent && Indent > 0)
-		{
-			builder.Append(GetIndentText().AsSpan());
-		}
-		// 添加剩余词法单元。
 		int count = tokens.Count;
 		for (int i = 0; i < count; i++)
 		{
@@ -278,118 +285,189 @@ internal sealed class BlockText
 	}
 
 	/// <summary>
-	/// 清除行的数据。
-	/// </summary>
-	public void Clear()
-	{
-		tokens.Clear();
-		hasIndent = false;
-		text = null;
-		start = -1;
-		end = 0;
-		ParagraphSkippable = true;
-	}
-
-	/// <summary>
 	/// 添加新的词法单元。
 	/// </summary>
 	/// <param name="token">要添加的词法单元。</param>
-	internal void AddToken(Token<BlockKind> token)
+	/// <param name="canConcat">是否可以连接字符串视图。</param>
+	public void Add(Token<BlockKind> token, bool canConcat = false)
 	{
-		if (start < 0)
+		if (length == 0)
 		{
-			start = token.Span.Start;
+			canConcat = false;
 		}
-		end = token.Span.End;
-		tokens.Enqueue(token);
+		length += token.Text.Length;
+		if (canConcat)
+		{
+			var lastToken = tokens.PeekBack();
+			if (lastToken.Text.TryConcat(token.Text, out var concated))
+			{
+				lastToken.Text = concated;
+				lastToken.Span = lastToken.Span with
+				{
+					End = token.Span.End,
+				};
+				return;
+			}
+		}
+		tokens.PushBack(token);
 	}
 
 	/// <summary>
-	/// 获取缩进信息。
+	/// 添加新的词法单元的一部分。
 	/// </summary>
-	private void GetIndent()
+	/// <param name="token">要添加的词法单元。</param>
+	/// <param name="start">要添加的起始索引。</param>
+	/// <param name="length">要添加的长度。</param>
+	public void Add(Token<BlockKind> token, int start, int length)
 	{
-		if (hasIndent)
+		if (length <= 0)
 		{
 			return;
 		}
-		hasIndent = true;
-		if (tokens.Count == 0)
+		StringView text = token.Text;
+		if (length == text.Length)
 		{
-			start = indentOriginalStart = indentEnd = end;
-			indentText = StringView.Empty;
-			indentStartColumn = indentEndColumn = 0;
-			return;
-		}
-		Token<BlockKind> token = tokens.Peek();
-		if (token.Kind == BlockKind.Indent)
-		{
-			// 是缩进，提取相关信息。
-			tokens.Dequeue();
-			text = null;
-			start = token.Span.Start;
-			indentEnd = token.Span.End;
-			indentOriginalStart = start;
-			indentText = token.Text;
-			indentStartColumn = locator.GetPosition(start).Column;
-			indentEndColumn = locator.GetPosition(indentEnd).Column;
+			Add(token);
 		}
 		else
 		{
-			// 其它，使用空缩进。
-			start = indentOriginalStart = indentEnd = token.Span.Start;
-			indentText = StringView.Empty;
-			indentStartColumn = indentEndColumn = 0;
+			int spanStart = token.Span.Start + start;
+			int spanEnd = spanStart + length;
+			tokens.PushBack(new Token<BlockKind>(token.Kind, text.Slice(start, length), new TextSpan(spanStart, spanEnd)));
+			this.length += length;
 		}
 	}
 
 	/// <summary>
-	/// 返回下一词法单元，但不将其消费。
+	/// 返回开始处的下一词法单元，但不将其消费。
 	/// </summary>
-	/// <returns>下一词法单元。</returns>
-	internal Token<BlockKind> Peek()
+	/// <returns>开始处的下一词法单元。</returns>
+	public Token<BlockKind> PeekFront()
 	{
-		return tokens.Peek();
+		return tokens.PeekFront();
 	}
 
 	/// <summary>
-	/// 读取并返回下一词法单元。
+	/// 读取并返回开始处的下一词法单元。
 	/// </summary>
-	/// <returns>下一词法单元。</returns>
-	internal Token<BlockKind> Read()
+	/// <returns>开始处的下一词法单元。</returns>
+	public Token<BlockKind> PopFront()
 	{
-		Token<BlockKind> token = tokens.Dequeue();
-		// 读取词法单元后，需要重新检查缩进、文本和位置信息。
-		hasIndent = false;
-		text = null;
-		start = token.Span.End;
+		Token<BlockKind> token = tokens.PopFront();
+		length -= token.Text.Length;
 		return token;
 	}
 
 	/// <summary>
-	/// 返回剩余的缩进文本。
+	/// 返回末尾处的下一词法单元，但不将其消费。
 	/// </summary>
-	/// <returns>缩进文本。</returns>
-	private StringView GetIndentText()
+	/// <returns>末尾处的下一词法单元。</returns>
+	public Token<BlockKind> PeekBack()
 	{
-		int column = locator.GetPosition(start).Column;
-		if (column == indentStartColumn)
+		return tokens.PeekBack();
+	}
+
+	/// <summary>
+	/// 读取并返回末尾处的下一词法单元。
+	/// </summary>
+	/// <returns>末尾处的下一词法单元。</returns>
+	public Token<BlockKind> PopBack()
+	{
+		Token<BlockKind> token = tokens.PopBack();
+		length -= token.Text.Length;
+		return token;
+	}
+
+	/// <summary>
+	/// 清除所有文本。
+	/// </summary>
+	public void Clear()
+	{
+		tokens.Clear();
+		length = 0;
+	}
+
+	/// <summary>
+	/// 将当前文本的内容添加到指定块文本。
+	/// </summary>
+	/// <param name="text">要添加到的块文本。</param>
+	public void AppendTo(BlockText text)
+	{
+		int count = tokens.Count;
+		for (int i = 0; i < count; i++)
 		{
-			return indentText[(start - indentOriginalStart)..];
+			text.Add(tokens[i], true);
 		}
-		else
+	}
+
+	/// <summary>
+	/// 读取位置映射。
+	/// </summary>
+	/// <param name="locMap">要写入的位置映射表。</param>
+	public void GetLocationMap(LocationMap locMap)
+	{
+		int count = tokens.Count;
+		int index = 0;
+		for (int i = 0; i < count; i++)
 		{
-			// 当前是部分 Tab，需要使用空格补齐 column(start) 到 startColumn 的位置。
-			column = locator.GetPosition(start + 1).Column;
-			using ValueList<char> result = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
-			result.Add(' ', column - indentStartColumn);
-			int idx = start + 1 - indentOriginalStart;
-			// 存在 Tab 时，可能会出现列数超出字符数的场景。
-			if (idx < indentText.Length)
-			{
-				result.Add(indentText.AsSpan(idx));
-			}
-			return result.ToString();
+			var token = tokens[i];
+			locMap.Add(index, token.Span.Start);
+			index += token.Text.Length;
 		}
+	}
+
+	/// <summary>
+	/// 创建当前文本的副本。
+	/// </summary>
+	/// <returns>当前文本的副本。</returns>
+	public BlockText Clone()
+	{
+		BlockText result = new();
+		int count = tokens.Count;
+		result.tokens.EnsureCapacity(count);
+		result.length = length;
+		for (int i = 0; i < count; i++)
+		{
+			result.tokens.PushBack(tokens[i]);
+		}
+		return result;
+	}
+
+	/// <summary>
+	/// 返回当前对象的字符串视图表示形式。
+	/// </summary>
+	/// <returns>当前对象的字符串视图表示形式。</returns>
+	public StringView ToStringView()
+	{
+		int count = tokens.Count;
+		if (count == 0)
+		{
+			return StringView.Empty;
+		}
+		else if (count == 1)
+		{
+			return tokens[0].Text;
+		}
+		// 优先连接字符串视图。
+		StringView view = tokens[0].Text;
+		int i = 1;
+		for (; i < count && view.TryConcat(tokens[i].Text, out var newView); i++)
+		{
+			view = newView;
+		}
+		if (i >= count)
+		{
+			return view;
+		}
+		// 存在无法连接的字符串，改为使用 StringBuilder 拼接。
+		StringBuilder text = StringBuilderPool.Rent(length);
+		text.Append(view.AsSpan());
+		for (; i < count; i++)
+		{
+			text.Append(tokens[i].Text.AsSpan());
+		}
+		string result = text.ToString();
+		StringBuilderPool.Return(text);
+		return result;
 	}
 }

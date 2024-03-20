@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -23,7 +24,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <summary>
 	/// ATX 标题的文本。
 	/// </summary>
-	private readonly MappedText text;
+	private readonly BlockText text;
 
 	/// <summary>
 	/// 使用ATX 标题的起始位置和文本初始化 <see cref="ATXHeadingProcessor"/> 类的新实例。
@@ -32,7 +33,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <param name="depth">ATX 标题的深度。</param>
 	/// <param name="text">ATX 标题的文本。</param>
 	/// <param name="attrs">ATX 标题的属性。</param>
-	private ATXHeadingProcessor(int start, int depth, MappedText text, HtmlAttributeList? attrs)
+	private ATXHeadingProcessor(int start, int depth, BlockText text, HtmlAttributeList? attrs)
 		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
@@ -46,14 +47,14 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <summary>
 	/// 获取当前块是否需要解析行内节点。
 	/// </summary>
-	public override bool NeedParseInlines => !text.IsEmpty;
+	public override bool NeedParseInlines => text.Length > 0;
 
 	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		return BlockContinue.None;
 	}
@@ -66,7 +67,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		HeadingUtils.ProcessHeading(parser, heading, LinkUtil.NormalizeLabel(text.ToString()));
+		HeadingUtils.ProcessHeading(parser, heading, LinkUtil.NormalizeLabel(text));
 		heading.Span = new TextSpan(heading.Span.Start, end);
 		return heading;
 	}
@@ -77,7 +78,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	/// <param name="parser">行内节点的解析器。</param>
 	public override void ParseInline(InlineParser parser)
 	{
-		parser.Parse(Enumerable.Repeat(text, 1), heading.Children);
+		parser.Parse(text, heading.Children);
 	}
 
 	/// <summary>
@@ -92,36 +93,68 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
 				yield break;
 			}
 			line.SkipIndent();
-			HtmlAttributeList? attrs = line.Peek().Value as HtmlAttributeList;
-			MappedText text = line.Text;
-			// 计算标题的深度。
-			int depth = 0;
-			for (; depth < text.Length && text[depth] == '#'; depth++) ;
+			BlockText text = line.BlockText;
+			int start = text.Start;
+			var token = text.PeekFront();
+			HtmlAttributeList? attrs = token.Value as HtmlAttributeList;
+			// 计算标题的深度，标题一定在同一个 Token 内。
+			int depth = GetHeadingDepth(token.Text);
 			text.RemoteStart(depth);
 			// 忽略内容前后的空白
 			text.TrimStart();
 			text.TrimEnd();
 			// 检查闭合 #
-			int end = text.Length;
-			for (; end > 0 && text[end - 1] == '#'; end--) ;
-			if (end < text.Length)
+			if (text.Tokens.Count > 0)
+			{
+				TrimEndingSharp(text);
+			}
+			yield return new ATXHeadingProcessor(start, depth, text.Clone(), attrs);
+		}
+
+		/// <summary>
+		/// 计算标题的深度。
+		/// </summary>
+		/// <param name="text">标题的文本。</param>
+		/// <returns>标题的深度。</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static int GetHeadingDepth(StringView text)
+		{
+			ReadOnlySpan<char> span = text;
+			return span.Length - span.TrimStart('#').Length;
+		}
+
+		/// <summary>
+		/// 移除标题的结束 # 符号。
+		/// </summary>
+		/// <param name="text">标题的文本。</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void TrimEndingSharp(BlockText text)
+		{
+			ReadOnlySpan<char> span = text.PeekBack().Text;
+			int sharpCount = span.Length - span.TrimEnd('#').Length;
+			if (sharpCount == 0)
+			{
+				return;
+			}
+			if (sharpCount == span.Length)
+			{
+				// 最后一个 Token 被全部消费。
+				text.PopBack();
+				text.TrimEnd();
+			}
+			else if (MarkdownUtil.IsWhitespace(span[span.Length - sharpCount - 1]))
 			{
 				// 要求闭合 # 前包含空格或 Tab。
-				if (end == 0 || (end > 0 && MarkdownUtil.IsWhitespace(text[end - 1])))
-				{
-					text.RemoteEnd(text.Length - end);
-					// 忽略结尾 # 前的空白。
-					text.TrimEnd();
-				}
+				text.RemoteEnd(sharpCount);
+				text.TrimEnd();
 			}
-			yield return new ATXHeadingProcessor(line.Start, depth, text, attrs);
 		}
 	}
 }

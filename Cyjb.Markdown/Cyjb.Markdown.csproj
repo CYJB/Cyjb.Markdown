@@ -32,15 +32,15 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Cyjb" Version="1.0.22">
+	<PackageReference Include="Cyjb" Version="1.0.23">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.18">
+	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.19">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.18" />
+	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>

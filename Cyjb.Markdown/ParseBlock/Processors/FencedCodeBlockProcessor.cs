@@ -18,7 +18,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 代码的文本。
 	/// </summary>
-	private readonly StringBuilder builder = StringBuilderPool.Rent(16);
+	private readonly StringBuilder builder = StringBuilderPool.Rent(64);
 	/// <summary>
 	/// 代码块。
 	/// </summary>
@@ -67,13 +67,13 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		if (!line.IsCodeIndent)
 		{
-			Token<BlockKind> token = line.Peek();
+			Token<BlockKind> token = line.PeekFront();
 			if (token.Kind == BlockKind.CodeFence && token.Text[0] == fence &&
-				MarkdownUtil.GetFenceLength(token.Text.AsSpan()) >= fenceLength)
+				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}
@@ -87,7 +87,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(BlockText line)
+	public override void AddLine(BlockLine line)
 	{
 		line.AppendTo(builder);
 	}
@@ -118,7 +118,7 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{

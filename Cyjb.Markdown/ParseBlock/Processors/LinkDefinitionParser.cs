@@ -131,49 +131,46 @@ internal sealed class LinkDefinitionParser
 	/// 解析指定的行。
 	/// </summary>
 	/// <param name="text">行的文本。</param>
-	public void Parse(MappedText text)
+	/// <param name="span">行的文本范围。</param>
+	public void Parse(StringView text, TextSpan span)
 	{
-		ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
-		text.AppendTo(ref list);
-		ReadOnlySpan<char> textSpan = list.AsSpan();
+		ReadOnlySpan<char> textSpan = text;
 		while (!textSpan.IsEmpty)
 		{
 			bool success = false;
 			switch (state)
 			{
 				case State.StartDefinition:
-					success = ParseStartDefinition(ref textSpan, text.Span);
+					success = ParseStartDefinition(ref textSpan, span);
 					break;
 				case State.Label:
 					success = ParseLabel(ref textSpan);
 					break;
 				case State.Destination:
-					success = ParseDestination(ref textSpan, text.Span);
+					success = ParseDestination(ref textSpan, span);
 					break;
 				case State.StartTitleOrAttr:
 					success = ParseStartTitleOrAttr(ref textSpan);
 					break;
 				case State.Title:
-					success = ParseTitle(ref textSpan, text.Span);
+					success = ParseTitle(ref textSpan, span);
 					break;
 				case State.StartAttributes:
 					success = ParseStartAttribute(ref textSpan);
 					break;
 				case State.Attributes:
-					success = ParseAttributes(ref textSpan, text.Span);
+					success = ParseAttributes(ref textSpan, span);
 					break;
 				case State.AttributeValue:
-					success = ParseAttributeValue(ref textSpan, text.Span);
+					success = ParseAttributeValue(ref textSpan, span);
 					break;
 			}
 			if (!success)
 			{
 				state = State.Failed;
-				list.Dispose();
 				return;
 			}
 		}
-		list.Dispose();
 	}
 
 	/// <summary>

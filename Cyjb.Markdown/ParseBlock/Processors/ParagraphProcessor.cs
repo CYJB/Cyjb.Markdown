@@ -1,3 +1,4 @@
+using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Text;
@@ -16,7 +17,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// <summary>
 	/// 段落包含的行。
 	/// </summary>
-	private readonly List<MappedText> lines = new();
+	private readonly BlockText text = new();
 	/// <summary>
 	/// 代码块的起始位置。
 	/// </summary>
@@ -29,16 +30,18 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// 链接定义的解析器。
 	/// </summary>
 	private readonly LinkDefinitionParser linkDefinitionParser;
+	private bool needClearLines = false;
 
 	/// <summary>
 	/// 使用指定的解析选项初始化 <see cref="ParagraphProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="options">解析选项。</param>
-	public ParagraphProcessor(ParseOptions options) : base(MarkdownKind.Paragraph)
+	/// <param name="parser">块级语法分析器。</param>
+	public ParagraphProcessor(BlockParser parser) : base(MarkdownKind.Paragraph)
 	{
-		linkDefinitionParser = new LinkDefinitionParser(options, () =>
+		linkDefinitionParser = new LinkDefinitionParser(parser.Options, () =>
 		{
-			lines.Clear();
+			text.Clear();
+			needClearLines = true;
 			start = -1;
 			trimStart = true;
 		});
@@ -64,14 +67,14 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// 获取当前激活的段落的行。
 	/// </summary>
 	/// <value>当前激活的段落的行，如果激活的节点不是段落，则返回 <c>null</c>。</value>
-	public override IList<MappedText>? ParagraphLines => lines;
+	public override BlockText? ParagraphText => text;
 
 	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		return line.IsBlank() ? BlockContinue.None : BlockContinue.Continue;
 	}
@@ -80,7 +83,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(BlockText line)
+	public override void AddLine(BlockLine line)
 	{
 		// 在之前的文本被识别为链接声明后，需要移除新的行首空白。
 		if (trimStart)
@@ -92,11 +95,17 @@ internal sealed class ParagraphProcessor : BlockProcessor
 		{
 			start = line.Start;
 		}
-		MappedText text = line.Text;
-		lines.Add(text);
 		if (linkDefinitionParser.CanContinue)
 		{
-			linkDefinitionParser.Parse(text);
+			linkDefinitionParser.Parse(line.ToStringView(), line.Span);
+		}
+		if (needClearLines == true)
+		{
+			needClearLines = false;
+		}
+		else
+		{
+			line.AppendTo(text);
 		}
 	}
 
@@ -109,13 +118,13 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
 		AddDefinitions(parser);
-		if (lines.Count == 0)
+		if (text.Length == 0)
 		{
 			// 没有有效的行。
 			return null;
 		}
 		// 移除尾行后的空白。
-		lines[^1].TrimEnd();
+		text.TrimEnd();
 		paragraph.Span = new TextSpan(start, end);
 		return paragraph;
 	}
@@ -143,6 +152,6 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// <param name="parser">行内节点的解析器。</param>
 	public override void ParseInline(InlineParser parser)
 	{
-		parser.Parse(lines, paragraph.Children);
+		parser.Parse(text, paragraph.Children);
 	}
 }

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -28,19 +25,45 @@ internal sealed class TableProcessor : BlockProcessor
 	private readonly List<CellInfo> cellInfos = new();
 
 	/// <summary>
-	/// 使用表格的对齐信息和标题行初始化 <see cref="TableProcessor"/> 类的新实例。
+	/// 使用表格的分隔符信息和标题行初始化 <see cref="TableProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="aligns">对齐信息。</param>
+	/// <param name="delimiters">表格分隔符。</param>
 	/// <param name="heading">标题行。</param>
-	private TableProcessor(List<TableAlign> aligns, MappedText heading)
+	private TableProcessor(StringView[] delimiters, BlockText heading)
 		: base(MarkdownKind.Table)
 	{
-		TableRow row = ParseRow(heading);
-		int start = heading.Span.Start;
+		TableRow row = ParseRow(heading.Span, heading);
+		int start = heading.Start;
 		table = new Table(row, new TextSpan(start, start));
-		for (int i = 0; i < aligns.Count; i++)
+		ParseDelimiters(delimiters);
+	}
+
+	/// <summary>
+	/// 解析分隔符。
+	/// </summary>
+	/// <param name="delimiters">要解析的分隔符。</param>
+	private void ParseDelimiters(StringView[] delimiters)
+	{
+		for (int i = 0; i < delimiters.Length; i++)
 		{
-			table.Aligns[i] = aligns[i];
+			StringView cellText = delimiters[i].Trim(MarkdownUtil.WhitespaceChars);
+			TableAlign align = TableAlign.None;
+			if (cellText.StartsWith(':'))
+			{
+				align = TableAlign.Left;
+			}
+			if (cellText.EndsWith(':'))
+			{
+				if (align == TableAlign.Left)
+				{
+					align = TableAlign.Center;
+				}
+				else
+				{
+					align = TableAlign.Right;
+				}
+			}
+			table.Aligns[i] = align;
 		}
 	}
 
@@ -63,7 +86,7 @@ internal sealed class TableProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		return line.IsBlank() ? BlockContinue.None : BlockContinue.Continue;
 	}
@@ -72,9 +95,9 @@ internal sealed class TableProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(BlockText line)
+	public override void AddLine(BlockLine line)
 	{
-		table.Children.Add(ParseRow(line.Text));
+		table.Children.Add(ParseRow(line.Span, line.BlockText));
 	}
 
 	/// <summary>
@@ -104,74 +127,85 @@ internal sealed class TableProcessor : BlockProcessor
 	/// <summary>
 	/// 解析指定行。
 	/// </summary>
+	/// <param name="rowSpan">行的文本范围。</param>
 	/// <param name="text">要解析的文本。</param>
 	/// <returns>解析后的表格行。</returns>
-	private TableRow ParseRow(MappedText text)
+	private TableRow ParseRow(TextSpan rowSpan, BlockText text)
 	{
-		TextSpan rowSpan = text.Span;
-		text.TrimStart();
+		// 行首的空白都已当作缩进来处理，因此这里不需要 TrimStart。
 		text.TrimEnd();
 		List<TableCell> cells = new();
-		List<MappedText> texts = new();
-		int spanStart = 0;
-		int start = 0;
-		int len = text.Length;
-		for (int i = 0; i < len; i++)
+		BlockText cellText = new();
+		int cellStart = text.Start;
+		int cellEnd = text.End;
+		bool escaped = false;
+		int count = text.Tokens.Count;
+		for (int i = 0; i < count; i++)
 		{
-			char ch = text[i];
-			switch (ch)
+			int startIdx = 0;
+			var token = text.Tokens[i];
+			ReadOnlySpan<char> textSpan = token.Text;
+			int j = 0;
+			if (i == 0 && textSpan[0] == '|')
 			{
-				case '\\':
-					if (i + 1 < len)
+				// 首个 | 总是会当作前导竖划线看待，不计入内容。
+				startIdx = 1;
+				j++;
+			}
+			for (; j < textSpan.Length; j++)
+			{
+				char ch = textSpan[j];
+				if (ch == '\\')
+				{
+					escaped = !escaped;
+				}
+				else if (ch == '|')
+				{
+					if (escaped)
 					{
-						if (text[i + 1] == '|')
+						// 需要特殊处理竖划线，转义后的竖划线不会产生新单元格，
+						// 但在后续解析行级元素时，需要当作一个竖划线看待，不会包含前面的转义字符。
+						// 特别是在 `\|` 场景，会被当作 `|` 解析。
+						// 所以在拼接字符串时，将 \ 忽略掉。
+						if (startIdx < j - 1)
 						{
-							// 需要特殊处理竖划线，转义后的竖划线不会产生新单元格，
-							// 但在后续解析行级元素时，需要当作一个竖划线看待，不会包含前面的转义字符。
-							// 特别是在 `\|` 场景，会被当作 `|` 解析。
-							// 所以在拼接字符串时，将 \ 忽略掉。
-							if (i > start)
-							{
-								texts.Add(text[start..i]);
-							}
-							start = i + 1;
-							i++;
+							cellText.Add(token, startIdx, j - 1 - startIdx);
 						}
-						i++;
-					}
-					break;
-				case '|':
-					if (i == 0)
-					{
-						// 首个 | 总是会当作前导竖划线看待，不计入内容。
-						start = i + 1;
+						startIdx = j;
+						escaped = false;
 					}
 					else
 					{
-						if (i > start)
+						if (j > startIdx)
 						{
-							texts.Add(text[start..i]);
+							cellText.Add(token, startIdx, j - startIdx);
 						}
 						// 单元格总是包含结束 | 的。
-						TextSpan span = new(text.GetMappedIndex(spanStart), text.GetMappedIndex(i + 1));
-						CellInfo info = new(span, texts);
+						int curEnd = token.Span.Start + j + 1;
+						TextSpan span = new(cellStart, curEnd);
+						CellInfo info = new(span, cellText);
 						cells.Add(info.Cell);
 						cellInfos.Add(info);
-						spanStart = start = i + 1;
-						texts = new List<MappedText>();
+						cellStart = curEnd;
+						startIdx = j + 1;
+						cellText = new BlockText();
 					}
-					break;
+				}
+				else
+				{
+					escaped = false;
+				}
+			}
+			// 添加当前 Token 的剩余文本。
+			if (startIdx < textSpan.Length)
+			{
+				cellText.Add(token, startIdx, textSpan.Length - startIdx);
 			}
 		}
 		// 添加可能的最后一个单元格。
-		if (texts.Count > 0 || spanStart < len)
+		if (cellText.Length > 0 || cellStart < cellEnd)
 		{
-			if (start < len)
-			{
-				texts.Add(text[start..len]);
-			}
-			TextSpan span = new(text.GetMappedIndex(spanStart), text.GetMappedIndex(len));
-			CellInfo info = new(span, texts);
+			CellInfo info = new(new TextSpan(cellStart, cellEnd), cellText);
 			cells.Add(info.Cell);
 			cellInfos.Add(info);
 		}
@@ -190,21 +224,21 @@ internal sealed class TableProcessor : BlockProcessor
 		/// <summary>
 		/// 映射文本列表。
 		/// </summary>
-		private readonly List<MappedText> text;
+		private readonly BlockText text;
 
 		/// <summary>
 		/// 使用指定的文本范围和映射文本初始化 <see cref="CellInfo"/> 类的新实例。
 		/// </summary>
 		/// <param name="span">单元格的文本范围。</param>
-		/// <param name="text">映射文本列表。</param>
-		public CellInfo(TextSpan span, List<MappedText> text)
+		/// <param name="text">块文本。</param>
+		public CellInfo(TextSpan span, BlockText text)
 		{
 			Cell = new TableCell(span);
 			// 需要移除文本的前后空白。
-			if (text.Count > 0)
+			if (text.Length > 0)
 			{
-				text[0].TrimStart();
-				text[^1].TrimEnd();
+				text.TrimStart();
+				text.TrimEnd();
 			}
 			this.text = text;
 		}
@@ -215,7 +249,7 @@ internal sealed class TableProcessor : BlockProcessor
 		/// <param name="parser">行内节点的解析器。</param>
 		public void ParseInline(InlineParser parser)
 		{
-			if (text.Count > 0)
+			if (text.Length > 0)
 			{
 				parser.Parse(text, Cell.Children);
 			}
@@ -234,19 +268,21 @@ internal sealed class TableProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			// 要求分割行之前是段落，而且包含且只包含一行。
-			IList<MappedText>? lines;
-			if (line.IsCodeIndent || (lines = matchedProcessor.ParagraphLines) == null ||
-				lines.Count != 1)
+			BlockText? text;
+			if (line.IsCodeIndent || (text = matchedProcessor.ParagraphText) == null ||
+				!text.IsSingleLine())
 			{
 				yield break;
 			}
-			MappedText heading = lines[0];
-			List<TableAlign> aligns = ParseDelimiterRow(line.Peek().Text.ToString());
+			// 语法分析时已确保分割行的内容是有效的，这里直接 split 即可。
+			// 忽略前后空白，忽略空的子字符串来忽略最外侧的竖划线。
+			StringView[] delimiters = line.PeekFront().Text.Trim(MarkdownUtil.WhitespaceChars)
+				.Split('|', StringSplitOptions.RemoveEmptyEntries);
 			// 标题行与分割行必须具有相同的单元格数。
-			if (aligns.Count != CountCell(heading))
+			if (delimiters.Length != CountCell(text))
 			{
 				yield break;
 			}
@@ -254,7 +290,7 @@ internal sealed class TableProcessor : BlockProcessor
 			matchedProcessor.NeedReplace();
 			// 跳过当前行。
 			line.Skip();
-			yield return new TableProcessor(aligns, heading);
+			yield return new TableProcessor(delimiters, text);
 		}
 
 		/// <summary>
@@ -262,76 +298,55 @@ internal sealed class TableProcessor : BlockProcessor
 		/// </summary>
 		/// <param name="text">要解析的文本。</param>
 		/// <returns>单元格的个数。</returns>
-		private static int CountCell(MappedText text)
+		private static int CountCell(BlockText text)
 		{
-			int count = 0;
-			ReadOnlySpan<char> str = text.ToString();
-			MarkdownUtil.Trim(ref str);
-			int start = 0;
-			int len = str.Length;
-			for (int i = 0; i < len; i++)
+			int cellCount = 0;
+			bool escaped = false;
+			bool hasContent = false;
+			int end = text.Tokens.Count - 1;
+			for (int i = 0; i <= end; i++)
 			{
-				char ch = str[i];
-				switch (ch)
+				ReadOnlySpan<char> textSpan = text.Tokens[i].Text;
+				textSpan = textSpan.TrimEnd(MarkdownUtil.Whitespace);
+				int j = 0;
+				if (i == 0 && textSpan[0] == '|')
 				{
-					case '\\':
-						if (i + 1 < len)
-						{
-							i++;
-						}
-						break;
-					case '|':
-						if (i > 0)
-						{
-							// 首个 | 总是会当作前导竖划线看待，不计入内容。
-							count++;
-							start = i + 1;
-						}
-						break;
+					// 首个 | 总是会当作前导竖划线看待，不计入内容。
+					j++;
+					hasContent = true;
 				}
-			}
-			// 添加可能的最后一个单元格。
-			if (start < len)
-			{
-				count++;
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// 解析分割行。
-		/// </summary>
-		/// <param name="text">要解析的文本。</param>
-		/// <returns>表格的对齐。</returns>
-		private static List<TableAlign> ParseDelimiterRow(string text)
-		{
-			// 语法分析时已确保分割行的内容是有效的，这里直接 split 即可。
-			// 忽略前后空白，忽略空的子字符串来忽略最外侧的竖划线。
-			IEnumerable<string> cells = MarkdownUtil.Trim(text)
-				.Split('|', StringSplitOptions.RemoveEmptyEntries)
-				.Select(cell => MarkdownUtil.Trim(cell));
-			List<TableAlign> columns = new();
-			foreach (string str in cells)
-			{
-				TableAlign align = TableAlign.None;
-				if (str.StartsWith(':'))
+				for (; j < textSpan.Length; j++)
 				{
-					align = TableAlign.Left;
-				}
-				if (str.EndsWith(':'))
-				{
-					if (align == TableAlign.Left)
+					char ch = textSpan[j];
+					if (ch == '\\')
 					{
-						align = TableAlign.Center;
+						escaped = !escaped;
+					}
+					else if (ch == '|')
+					{
+						if (escaped)
+						{
+							escaped = false;
+						}
+						else
+						{
+							cellCount++;
+							hasContent = false;
+						}
 					}
 					else
 					{
-						align = TableAlign.Right;
+						escaped = false;
+						hasContent = true;
 					}
 				}
-				columns.Add(align);
 			}
-			return columns;
+			// 添加可能的最后一个单元格。
+			if (hasContent)
+			{
+				cellCount++;
+			}
+			return cellCount;
 		}
 	}
 }

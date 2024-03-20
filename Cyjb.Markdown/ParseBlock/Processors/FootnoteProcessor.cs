@@ -45,13 +45,13 @@ internal class FootnoteProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		if (line.IsCodeIndent || line.IsBlank())
 		{
 			// 缩进会被认为是脚注的一部分，这时要吃掉 4 个缩进。
 			// 空白行也是脚注的一部分。
-			line.SkipIndent(BlockText.CodeIndent);
+			line.SkipIndent(BlockLine.CodeIndent);
 			return BlockContinue.Continue;
 		}
 		else
@@ -109,13 +109,15 @@ internal class FootnoteProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
 				yield break;
 			}
-			Token<BlockKind> token = line.Read();
+			// 提前保存结束位置，避免行内文本被清空后无法找到正确的结束位置。
+			int end = line.End;
+			Token<BlockKind> token = line.PopFront();
 			// 跳过之后的空白。
 			line.SkipIndent();
 			// 如果达到了行尾，那么消费整行，确保在空脚注时能够拿到正确的结束位置。
@@ -123,7 +125,11 @@ internal class FootnoteProcessor : BlockProcessor
 			{
 				line.Skip();
 			}
-			yield return new FootnoteProcessor(token.Span.Start, line.Start, ((StringView)token.Value!).ToString());
+			else
+			{
+				end = line.Start;
+			}
+			yield return new FootnoteProcessor(token.Span.Start, end, ((StringView)token.Value!).ToString());
 		}
 	}
 }

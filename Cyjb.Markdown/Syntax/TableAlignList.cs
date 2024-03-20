@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Markdown.Syntax;

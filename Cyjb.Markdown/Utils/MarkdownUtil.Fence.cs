@@ -9,20 +9,15 @@ internal static partial class MarkdownUtil
 	/// <summary>
 	/// 返回分隔符的长度。
 	/// </summary>
-	/// <param name="text">要检查的字符串。</param>
+	/// <param name="text">要检查的字符串视图。</param>
 	/// <returns>分隔符的长度。</returns>
-	public static int GetFenceLength(ReadOnlySpan<char> text)
+	public static int GetFenceLength(StringView text)
 	{
-		char fence = text[0];
+		ReadOnlySpan<char> span = text;
+		char fence = span[0];
 		// 在词法分析中已确保分隔符长度至少为 2。
 		int i = 2;
-		for (; i < text.Length; i++)
-		{
-			if (text[i] != fence)
-			{
-				return i;
-			}
-		}
+		for (; i < span.Length && span[i] == fence; i++) ;
 		return i;
 	}
 
@@ -37,7 +32,7 @@ internal static partial class MarkdownUtil
 	/// <param name="fenceLength">分隔符的长度。</param>
 	/// <param name="info">分隔符的信息。</param>
 	/// <param name="attrs">分隔符的属性。</param>
-	public static void ParseFenceStart(BlockParser parser, BlockText line, out int start, out int indent,
+	public static void ParseFenceStart(BlockParser parser, BlockLine line, out int start, out int indent,
 		out char fenceChar, out int fenceLength,
 		out string? info, out HtmlAttributeList? attrs)
 	{
@@ -47,13 +42,12 @@ internal static partial class MarkdownUtil
 		indent = line.Indent;
 		line.SkipIndent();
 		// 解析自定义容器的信息。
-		Token<BlockKind> token = line.Peek();
+		Token<BlockKind> token = line.PeekFront();
 		fenceChar = token.Text[0];
-		fenceLength = GetFenceLength(token.Text.AsSpan());
+		fenceLength = GetFenceLength(token.Text);
 		if (token.Kind is BlockKind.CodeFenceStart or BlockKind.MathFenceStart or BlockKind.CustomContainerFenceStart)
 		{
-			ReadOnlySpan<char> text = token.Text.AsSpan(fenceLength);
-			Trim(ref text);
+			ReadOnlySpan<char> text = token.Text.AsSpan(fenceLength).Trim(MarkdownUtil.Whitespace);
 			info = text.Unescape();
 			if (info.Length == 0)
 			{

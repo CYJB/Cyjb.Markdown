@@ -1,4 +1,3 @@
-using System.Text;
 using Cyjb.Collections;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
@@ -25,7 +24,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	/// <summary>
 	/// Setext 标题的文本。
 	/// </summary>
-	private readonly IList<MappedText> text;
+	private readonly BlockText text;
 
 	/// <summary>
 	/// 使用 Setext 标题的起始位置和文本初始化 <see cref="SetextHeadingProcessor"/> 类的新实例。
@@ -34,7 +33,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	/// <param name="depth">Setext 标题的深度。</param>
 	/// <param name="text">Setext 标题的文本。</param>
 	/// <param name="attrs">Setext 标题的属性。</param>
-	private SetextHeadingProcessor(int start, int depth, IList<MappedText> text, HtmlAttributeList? attrs)
+	private SetextHeadingProcessor(int start, int depth, BlockText text, HtmlAttributeList? attrs)
 		: base(MarkdownKind.Heading)
 	{
 		heading = new Heading(depth, new TextSpan(start, start));
@@ -55,7 +54,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		return BlockContinue.None;
 	}
@@ -68,8 +67,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 	/// <returns>如果存在有效的节点，则返回节点本身。否则返回 <c>null</c>。</returns>
 	public override Node? CloseNode(int end, BlockParser parser)
 	{
-		string label = LinkUtil.NormalizeLabel(string.Join("", text.Select(text => text.ToString())));
-		HeadingUtils.ProcessHeading(parser, heading, label);
+		HeadingUtils.ProcessHeading(parser, heading, LinkUtil.NormalizeLabel(text));
 		heading.Span = new TextSpan(heading.Span.Start, end);
 		return heading;
 	}
@@ -95,79 +93,54 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			// 要求 Setext 标签之前是段落，而且包含有效内容。
-			IList<MappedText>? lines;
-			if (line.IsCodeIndent || (lines = matchedProcessor.ParagraphLines) == null ||
-				lines.Count == 0)
+			BlockText? text;
+			if (line.IsCodeIndent || (text = matchedProcessor.ParagraphText) == null ||
+				text.Length == 0)
 			{
 				yield break;
 			}
 			// 需要将之前的段落关闭。
 			matchedProcessor.NeedReplace();
-			int depth = line.Peek().Text[0] == '=' ? 1 : 2;
+			int depth = line.PeekFront().Text[0] == '=' ? 1 : 2;
 			// 移除尾行后的空白。
-			lines[^1].TrimEnd();
+			text.TrimEnd();
 			HtmlAttributeList? attrs = null;
 			// 尝试解析属性。
 			if (parser.Options.UseHeaderAttributes)
 			{
-				attrs = ParseAttributes(lines);
-				// 移除尾行后的空白。
-				lines[^1].TrimEnd();
+				attrs = ParseAttributes(text);
+				// 移除尾行后的空白，注意不要移除换行本身。
+				text.TrimEnd(false);
 			}
-			yield return new SetextHeadingProcessor(lines[0].Span.Start, depth, lines, attrs);
+			yield return new SetextHeadingProcessor(text.Start, depth, text, attrs);
 		}
 
 		/// <summary>
 		/// 尝试从行中解析属性。
 		/// </summary>
-		/// <param name="lines">要检查的行。</param>
+		/// <param name="text">要检查的文本。</param>
 		/// <returns>解析得到的属性列表，或者 <c>null</c> 表示解析失败。</returns>
-		public static HtmlAttributeList? ParseAttributes(IList<MappedText> lines)
+		public static HtmlAttributeList? ParseAttributes(BlockText text)
 		{
 			// 最后一个字符是 }
-			string text = lines[^1].ToString();
 			if (text.Length == 0 || text[^1] != '}')
 			{
 				return null;
 			}
 			// 找到最后一个未被引号扩起来的 {，且要求是未转义的。
-			int lineIdx = lines.Count - 1;
-			int startIdx = -1;
-			for (; lineIdx >= 0; lineIdx--)
-			{
-				text = lines[lineIdx].ToString();
-				startIdx = MarkdownUtil.FindAttributeStart(text);
-				if (startIdx == -2)
-				{
-					// -2 表示找到了 { 但不能用作属性起始。
-					return null;
-				}
-				else if (startIdx == -1)
-				{
-					// -1 表示未找到 {。
-					continue;
-				}
-				break;
-			}
+			int startIdx = MarkdownUtil.FindAttributeStart(text);
 			if (startIdx < 0)
 			{
 				// 未找到起始 {。
 				return null;
 			}
 			ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
-			for (int i = lineIdx; i < lines.Count; i++)
+			for (int i = startIdx; i < text.Length; i++)
 			{
-				if (i == lineIdx)
-				{
-					lines[i].AppendTo(ref list, startIdx);
-				}
-				else
-				{
-					lines[i].AppendTo(ref list);
-				}
+				list.Add(text[i]);
 			}
 			ReadOnlySpan<char> span = list.AsSpan();
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref span);
@@ -175,12 +148,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 			{
 				list.Dispose();
 				// 移除行中不需要的部分。
-				for (int i = lines.Count - 1; i > lineIdx; i--)
-				{
-					lines.RemoveAt(i);
-				}
-				MappedText lastLine = lines[^1];
-				lastLine.RemoteEnd(lastLine.Length - startIdx);
+				text.RemoteEnd(text.Length - startIdx);
 			}
 			else
 			{

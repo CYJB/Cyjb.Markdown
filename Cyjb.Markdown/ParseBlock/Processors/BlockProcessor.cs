@@ -67,23 +67,23 @@ internal abstract class BlockProcessor
 	}
 
 	/// <summary>
-	/// 获取当前激活的段落的行。
+	/// 获取当前激活的段落的文本。
 	/// </summary>
-	/// <value>当前激活的段落的行，如果激活的节点不是段落，则返回 <c>null</c>。</value>
-	public virtual IList<MappedText>? ParagraphLines => null;
+	/// <value>当前激活的段落的文本，如果激活的节点不是段落，则返回 <c>null</c>。</value>
+	public virtual BlockText? ParagraphText => null;
 
 	/// <summary>
 	/// 尝试将当前节点延伸到下一行。
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public abstract BlockContinue TryContinue(BlockText line);
+	public abstract BlockContinue TryContinue(BlockLine line);
 
 	/// <summary>
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public virtual void AddLine(BlockText line) { }
+	public virtual void AddLine(BlockLine line) { }
 
 	/// <summary>
 	/// 返回当前节点是否可以包含指定类型的子节点。

@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Cyjb.Collections;
+using Cyjb.Markdown.ParseBlock;
 
 namespace Cyjb.Markdown.Utils;
 
@@ -26,6 +27,43 @@ internal static class LinkUtil
 		{
 			throw new ArgumentException(Resources.EmptyLinkLabel, nameof(label));
 		}
+	}
+
+	/// <summary>
+	/// 标准化链接标签。
+	/// </summary>
+	/// <param name="label">要标准化的链接标签。</param>
+	/// <returns>标准化后的标签。</returns>
+	public static string NormalizeLabel(BlockText label)
+	{
+		using ValueList<char> text = label.Length <= ValueList.StackallocCharSizeLimit
+			? new ValueList<char>(stackalloc char[label.Length])
+			: new ValueList<char>(label.Length);
+		int count = label.Tokens.Count;
+		bool isWhitespace = true;
+		for (int i = 0; i < count; i++)
+		{
+			ReadOnlySpan<char> span = label.Tokens[i].Text;
+			for (int j = 0; j < span.Length; j++)
+			{
+				char ch = span[j];
+				// 将中间的连续空白合并成一个。
+				if (MarkdownUtil.IsWhitespace(ch))
+				{
+					if (!isWhitespace)
+					{
+						isWhitespace = true;
+						text.Add(' ');
+					}
+				}
+				else
+				{
+					isWhitespace = false;
+					text.Add(UnicodeCaseFolding.GetCaseFolding(ch));
+				}
+			}
+		}
+		return text.ToString();
 	}
 
 	/// <summary>

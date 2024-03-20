@@ -81,7 +81,7 @@ internal sealed class ListProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		if (line.IsBlank())
 		{
@@ -183,16 +183,16 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{
 				yield break;
 			}
-			Token<BlockKind> token = line.Peek();
+			Token<BlockKind> token = line.PeekFront();
 			ListStyleType styleType = (ListStyleType)token.Value!;
 			bool hasContent = !line.IsBlank(1);
-			if (matchedProcessor.ParagraphLines?.Count > 0)
+			if (matchedProcessor.ParagraphText?.Length > 0)
 			{
 				// 空列表不能中断段落。
 				if (!hasContent)
@@ -208,10 +208,10 @@ internal sealed class ListProcessor : BlockProcessor
 			int itemStart = token.Span.Start;
 			// 找到内容相对列表项起始的缩进宽度。
 			int indentAfterMarker = line.Indent + token.Text.Length;
-			line.Read();
+			line.PopFront();
 			int contentIndent = indentAfterMarker + line.Indent;
 			// 如果没有内容或者是代码段，那么认为内容缩进是列表项后一个字符位置。
-			if (!hasContent || contentIndent - indentAfterMarker > BlockText.CodeIndent)
+			if (!hasContent || contentIndent - indentAfterMarker > BlockLine.CodeIndent)
 			{
 				contentIndent = indentAfterMarker + 1;
 				// 只跳过 marker 后的一个空白。
@@ -315,14 +315,14 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <returns>如果当前行包含任务列表项，根据是否勾选返回 <c>true</c> 或 <c>false</c>；
 		/// 如果不包含任务列表项，返回 <c>null</c>。</returns>
-		private static bool? CheckTaskListItem(BlockText line)
+		private static bool? CheckTaskListItem(BlockLine line)
 		{
 			// 检查包含任务列表项标志
 			if (line.Indent >= 4 || line.IsBlank())
 			{
 				return null;
 			}
-			Token<BlockKind> token = line.Peek();
+			Token<BlockKind> token = line.PeekFront();
 			if (token.Kind != BlockKind.TaskListItemMarker)
 			{
 				return null;
@@ -340,7 +340,7 @@ internal sealed class ListProcessor : BlockProcessor
 				return null;
 			}
 			// 消费掉任务列表项标志。
-			line.Read();
+			line.PopFront();
 			// 消费掉任务列表项标志后的一个空白。
 			line.SkipIndent(1);
 			// 后续的段落不要跳过这里的空白。

@@ -16,7 +16,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// <param name="parser">块级语法分析器。</param>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>新的块处理器数组，若未能成功解析，则返回空数组。</returns>
-	public static IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line)
+	public static IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line)
 	{
 		// 缩进代码块不会中断段落。
 		if (line.IsCodeIndent && !line.IsBlank() &&
@@ -25,7 +25,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 			// 代码块的起始位置包含缩进位置。
 			int start = line.Start;
 			// 跳过空白部分。
-			line.SkipIndent(BlockText.CodeIndent);
+			line.SkipIndent(BlockLine.CodeIndent);
 			yield return new IndentedCodeBlockProcessor(start, line.End);
 		}
 	}
@@ -63,19 +63,19 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		if (line.IsCodeIndent)
 		{
 			// 跳过空白部分。
-			line.SkipIndent(BlockText.CodeIndent);
+			line.SkipIndent(BlockLine.CodeIndent);
 			end = line.End;
 			return BlockContinue.Continue;
 		}
 		else if (line.IsBlank())
 		{
 			// 跳过空白部分，但暂时不计入结尾。
-			line.SkipIndent(BlockText.CodeIndent);
+			line.SkipIndent(BlockLine.CodeIndent);
 			return BlockContinue.Continue;
 		}
 		else
@@ -88,7 +88,7 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// 添加一个新行。
 	/// </summary>
 	/// <param name="line">新添加的行。</param>
-	public override void AddLine(BlockText line)
+	public override void AddLine(BlockLine line)
 	{
 		line.AppendTo(builder);
 		if (!line.IsBlank())

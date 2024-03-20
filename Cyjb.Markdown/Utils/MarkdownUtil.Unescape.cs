@@ -1,5 +1,6 @@
 using System.Globalization;
 using Cyjb.Collections;
+using Cyjb.Markdown.ParseBlock;
 
 namespace Cyjb.Markdown.Utils;
 
@@ -49,6 +50,30 @@ internal static partial class MarkdownUtil
 	/// <param name="start">要检查的起始索引。</param>
 	/// <returns>如果指定索引的字符是被转义的，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
 	public static bool IsEscaped(this ReadOnlySpan<char> text, int idx, int start = 0)
+	{
+		int slashCount = 0;
+		for (int i = idx - 1; i >= start; i--)
+		{
+			if (text[i] == '\\')
+			{
+				slashCount++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return (slashCount & 1) == 1;
+	}
+
+	/// <summary>
+	/// 返回指定块文本中，指定索引的字符是否是被转义的。
+	/// </summary>
+	/// <param name="text">要检查的块文本。</param>
+	/// <param name="idx">要检查的字符位置。</param>
+	/// <param name="start">要检查的起始索引。</param>
+	/// <returns>如果指定索引的字符是被转义的，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool IsEscaped(this BlockText text, int idx, int start = 0)
 	{
 		int slashCount = 0;
 		for (int i = idx - 1; i >= start; i--)

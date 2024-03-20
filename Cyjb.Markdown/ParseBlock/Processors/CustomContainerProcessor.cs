@@ -55,13 +55,13 @@ internal class CustomContainerProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="line">要检查的行。</param>
 	/// <returns>当前节点是否可以延伸到下一行。</returns>
-	public override BlockContinue TryContinue(BlockText line)
+	public override BlockContinue TryContinue(BlockLine line)
 	{
 		if (!line.IsCodeIndent)
 		{
-			Token<BlockKind> token = line.Peek();
+			Token<BlockKind> token = line.PeekFront();
 			if (token.Kind == BlockKind.CustomContainerFence &&
-				MarkdownUtil.GetFenceLength(token.Text.AsSpan()) >= fenceLength)
+				MarkdownUtil.GetFenceLength(token.Text) >= fenceLength)
 			{
 				return BlockContinue.Closed;
 			}
@@ -112,7 +112,7 @@ internal class CustomContainerProcessor : BlockProcessor
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
 		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockText line, BlockProcessor matchedProcessor)
+		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
 		{
 			if (line.IsCodeIndent)
 			{

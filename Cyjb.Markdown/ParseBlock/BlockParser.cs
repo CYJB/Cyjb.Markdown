@@ -130,7 +130,7 @@ internal sealed class BlockParser
 	public Document Parse()
 	{
 		Token<BlockKind> token;
-		BlockText line = new(locator);
+		BlockLine line = new(locator);
 		while (true)
 		{
 			// 清除行的旧数据。
@@ -138,7 +138,7 @@ internal sealed class BlockParser
 			// 添加所有换行符前的 Token。
 			while (!(token = tokenizer.Read()).IsEndOfFile)
 			{
-				line.AddToken(token);
+				line.Add(token);
 				if (token.Kind == BlockKind.NewLine)
 				{
 					ParseLine(line);
@@ -204,7 +204,7 @@ internal sealed class BlockParser
 	/// 解析指定行。
 	/// </summary>
 	/// <param name="line">要解析的行。</param>
-	private void ParseLine(BlockText line)
+	private void ParseLine(BlockLine line)
 	{
 		int lineStart = line.Start;
 		// 栈底总是 document，总是可以接受任何行，因此总是跳过。
@@ -243,7 +243,7 @@ internal sealed class BlockParser
 				break;
 			}
 			processor.IsNeedReplaced = false;
-			token = line.Peek();
+			token = line.PeekFront();
 			currentInlineProcessors.Clear();
 			if (token.Kind == BlockKind.NewLine)
 			{
@@ -306,7 +306,7 @@ internal sealed class BlockParser
 		if (!line.IsBlank())
 		{
 			// 为行添加一个新的段落。
-			processor = new ParagraphProcessor(options);
+			processor = new ParagraphProcessor(this);
 			AddProcessor(processor, lineStart);
 			// 需要跳过段落的起始缩进。
 			if (line.ParagraphSkippable)

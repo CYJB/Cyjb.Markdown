@@ -1,4 +1,5 @@
 using Cyjb.Collections;
+using Cyjb.Markdown.ParseBlock;
 using Cyjb.Markdown.Syntax;
 
 namespace Cyjb.Markdown.Utils;
@@ -17,6 +18,37 @@ internal static partial class MarkdownUtil
 	/// <returns>起始 <c>{</c> 字符的索引；如果未找到则返回 <c>-1</c>；
 	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
 	public static int FindAttributeStart(ReadOnlySpan<char> text)
+	{
+		for (int i = text.Length - 1; i >= 0; i--)
+		{
+			char ch = text[i];
+			if (ch == '{')
+			{
+				// 要求 { 是未转义的。
+				if (text.IsEscaped(i))
+				{
+					return -2;
+				}
+				else
+				{
+					return i;
+				}
+			}
+			else if (ch == '"' || ch == '\'')
+			{
+				for (i--; i >= 0 && text[i] != ch; i--) ;
+			}
+		}
+		return -1;
+	}
+
+	/// <summary>
+	/// 找到属性的起始 <c>{</c> 字符。
+	/// </summary>
+	/// <param name="text">要检查的文本。</param>
+	/// <returns>起始 <c>{</c> 字符的索引；如果未找到则返回 <c>-1</c>；
+	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
+	public static int FindAttributeStart(BlockText text)
 	{
 		for (int i = text.Length - 1; i >= 0; i--)
 		{

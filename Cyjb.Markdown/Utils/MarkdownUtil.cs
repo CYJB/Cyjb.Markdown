@@ -13,7 +13,12 @@ internal static partial class MarkdownUtil
 	/// <summary>
 	/// Markdown 的空白字符。
 	/// </summary>
-	public static readonly char[] WhitespaceChars = new char[]{ ' ', '\t', '\r', '\n' };
+	public static readonly char[] WhitespaceChars = new char[] { ' ', '\t', '\r', '\n' };
+
+	/// <summary>
+	/// Markdown 的空白字符。
+	/// </summary>
+	public static readonly char[] WhitespaceCharsWithoutNewLine = new char[] { ' ', '\t' };
 
 	/// <summary>
 	/// 返回指定字符是否表示 Markdown 空白。
@@ -105,40 +110,5 @@ internal static partial class MarkdownUtil
 		int len = text.Length;
 		text = text.TrimStart(Whitespace).TrimEnd(Whitespace);
 		return text.Length < len;
-	}
-
-	/// <summary>
-	/// 移除指定文本的起始和尾随空白。
-	/// </summary>
-	/// <param name="text">要移除起始和尾随空白的文本。</param>
-	/// <returns>移除了起始和尾随空白后的文本。</returns>
-	public static string Trim(string text)
-	{
-		ReadOnlySpan<char> span = text;
-		if (Trim(ref span))
-		{
-			return span.ToString();
-		}
-		else
-		{
-			return text;
-		}
-	}
-
-	/// <summary>
-	/// 获取当前文本是否是空白的（只包含空格、Tab、\r 或 \n）。
-	/// </summary>
-	/// <param name="text">要检查的文本。</param>
-	/// <returns>如果当前文本是空白的，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool IsBlank(this ReadOnlySpan<char> text)
-	{
-		for (int i = 0; i < text.Length; i++)
-		{
-			if (!IsWhitespace(text[i]))
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 }

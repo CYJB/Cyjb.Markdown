@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Cyjb.Collections;
 using Cyjb.Compilers.Lexers;
 using Cyjb.Markdown.ParseBlock;
 using Cyjb.Markdown.Syntax;
@@ -53,7 +52,7 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 位置映射关系。
 	/// </summary>
-	private LocationMap locationMap;
+	private readonly LocationMap locationMap = new();
 
 #pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
 
@@ -86,26 +85,14 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 从指定文本解析行级节点。
 	/// </summary>
-	/// <param name="texts">要解析的文本列表。</param>
+	/// <param name="text">要解析的块文本。</param>
 	/// <param name="children">子节点列表。</param>
-	public void Parse(IEnumerable<MappedText> texts, NodeList<InlineNode> children)
+	public void Parse(BlockText text, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
-		int sumCount = 0;
-		foreach (MappedText text in texts)
-		{
-			sumCount += text.Length;
-		}
-		ValueList<char> list = sumCount <= ValueList.StackallocCharSizeLimit
-			? new(stackalloc char[sumCount])
-			: new(sumCount);
-		foreach (MappedText text in texts)
-		{
-			text.AppendTo(ref list);
-		}
-		reader = new SourceReader(new StringReader(list.ToString()));
-		list.Dispose();
-		locationMap = new LocationMap(GetMaps(texts), LocationMapType.Offset);
+		reader = new SourceReader(text.ToStringView());
+		locationMap.Clear();
+		text.GetLocationMap(locationMap);
 		// 将词法单元重新映射成源码位置。
 		tokenizer.Load(reader);
 		tokenizer.SharedContext = this;
@@ -472,41 +459,6 @@ internal sealed class InlineParser
 		}
 		BracketInfo info = brackets.Peek();
 		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index).ToString();
-	}
-
-	/// <summary>
-	/// 从指定文本中提取映射信息。
-	/// </summary>
-	/// <param name="texts">文本序列。</param>
-	/// <returns>提取的映射信息。</returns>
-	private static IEnumerable<Tuple<int, int>> GetMaps(IEnumerable<MappedText> texts)
-	{
-		int lastMappedIndex = 0;
-		foreach (MappedText text in texts)
-		{
-			int length = text.Length;
-			int curLen = 0;
-			bool isFirst = true;
-			foreach (Tuple<int, int> map in text.Maps)
-			{
-				var (index, mappedIndex) = map;
-				curLen += index;
-				if (curLen >= length)
-				{
-					break;
-				}
-				if (isFirst)
-				{
-					mappedIndex -= lastMappedIndex;
-					isFirst = false;
-				}
-				yield return new Tuple<int, int>(index, mappedIndex);
-				lastMappedIndex += mappedIndex;
-			}
-			int restLen = length - curLen;
-			yield return new Tuple<int, int>(restLen, restLen);
-			lastMappedIndex += restLen;
-		}
 	}
 
 	/// <summary>
