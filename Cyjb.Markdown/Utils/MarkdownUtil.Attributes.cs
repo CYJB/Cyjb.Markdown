@@ -10,6 +10,10 @@ internal static partial class MarkdownUtil
 	/// 空白字符或者 <c>}</c>。
 	/// </summary>
 	private static readonly string WhitespaceOrRightBrace = Whitespace + "}";
+	/// <summary>
+	/// 属性的分割字符。
+	/// </summary>
+	private const string AttributeSeperatorChars = "{'\"";
 
 	/// <summary>
 	/// 找到属性的起始 <c>{</c> 字符。
@@ -50,24 +54,57 @@ internal static partial class MarkdownUtil
 	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
 	public static int FindAttributeStart(BlockText text)
 	{
-		for (int i = text.Length - 1; i >= 0; i--)
+		char stringDelimiter = '\0';
+		bool inString = false;
+		int idx;
+		for (int i = text.Tokens.Count - 1; i >= 0; i--)
 		{
-			char ch = text[i];
-			if (ch == '{')
+			ReadOnlySpan<char> span = text.Tokens[i].Text;
+			if (inString)
 			{
-				// 要求 { 是未转义的。
-				if (text.IsEscaped(i))
+				// 跳过字符串。
+				idx = span.LastIndexOf(stringDelimiter);
+				if (idx < 0)
 				{
-					return -2;
+					continue;
+				}
+				inString = false;
+				span = span.Slice(0, idx);
+			}
+			idx = span.LastIndexOfAny(AttributeSeperatorChars);
+			while (idx >= 0)
+			{
+				char ch = span[idx];
+				if (ch == '{')
+				{
+					// 要求 { 是未转义的。
+					if (span.IsEscaped(idx))
+					{
+						return -2;
+					}
+					else
+					{
+						for (i--; i >= 0; i--)
+						{
+							idx += text.Tokens[i].Text.Length;
+						}
+						return idx;
+					}
 				}
 				else
 				{
-					return i;
+					// 跳过字符串。
+					span = span.Slice(0, idx);
+					idx = span.LastIndexOf(ch);
+					if (idx < 0)
+					{
+						stringDelimiter = ch;
+						inString = true;
+						break;
+					}
 				}
-			}
-			else if (ch == '"' || ch == '\'')
-			{
-				for (i--; i >= 0 && text[i] != ch; i--) ;
+				span = span.Slice(0, idx);
+				idx = span.LastIndexOfAny(AttributeSeperatorChars);
 			}
 		}
 		return -1;
@@ -103,8 +140,7 @@ internal static partial class MarkdownUtil
 			return null;
 		}
 		int start = idx;
-		ReadOnlySpan<char> attrText = text.Slice(start + 1);
-		TrimEnd(ref attrText);
+		ReadOnlySpan<char> attrText = text.Slice(start + 1).TrimEnd(Whitespace);
 		// 要求最后一个非空白字符是 }。
 		if (attrText.IsEmpty || attrText[^1] != '}')
 		{
