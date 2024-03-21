@@ -5,13 +5,13 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 图片的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#images"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#images"/>
 [TestClass]
 public partial class UnitTestImage : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-571"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-572"/>
 	[TestMethod]
-	public void Test571()
+	public void Test572()
 	{
 		AssertMarkdown("![foo](/url \"title\")", () =>
 		{
@@ -24,9 +24,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-572"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-573"/>
 	[TestMethod]
-	public void Test572()
+	public void Test573()
 	{
 		AssertMarkdown("![foo *bar*]\r\n\r\n[foo *bar*]: train.jpg \"train & tracks\"", () =>
 		{
@@ -44,9 +44,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(16..55, "foo *bar*", "train.jpg", "train & tracks");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-573"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-574"/>
 	[TestMethod]
-	public void Test573()
+	public void Test574()
 	{
 		AssertMarkdown("![foo ![bar](/url)](/url2)", () =>
 		{
@@ -63,9 +63,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-574"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-575"/>
 	[TestMethod]
-	public void Test574()
+	public void Test575()
 	{
 		AssertMarkdown("![foo [bar](/url)](/url2)", () =>
 		{
@@ -82,9 +82,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-575"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-576"/>
 	[TestMethod]
-	public void Test575()
+	public void Test576()
 	{
 		AssertMarkdown("![foo *bar*][]\r\n\r\n[foo *bar*]: train.jpg \"train & tracks\"", () =>
 		{
@@ -102,9 +102,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(18..57, "foo *bar*", "train.jpg", "train & tracks");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-576"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-577"/>
 	[TestMethod]
-	public void Test576()
+	public void Test577()
 	{
 		AssertMarkdown("![foo *bar*][foobar]\r\n\r\n[FOOBAR]: train.jpg \"train & tracks\"", () =>
 		{
@@ -122,9 +122,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(24..60, "FOOBAR", "train.jpg", "train & tracks");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-577"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-578"/>
 	[TestMethod]
-	public void Test577()
+	public void Test578()
 	{
 		AssertMarkdown("![foo](train.jpg)", () =>
 		{
@@ -137,9 +137,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-578"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-579"/>
 	[TestMethod]
-	public void Test578()
+	public void Test579()
 	{
 		AssertMarkdown("My ![foo bar](/path/to/train.jpg  \"title\"   )", () =>
 		{
@@ -153,9 +153,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-579"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-580"/>
 	[TestMethod]
-	public void Test579()
+	public void Test580()
 	{
 		AssertMarkdown("![foo](<url>)", () =>
 		{
@@ -168,9 +168,9 @@ public partial class UnitTestImage : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-580"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-581"/>
 	[TestMethod]
-	public void Test580()
+	public void Test581()
 	{
 		AssertMarkdown("![](/url)", () =>
 		{
@@ -183,9 +183,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 图片引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-581"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-582"/>
 	[TestMethod]
-	public void Test581()
+	public void Test582()
 	{
 		AssertMarkdown("![foo][bar]\r\n\r\n[bar]: /url", () =>
 		{
@@ -199,9 +199,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(15..26, "bar", "/url", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-582"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-583"/>
 	[TestMethod]
-	public void Test582()
+	public void Test583()
 	{
 		AssertMarkdown("![foo][bar]\r\n\r\n[BAR]: /url", () =>
 		{
@@ -218,9 +218,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 折叠。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-583"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-584"/>
 	[TestMethod]
-	public void Test583()
+	public void Test584()
 	{
 		AssertMarkdown("![foo][]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -234,9 +234,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(12..31, "foo", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-584"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-585"/>
 	[TestMethod]
-	public void Test584()
+	public void Test585()
 	{
 		AssertMarkdown("![*foo* bar][]\r\n\r\n[*foo* bar]: /url \"title\"", () =>
 		{
@@ -257,9 +257,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 链接标签是忽略大小写的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-585"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-586"/>
 	[TestMethod]
-	public void Test585()
+	public void Test586()
 	{
 		AssertMarkdown("![Foo][]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -276,9 +276,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 方括号间不能存在空格、Tab 或换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-586"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-587"/>
 	[TestMethod]
-	public void Test586()
+	public void Test587()
 	{
 		AssertMarkdown("![foo] \r\n[]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -297,9 +297,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 简写。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-587"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-588"/>
 	[TestMethod]
-	public void Test587()
+	public void Test588()
 	{
 		AssertMarkdown("![foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -313,9 +313,9 @@ public partial class UnitTestImage : BaseTest
 			LinkDefinition(10..29, "foo", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-588"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-589"/>
 	[TestMethod]
-	public void Test588()
+	public void Test589()
 	{
 		AssertMarkdown("![*foo* bar]\r\n\r\n[*foo* bar]: /url \"title\"", () =>
 		{
@@ -336,9 +336,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 连接标签不能包含未转义的方括号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-589"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-590"/>
 	[TestMethod]
-	public void Test589()
+	public void Test590()
 	{
 		AssertMarkdown("![[foo]]\r\n\r\n[[foo]]: /url \"title\"", () =>
 		{
@@ -355,9 +355,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 链接标签是忽略大小写的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-590"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-591"/>
 	[TestMethod]
-	public void Test590()
+	public void Test591()
 	{
 		AssertMarkdown("![Foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -374,9 +374,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 转义起始 [。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-591"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-592"/>
 	[TestMethod]
-	public void Test591()
+	public void Test592()
 	{
 		AssertMarkdown("!\\[foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -390,9 +390,9 @@ public partial class UnitTestImage : BaseTest
 	/// <summary>
 	/// 转义 !。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-592"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-593"/>
 	[TestMethod]
-	public void Test592()
+	public void Test593()
 	{
 		AssertMarkdown("\\![foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{

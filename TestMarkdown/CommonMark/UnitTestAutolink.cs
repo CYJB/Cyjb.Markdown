@@ -5,13 +5,13 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 自动链接的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#autolinks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#autolinks"/>
 [TestClass]
 public class UnitTestAutolink : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-593"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-594"/>
 	[TestMethod]
-	public void Test593()
+	public void Test594()
 	{
 		AssertMarkdown("<http://foo.bar.baz>", () =>
 		{
@@ -24,24 +24,24 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-594"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-595"/>
 	[TestMethod]
-	public void Test594()
+	public void Test595()
 	{
-		AssertMarkdown("<http://foo.bar.baz/test?q=hello&id=22&boolean>", () =>
+		AssertMarkdown("<https://foo.bar.baz/test?q=hello&id=22&boolean>", () =>
 		{
-			Paragraph(0..47, () =>
+			Paragraph(0..48, () =>
 			{
-				Link(0..47, "http://foo.bar.baz/test?q=hello&id=22&boolean", null, () =>
+				Link(0..48, "https://foo.bar.baz/test?q=hello&id=22&boolean", null, () =>
 				{
-					Literal(1..46, "http://foo.bar.baz/test?q=hello&id=22&boolean");
+					Literal(1..47, "https://foo.bar.baz/test?q=hello&id=22&boolean");
 				});
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-595"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-596"/>
 	[TestMethod]
-	public void Test595()
+	public void Test596()
 	{
 		AssertMarkdown("<irc://foo.bar:2233/baz>", () =>
 		{
@@ -57,9 +57,9 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 支持大写字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-596"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-597"/>
 	[TestMethod]
-	public void Test596()
+	public void Test597()
 	{
 		AssertMarkdown("<MAILTO:FOO@BAR.BAZ>", () =>
 		{
@@ -75,9 +75,9 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 不要求 URI 规范。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-597"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-598"/>
 	[TestMethod]
-	public void Test597()
+	public void Test598()
 	{
 		AssertMarkdown("<a+b+c:d>", () =>
 		{
@@ -90,9 +90,9 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-598"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-599"/>
 	[TestMethod]
-	public void Test598()
+	public void Test599()
 	{
 		AssertMarkdown("<made-up-scheme://foo,bar>", () =>
 		{
@@ -105,24 +105,24 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-599"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-600"/>
 	[TestMethod]
-	public void Test599()
+	public void Test600()
 	{
-		AssertMarkdown("<http://../>", () =>
+		AssertMarkdown("<https://../>", () =>
 		{
-			Paragraph(0..12, () =>
+			Paragraph(0..13, () =>
 			{
-				Link(0..12, "http://../", null, () =>
+				Link(0..13, "https://../", null, () =>
 				{
-					Literal(1..11, "http://../");
+					Literal(1..12, "https://../");
 				});
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-600"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-601"/>
 	[TestMethod]
-	public void Test600()
+	public void Test601()
 	{
 		AssertMarkdown("<localhost:5001/foo>", () =>
 		{
@@ -138,32 +138,32 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 不允许出现空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-601"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-602"/>
 	[TestMethod]
-	public void Test601()
+	public void Test602()
 	{
-		AssertCommonMark("<http://foo.bar/baz bim>", () =>
+		AssertCommonMark("<https://foo.bar/baz bim>", () =>
 		{
-			Paragraph(0..24, () =>
+			Paragraph(0..25, () =>
 			{
-				Literal(0..24, "<http://foo.bar/baz bim>");
+				Literal(0..25, "<https://foo.bar/baz bim>");
 			});
 		});
 	}
 	/// <summary>
 	/// 反斜杠转义不生效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-602"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-603"/>
 	[TestMethod]
-	public void Test602()
+	public void Test603()
 	{
-		AssertMarkdown(@"<http://example.com/\[\>", () =>
+		AssertMarkdown(@"<https://example.com/\[\>", () =>
 		{
-			Paragraph(0..24, () =>
+			Paragraph(0..25, () =>
 			{
-				Link(0..24, @"http://example.com/\[\", null, () =>
+				Link(0..25, @"https://example.com/\[\", null, () =>
 				{
-					Literal(1..23, @"http://example.com/\[\");
+					Literal(1..24, @"https://example.com/\[\");
 				});
 			});
 		});
@@ -171,9 +171,9 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 邮件自动链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-603"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-604"/>
 	[TestMethod]
-	public void Test603()
+	public void Test604()
 	{
 		AssertMarkdown("<foo@bar.example.com>", () =>
 		{
@@ -186,9 +186,9 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-604"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-605"/>
 	[TestMethod]
-	public void Test604()
+	public void Test605()
 	{
 		AssertMarkdown("<foo+special@Bar.baz-bar0.com>", () =>
 		{
@@ -204,9 +204,9 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 反斜杠转义不生效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-605"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-606"/>
 	[TestMethod]
-	public void Test605()
+	public void Test606()
 	{
 		AssertMarkdown(@"<foo\+@bar.example.com>", () =>
 		{
@@ -219,9 +219,9 @@ public class UnitTestAutolink : BaseTest
 	/// <summary>
 	/// 非自动链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-606"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-607"/>
 	[TestMethod]
-	public void Test606()
+	public void Test607()
 	{
 		AssertMarkdown("<>", () =>
 		{
@@ -231,21 +231,21 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-607"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-608"/>
 	[TestMethod]
-	public void Test607()
+	public void Test608()
 	{
-		AssertCommonMark("< http://foo.bar >", () =>
+		AssertCommonMark("< https://foo.bar >", () =>
 		{
-			Paragraph(0..18, () =>
+			Paragraph(0..19, () =>
 			{
-				Literal(0..18, "< http://foo.bar >");
+				Literal(0..19, "< https://foo.bar >");
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-608"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-609"/>
 	[TestMethod]
-	public void Test608()
+	public void Test609()
 	{
 		AssertMarkdown("<m:abc>", () =>
 		{
@@ -255,9 +255,9 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-609"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-610"/>
 	[TestMethod]
-	public void Test609()
+	public void Test610()
 	{
 		AssertMarkdown(@"<foo.bar.baz>", () =>
 		{
@@ -267,21 +267,21 @@ public class UnitTestAutolink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-610"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-611"/>
 	[TestMethod]
-	public void Test610()
+	public void Test611()
 	{
-		AssertCommonMark("http://example.com", () =>
+		AssertCommonMark("https://example.com", () =>
 		{
-			Paragraph(0..18, () =>
+			Paragraph(0..19, () =>
 			{
-				Literal(0..18, "http://example.com");
+				Literal(0..19, "https://example.com");
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-611"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-612"/>
 	[TestMethod]
-	public void Test611()
+	public void Test612()
 	{
 		AssertCommonMark("foo@bar.example.com", () =>
 		{

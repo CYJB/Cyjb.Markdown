@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 列表的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#list"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#list"/>
 [TestClass]
 public class UnitTestList : BaseTest
 {
 	/// <summary>
 	/// 改变列表分隔符会开始一个新的列表。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-301"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-301"/>
 	[TestMethod]
 	public void Test301()
 	{
@@ -47,7 +47,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-302"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-302"/>
 	[TestMethod]
 	public void Test302()
 	{
@@ -85,7 +85,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 列表可以中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-303"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-303"/>
 	[TestMethod]
 	public void Test303()
 	{
@@ -117,7 +117,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 只允许从 1 开始的列表中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-304"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-304"/>
 	[TestMethod]
 	public void Test304()
 	{
@@ -134,7 +134,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 下面的场景就会识别成列表。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-305"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-305"/>
 	[TestMethod]
 	public void Test305()
 	{
@@ -159,7 +159,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 列表项之间可以包含任意空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-306"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-306"/>
 	[TestMethod]
 	public void Test306()
 	{
@@ -191,7 +191,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-307"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-307"/>
 	[TestMethod]
 	public void Test307()
 	{
@@ -236,7 +236,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 为了分割相同序号类型的列表，可以插入空的 HTML 注释。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-308"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-308"/>
 	[TestMethod]
 	public void Test308()
 	{
@@ -279,7 +279,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-309"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-309"/>
 	[TestMethod]
 	public void Test309()
 	{
@@ -313,7 +313,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 列表项不需要同样的缩进级别。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-310"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-310"/>
 	[TestMethod]
 	public void Test310()
 	{
@@ -373,7 +373,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-311"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-311"/>
 	[TestMethod]
 	public void Test311()
 	{
@@ -408,7 +408,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 列表项前不能有 4 个或更多空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-312"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-312"/>
 	[TestMethod]
 	public void Test312()
 	{
@@ -452,7 +452,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 这里 <c>3. c</c> 会被识别为缩进代码块，因为之前有一个空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-313"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-313"/>
 	[TestMethod]
 	public void Test313()
 	{
@@ -481,7 +481,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 是松散列表，因为两个列表项间包含空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-314"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-314"/>
 	[TestMethod]
 	public void Test314()
 	{
@@ -516,7 +516,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 第二个列表项是空的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-315"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-315"/>
 	[TestMethod]
 	public void Test315()
 	{
@@ -545,7 +545,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 列表项包含了被空行分隔的两个块级节点，因此也是松散的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-316"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-316"/>
 	[TestMethod]
 	public void Test316()
 	{
@@ -581,7 +581,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-317"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-317"/>
 	[TestMethod]
 	public void Test317()
 	{
@@ -617,7 +617,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 非松散列表，因为空行在代码块内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-318"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-318"/>
 	[TestMethod]
 	public void Test318()
 	{
@@ -649,7 +649,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 非松散列表，因为空行在子列表内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-319"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-319"/>
 	[TestMethod]
 	public void Test319()
 	{
@@ -691,7 +691,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 非松散列表，因为空行在引用内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-320"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-320"/>
 	[TestMethod]
 	public void Test320()
 	{
@@ -726,7 +726,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 非松散列表，因为未使用空行分割。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-321"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-321"/>
 	[TestMethod]
 	public void Test321()
 	{
@@ -762,7 +762,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 只包含一个段落的列表是非松散的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-322"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-322"/>
 	[TestMethod]
 	public void Test322()
 	{
@@ -780,7 +780,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-323"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-323"/>
 	[TestMethod]
 	public void Test323()
 	{
@@ -811,7 +811,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 松散列表，因为空行在列表项的两个块之间。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-324"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-324"/>
 	[TestMethod]
 	public void Test324()
 	{
@@ -833,7 +833,7 @@ public class UnitTestList : BaseTest
 	/// <summary>
 	/// 外层列表是松散的，内层是非松散的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-325"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-325"/>
 	[TestMethod]
 	public void Test325()
 	{
@@ -865,7 +865,7 @@ public class UnitTestList : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-326"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-326"/>
 	[TestMethod]
 	public void Test326()
 	{

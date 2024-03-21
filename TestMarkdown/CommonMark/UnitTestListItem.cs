@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 列表项的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#list-items"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#list-items"/>
 [TestClass]
 public class UnitTestListItem : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-253"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-253"/>
 	[TestMethod]
 	public void Test253()
 	{
@@ -31,7 +31,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-254"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-254"/>
 	[TestMethod]
 	public void Test254()
 	{
@@ -62,7 +62,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项的内容必须包含足够的缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-255"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-255"/>
 	[TestMethod]
 	public void Test255()
 	{
@@ -84,7 +84,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-256"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-256"/>
 	[TestMethod]
 	public void Test256()
 	{
@@ -106,7 +106,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-257"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-257"/>
 	[TestMethod]
 	public void Test257()
 	{
@@ -125,7 +125,7 @@ public class UnitTestListItem : BaseTest
 			CodeBlock(13..23, " two\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-258"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-258"/>
 	[TestMethod]
 	public void Test258()
 	{
@@ -150,7 +150,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进是按照列计算的，会依赖列表项的父节点。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-259"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-259"/>
 	[TestMethod]
 	public void Test259()
 	{
@@ -178,7 +178,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-260"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-260"/>
 	[TestMethod]
 	public void Test260()
 	{
@@ -209,7 +209,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项标志和内容之间至少需要一个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-261"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-261"/>
 	[TestMethod]
 	public void Test261()
 	{
@@ -228,7 +228,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项可以包含由一个或多个空行分割的块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-262"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-262"/>
 	[TestMethod]
 	public void Test262()
 	{
@@ -253,7 +253,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项可以包含任何类型的块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-263"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-263"/>
 	[TestMethod]
 	public void Test263()
 	{
@@ -286,7 +286,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项内的缩进代码块会保留空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-264"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-264"/>
 	[TestMethod]
 	public void Test264()
 	{
@@ -308,7 +308,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 有序列表可以包含 9 个或更少的数字。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-265"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-265"/>
 	[TestMethod]
 	public void Test265()
 	{
@@ -326,7 +326,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-266"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-266"/>
 	[TestMethod]
 	public void Test266()
 	{
@@ -341,7 +341,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 起始序号可以从 0 开始。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-267"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-267"/>
 	[TestMethod]
 	public void Test267()
 	{
@@ -359,7 +359,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-268"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-268"/>
 	[TestMethod]
 	public void Test268()
 	{
@@ -380,7 +380,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 起始序号不能是负数。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-269"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-269"/>
 	[TestMethod]
 	public void Test269()
 	{
@@ -395,7 +395,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进代码块会在列表项内容左边缘后再缩进四个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-270"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-270"/>
 	[TestMethod]
 	public void Test270()
 	{
@@ -414,7 +414,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-271"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-271"/>
 	[TestMethod]
 	public void Test271()
 	{
@@ -436,7 +436,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 如果首个块是缩进代码块，内容会在列表标志后一个空格的位置。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-272"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-272"/>
 	[TestMethod]
 	public void Test272()
 	{
@@ -450,7 +450,7 @@ public class UnitTestListItem : BaseTest
 			CodeBlock(34..49, "more code\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-273"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-273"/>
 	[TestMethod]
 	public void Test273()
 	{
@@ -473,7 +473,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 注意额外的缩进会计入代码块中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-274"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-274"/>
 	[TestMethod]
 	public void Test274()
 	{
@@ -496,7 +496,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 第一个块以三个空格开头，使得第二个块的缩进不够，不能添加到列表项中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-275"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-275"/>
 	[TestMethod]
 	public void Test275()
 	{
@@ -512,7 +512,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-276"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-276"/>
 	[TestMethod]
 	public void Test276()
 	{
@@ -537,7 +537,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 第二个块有足够的缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-277"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-277"/>
 	[TestMethod]
 	public void Test277()
 	{
@@ -562,7 +562,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 以空行开始的非空列表项。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-278"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-278"/>
 	[TestMethod]
 	public void Test278()
 	{
@@ -591,7 +591,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 以空行开始的列表项，空格数不影响内容缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-279"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-279"/>
 	[TestMethod]
 	public void Test279()
 	{
@@ -612,7 +612,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项最多可以以一个空行开始。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-280"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-280"/>
 	[TestMethod]
 	public void Test280()
 	{
@@ -631,7 +631,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 空的无序列表项。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-281"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-281"/>
 	[TestMethod]
 	public void Test281()
 	{
@@ -660,7 +660,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表标志后可以包含空格或者 Tab 。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-282"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-282"/>
 	[TestMethod]
 	public void Test282()
 	{
@@ -689,7 +689,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 空的有序列表。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-283"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-283"/>
 	[TestMethod]
 	public void Test283()
 	{
@@ -718,7 +718,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表可以只包含空的列表项。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-284"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-284"/>
 	[TestMethod]
 	public void Test284()
 	{
@@ -733,7 +733,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 空列表项不能中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-285"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-285"/>
 	[TestMethod]
 	public void Test285()
 	{
@@ -756,7 +756,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进一个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-286"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-286"/>
 	[TestMethod]
 	public void Test286()
 	{
@@ -787,7 +787,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进两个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-287"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-287"/>
 	[TestMethod]
 	public void Test287()
 	{
@@ -818,7 +818,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进三个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-288"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-288"/>
 	[TestMethod]
 	public void Test288()
 	{
@@ -849,7 +849,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进四个空格就会得到代码块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-289"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-289"/>
 	[TestMethod]
 	public void Test289()
 	{
@@ -861,7 +861,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项中的段落可以延迟延伸。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-290"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-290"/>
 	[TestMethod]
 	public void Test290()
 	{
@@ -892,7 +892,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 缩进会被部分删除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-291"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-291"/>
 	[TestMethod]
 	public void Test291()
 	{
@@ -912,7 +912,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-292"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-292"/>
 	[TestMethod]
 	public void Test292()
 	{
@@ -938,7 +938,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-293"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-293"/>
 	[TestMethod]
 	public void Test293()
 	{
@@ -967,7 +967,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 需要两个空格的缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-294"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-294"/>
 	[TestMethod]
 	public void Test294()
 	{
@@ -1018,7 +1018,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 一个空格的缩进是不够的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-295"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-295"/>
 	[TestMethod]
 	public void Test295()
 	{
@@ -1060,7 +1060,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表标志更宽，需要四个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-296"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-296"/>
 	[TestMethod]
 	public void Test296()
 	{
@@ -1091,7 +1091,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 三个空格是不够的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-297"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-297"/>
 	[TestMethod]
 	public void Test297()
 	{
@@ -1122,7 +1122,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表的第一个块也可以是一个列表。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-298"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-298"/>
 	[TestMethod]
 	public void Test298()
 	{
@@ -1146,7 +1146,7 @@ public class UnitTestListItem : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-299"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-299"/>
 	[TestMethod]
 	public void Test299()
 	{
@@ -1179,7 +1179,7 @@ public class UnitTestListItem : BaseTest
 	/// <summary>
 	/// 列表项可以包含标题。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-300"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-300"/>
 	[TestMethod]
 	public void Test300()
 	{

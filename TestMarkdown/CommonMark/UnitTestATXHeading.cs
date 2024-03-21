@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// ATX 标题的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#atx-headings"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#atx-headings"/>
 [TestClass]
 public class UnitTestATXHeading : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-62"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-62"/>
 	[TestMethod]
 	public void Test62()
 	{
@@ -44,7 +44,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 多于 6 个 # 不是标题。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-63"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-63"/>
 	[TestMethod]
 	public void Test63()
 	{
@@ -59,7 +59,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// # 后至少需要一个空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-64"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-64"/>
 	[TestMethod]
 	public void Test64()
 	{
@@ -78,7 +78,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 首个 # 被转义，不是标题。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-65"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-65"/>
 	[TestMethod]
 	public void Test65()
 	{
@@ -93,7 +93,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 标题的内容作为行级节点解析。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-66"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-66"/>
 	[TestMethod]
 	public void Test66()
 	{
@@ -113,7 +113,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 起始和结束空格会被忽略。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-67"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-67"/>
 	[TestMethod]
 	public void Test67()
 	{
@@ -128,7 +128,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 最多允许三个空格的缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-68"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-68"/>
 	[TestMethod]
 	public void Test68()
 	{
@@ -151,7 +151,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 四个空格就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-69"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-69"/>
 	[TestMethod]
 	public void Test69()
 	{
@@ -160,7 +160,7 @@ public class UnitTestATXHeading : BaseTest
 			CodeBlock(0..11, "# foo\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-70"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-70"/>
 	[TestMethod]
 	public void Test70()
 	{
@@ -177,7 +177,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 闭合的 # 是可选的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-71"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-71"/>
 	[TestMethod]
 	public void Test71()
 	{
@@ -196,7 +196,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 闭合的 # 个数不需要与起始 # 个数相同。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-72"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-72"/>
 	[TestMethod]
 	public void Test72()
 	{
@@ -215,7 +215,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 闭合 # 后允许出现空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-73"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-73"/>
 	[TestMethod]
 	public void Test73()
 	{
@@ -230,7 +230,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 闭合 # 后不允许出现非空白字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-74"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-74"/>
 	[TestMethod]
 	public void Test74()
 	{
@@ -245,7 +245,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 闭合 # 前必须包含空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-75"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-75"/>
 	[TestMethod]
 	public void Test75()
 	{
@@ -260,7 +260,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// 被转义的 # 不计入闭合序列中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-76"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-76"/>
 	[TestMethod]
 	public void Test76()
 	{
@@ -283,7 +283,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// ATX 标题不需要使用空行分割，并且可以中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-77"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-77"/>
 	[TestMethod]
 	public void Test77()
 	{
@@ -297,7 +297,7 @@ public class UnitTestATXHeading : BaseTest
 			ThematicBreak(14..20);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-78"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-78"/>
 	[TestMethod]
 	public void Test78()
 	{
@@ -320,7 +320,7 @@ public class UnitTestATXHeading : BaseTest
 	/// <summary>
 	/// ATX 标题可以是空的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-79"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-79"/>
 	[TestMethod]
 	public void Test79()
 	{

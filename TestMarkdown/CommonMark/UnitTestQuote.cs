@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 引用的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#block-quotes"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#block-quotes"/>
 [TestClass]
 public class UnitTestQuote : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-228"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-228"/>
 	[TestMethod]
 	public void Test228()
 	{
@@ -33,7 +33,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 可以省略 > 后的空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-229"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-229"/>
 	[TestMethod]
 	public void Test229()
 	{
@@ -57,7 +57,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// > 前可以包含最多三个空格的缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-230"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-230"/>
 	[TestMethod]
 	public void Test230()
 	{
@@ -81,7 +81,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 四个空格就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-231"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-231"/>
 	[TestMethod]
 	public void Test231()
 	{
@@ -93,7 +93,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 懒闭合允许忽略段落延伸文本前的 >。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-232"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-232"/>
 	[TestMethod]
 	public void Test232()
 	{
@@ -117,7 +117,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用可以包含延迟延伸或非延迟延伸的行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-233"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-233"/>
 	[TestMethod]
 	public void Test233()
 	{
@@ -139,7 +139,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用的懒闭合只能用于段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-234"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-234"/>
 	[TestMethod]
 	public void Test234_1()
 	{
@@ -229,7 +229,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 不能省略代码段前的 >。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-236"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-236"/>
 	[TestMethod]
 	public void Test236()
 	{
@@ -242,7 +242,7 @@ public class UnitTestQuote : BaseTest
 			CodeBlock(11..20, "bar\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-237"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-237"/>
 	[TestMethod]
 	public void Test237()
 	{
@@ -262,7 +262,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 可以有延迟延伸的行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-238"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-238"/>
 	[TestMethod]
 	public void Test238_1()
 	{
@@ -298,7 +298,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用可以是空的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-239"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-239"/>
 	[TestMethod]
 	public void Test239_1()
 	{
@@ -315,7 +315,7 @@ public class UnitTestQuote : BaseTest
 			Blockquote(0..1);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-240"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-240"/>
 	[TestMethod]
 	public void Test240_1()
 	{
@@ -335,7 +335,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用可以包含起始或结束空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-241"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-241"/>
 	[TestMethod]
 	public void Test241()
 	{
@@ -353,7 +353,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 空行总是会分割引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-242"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-242"/>
 	[TestMethod]
 	public void Test242()
 	{
@@ -378,7 +378,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 如果将两个引用放在一起，会得到一个引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-243"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-243"/>
 	[TestMethod]
 	public void Test243()
 	{
@@ -398,7 +398,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 如果想得到含有两个段落的引用，可以添加一个空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-244"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-244"/>
 	[TestMethod]
 	public void Test244()
 	{
@@ -420,7 +420,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用可以中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-245"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-245"/>
 	[TestMethod]
 	public void Test245()
 	{
@@ -442,7 +442,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 引用前后不需要空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-246"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-246"/>
 	[TestMethod]
 	public void Test246()
 	{
@@ -468,7 +468,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 由于延迟延伸，引用和后续段落间需要一个空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-247"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-247"/>
 	[TestMethod]
 	public void Test247()
 	{
@@ -485,7 +485,7 @@ public class UnitTestQuote : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-248"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-248"/>
 	[TestMethod]
 	public void Test248()
 	{
@@ -504,7 +504,7 @@ public class UnitTestQuote : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-249"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-249"/>
 	[TestMethod]
 	public void Test249()
 	{
@@ -526,7 +526,7 @@ public class UnitTestQuote : BaseTest
 	/// <summary>
 	/// 在延迟延伸时，会忽略多个 <c>&gt;</c>，将行添加到最内部引用中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-250"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-250"/>
 	[TestMethod]
 	public void Test250()
 	{
@@ -549,7 +549,7 @@ public class UnitTestQuote : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-251"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-251"/>
 	[TestMethod]
 	public void Test251()
 	{
@@ -578,7 +578,7 @@ public class UnitTestQuote : BaseTest
 	/// 在引用中包含缩进代码块时，注意引用标志会包含一个额外的空格，
 	/// 因此在 <c>&gt;</c> 后需要 5 个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-252"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-252"/>
 	[TestMethod]
 	public void Test252()
 	{

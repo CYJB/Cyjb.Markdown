@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 段落的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#paragraphs"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#paragraphs"/>
 [TestClass]
 public class UnitTestParagraph : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-219"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-219"/>
 	[TestMethod]
 	public void Test219_1()
 	{
@@ -45,7 +45,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 段落可以包含多行，但不包含空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-220"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-220"/>
 	[TestMethod]
 	public void Test220_1()
 	{
@@ -89,7 +89,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 段落间的多个空行没有影响。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-221"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-221"/>
 	[TestMethod]
 	public void Test221()
 	{
@@ -109,7 +109,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 起始空格或 tab 会被跳过。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-222"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-222"/>
 	[TestMethod]
 	public void Test222()
 	{
@@ -127,7 +127,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 段落的非首行可以包含任意缩进，因为代码段不会中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-223"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-223"/>
 	[TestMethod]
 	public void Test223()
 	{
@@ -147,7 +147,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 段落的首行最多只能包含三个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-224"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-224"/>
 	[TestMethod]
 	public void Test224()
 	{
@@ -162,7 +162,7 @@ public class UnitTestParagraph : BaseTest
 		});
 	}
 
-	/// <see href="https://spec.commonmark.org/0.30/#example-225"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-225"/>
 	[TestMethod]
 	public void Test225()
 	{
@@ -179,7 +179,7 @@ public class UnitTestParagraph : BaseTest
 	/// <summary>
 	/// 末尾的空格和 Tab 会在行内分析之前就去掉。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-226"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-226"/>
 	[TestMethod]
 	public void Test226()
 	{

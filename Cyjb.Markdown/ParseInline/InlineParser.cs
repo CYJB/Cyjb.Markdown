@@ -10,7 +10,7 @@ namespace Cyjb.Markdown.ParseInline;
 /// <summary>
 /// 表示 Markdown 的行级语法分析器。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/"/>
+/// <see href="https://spec.commonmark.org/0.31.2/"/>
 internal sealed class InlineParser
 {
 	/// <summary>

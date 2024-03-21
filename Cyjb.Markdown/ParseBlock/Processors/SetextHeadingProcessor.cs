@@ -126,7 +126,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 		public static HtmlAttributeList? ParseAttributes(BlockText text)
 		{
 			// 最后一个字符是 }
-			if (text.Length == 0 || text[^1] != '}')
+			if (text.Length == 0 || text.PeekBack().Text[^1] != '}')
 			{
 				return null;
 			}

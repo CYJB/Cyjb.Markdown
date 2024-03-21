@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 空行的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#blank-lines"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#blank-lines"/>
 [TestClass]
 public class UnitTestBlankLines : BaseTest
 {
 	/// <summary>
 	/// 文档前后的空行会被忽略。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-227"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-227"/>
 	[TestMethod]
 	public void Test227()
 	{

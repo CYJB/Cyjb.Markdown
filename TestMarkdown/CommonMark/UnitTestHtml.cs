@@ -5,13 +5,13 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 行级 HTML 的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#autolinks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#autolinks"/>
 [TestClass]
 public partial class UnitTestHtml : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-612"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-613"/>
 	[TestMethod]
-	public void Test612()
+	public void Test613()
 	{
 		AssertMarkdown("<a><bab><c2c>", () =>
 		{
@@ -26,9 +26,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 空元素。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-613"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-614"/>
 	[TestMethod]
-	public void Test613()
+	public void Test614()
 	{
 		AssertMarkdown("<a/><b2/>", () =>
 		{
@@ -42,9 +42,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 允许空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-614"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-615"/>
 	[TestMethod]
-	public void Test614()
+	public void Test615()
 	{
 		AssertMarkdown("<a  /><b2\r\ndata=\"foo\" >", () =>
 		{
@@ -58,9 +58,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 带有属性。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-615"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-616"/>
 	[TestMethod]
-	public void Test615()
+	public void Test616()
 	{
 		AssertMarkdown("<a foo=\"bar\" bam = 'baz <em>\"</em>'\r\n_boolean zoop:33=zoop:33 />", () =>
 		{
@@ -73,9 +73,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 可以使用自定义标签。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-616"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-617"/>
 	[TestMethod]
-	public void Test616()
+	public void Test617()
 	{
 		AssertMarkdown("Foo <responsive-image src=\"foo.jpg\" />", () =>
 		{
@@ -89,9 +89,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 无效的标签名。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-617"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-618"/>
 	[TestMethod]
-	public void Test617()
+	public void Test618()
 	{
 		AssertMarkdown("<33> <__>", () =>
 		{
@@ -104,9 +104,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 无效的属性名。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-618"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-619"/>
 	[TestMethod]
-	public void Test618()
+	public void Test619()
 	{
 		AssertMarkdown("<a h*#ref=\"hi\">", () =>
 		{
@@ -119,9 +119,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 无效的属性值。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-619"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-620"/>
 	[TestMethod]
-	public void Test619()
+	public void Test620()
 	{
 		AssertMarkdown("<a href=\"hi'> <a href=hi'>", () =>
 		{
@@ -134,9 +134,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 非法的空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-620"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-621"/>
 	[TestMethod]
-	public void Test620()
+	public void Test621()
 	{
 		AssertMarkdown("< a><\r\nfoo><bar/ >\r\n<foo bar=baz\r\nbim!bop />", () =>
 		{
@@ -155,9 +155,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 缺少的空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-621"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-622"/>
 	[TestMethod]
-	public void Test621()
+	public void Test622()
 	{
 		AssertMarkdown("<a href='bar'title=title>", () =>
 		{
@@ -170,9 +170,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 关闭标签。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-622"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-623"/>
 	[TestMethod]
-	public void Test622()
+	public void Test623()
 	{
 		AssertMarkdown("</a></foo >", () =>
 		{
@@ -186,9 +186,9 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 关闭标签中的无效属性。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-623"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-624"/>
 	[TestMethod]
-	public void Test623()
+	public void Test624()
 	{
 		AssertMarkdown("</a href=\"foo\">", () =>
 		{
@@ -201,69 +201,65 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 注释。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-624"/>
-	[TestMethod]
-	public void Test624()
-	{
-		AssertMarkdown("foo <!-- this is a\r\ncomment - with hyphen -->", () =>
-		{
-			Paragraph(0..45, () =>
-			{
-				Literal(0..4, "foo ");
-				HtmlComment(4..45, "<!-- this is a\r\ncomment - with hyphen -->");
-			});
-		});
-	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-625"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-625"/>
 	[TestMethod]
 	public void Test625()
 	{
-		AssertMarkdown("foo <!-- not a comment -- two hyphens -->", () =>
+		AssertMarkdown("foo <!-- this is a --\r\ncomment - with hyphens -->", () =>
 		{
-			Paragraph(0..41, () =>
+			Paragraph(0..49, () =>
 			{
-				Literal(0..41, "foo <!-- not a comment -- two hyphens -->");
+				Literal(0..4, "foo ");
+				HtmlComment(4..49, "<!-- this is a --\r\ncomment - with hyphens -->");
 			});
 		});
 	}
 	/// <summary>
 	/// 非注释。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-626"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-626"/>
 	[TestMethod]
 	public void Test626_1()
 	{
-		AssertMarkdown("foo <!--> foo -->\r\n\r\nfoo <!-- foo--->", () =>
+		AssertMarkdown("foo <!--> foo -->\r\n\r\nfoo <!---> foo -->", () =>
 		{
 			Paragraph(0..19, () =>
 			{
-				Literal(0..17, "foo <!--> foo -->");
+				Literal(0..4, "foo ");
+				HtmlComment(4..9, "<!-->");
+				Literal(9..17, " foo -->");
 			});
-			Paragraph(21..37, () =>
+			Paragraph(21..39, () =>
 			{
-				Literal(21..37, "foo <!-- foo--->");
+				Literal(21..25, "foo ");
+				HtmlComment(25..31, "<!--->");
+				Literal(31..39, " foo -->");
 			});
 		});
 	}
 	[TestMethod]
 	public void Test626_2()
 	{
-		AssertMarkdown("foo <!--> foo -->\n\nfoo <!-- foo--->", () =>
+		AssertMarkdown("foo <!--> foo -->\n\nfoo <!---> foo -->", () =>
 		{
 			Paragraph(0..18, () =>
 			{
-				Literal(0..17, "foo <!--> foo -->");
+				Literal(0..4, "foo ");
+				HtmlComment(4..9, "<!-->");
+				Literal(9..17, " foo -->");
 			});
-			Paragraph(19..35, () =>
+			Paragraph(19..37, () =>
 			{
-				Literal(19..35, "foo <!-- foo--->");
+				Literal(19..23, "foo ");
+				HtmlComment(23..29, "<!--->");
+				Literal(29..37, " foo -->");
 			});
 		});
 	}
 	/// <summary>
 	/// 处理结构。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-627"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-627"/>
 	[TestMethod]
 	public void Test627()
 	{
@@ -279,7 +275,7 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 声明。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-628"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-628"/>
 	[TestMethod]
 	public void Test628()
 	{
@@ -295,7 +291,7 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// CDATA 段。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-629"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-629"/>
 	[TestMethod]
 	public void Test629()
 	{
@@ -311,7 +307,7 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 实体会在 HTML 属性中保留。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-630"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-630"/>
 	[TestMethod]
 	public void Test630()
 	{
@@ -327,7 +323,7 @@ public partial class UnitTestHtml : BaseTest
 	/// <summary>
 	/// 反斜杠转移在 HTML 属性中无效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-631"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-631"/>
 	[TestMethod]
 	public void Test631()
 	{
@@ -340,7 +336,7 @@ public partial class UnitTestHtml : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-632"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-632"/>
 	[TestMethod]
 	public void Test632()
 	{

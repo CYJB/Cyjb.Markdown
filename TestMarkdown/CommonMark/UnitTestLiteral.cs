@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 文本的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#textual-content"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#textual-content"/>
 [TestClass]
 public class UnitTestLiteral : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-650"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-650"/>
 	[TestMethod]
 	public void Test650()
 	{
@@ -21,7 +21,7 @@ public class UnitTestLiteral : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-651"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-651"/>
 	[TestMethod]
 	public void Test651()
 	{
@@ -36,7 +36,7 @@ public class UnitTestLiteral : BaseTest
 	/// <summary>
 	/// 内部空白会被原样保留。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-652"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-652"/>
 	[TestMethod]
 	public void Test652()
 	{

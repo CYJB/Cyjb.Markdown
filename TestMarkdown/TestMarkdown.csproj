@@ -37,7 +37,7 @@
     <None Update="Spec\AutoIdentifier.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Spec\CommonMark.0.30.spec.json">
+    <None Update="Spec\CommonMark.0.31.2.spec.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Spec\CustomContainers.spec.json">

@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 分隔符代码块的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#fenced-code-blocks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#fenced-code-blocks"/>
 [TestClass]
 public class UnitTestFencedCodeBlock : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-119"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-119"/>
 	[TestMethod]
 	public void Test119_1()
 	{
@@ -45,7 +45,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 使用 ~。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-120"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-120"/>
 	[TestMethod]
 	public void Test120()
 	{
@@ -57,7 +57,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 分隔符不能少于三个。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-121"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-121"/>
 	[TestMethod]
 	public void Test121()
 	{
@@ -72,7 +72,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 结束分隔符必须与起始分隔符相同。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-122"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-122"/>
 	[TestMethod]
 	public void Test122()
 	{
@@ -84,7 +84,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 结束分隔符必须与起始分隔符相同。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-123"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-123"/>
 	[TestMethod]
 	public void Test123()
 	{
@@ -96,7 +96,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 结束分隔符长度要至少是起始分隔符的长度。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-124"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-124"/>
 	[TestMethod]
 	public void Test124()
 	{
@@ -105,7 +105,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..24, "aaa\r\n```\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-125"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-125"/>
 	[TestMethod]
 	public void Test125()
 	{
@@ -117,7 +117,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 未闭合的代码块会在文档（或父容器块）结束时闭合。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-126"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-126"/>
 	[TestMethod]
 	public void Test126_1()
 	{
@@ -126,7 +126,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..5, "");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-126"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-126"/>
 	[TestMethod]
 	public void Test126_2()
 	{
@@ -135,7 +135,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..3, "");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-127"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-127"/>
 	[TestMethod]
 	public void Test127()
 	{
@@ -144,7 +144,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..19, "\r\n```\r\naaa\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-128"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-128"/>
 	[TestMethod]
 	public void Test128()
 	{
@@ -163,7 +163,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 代码块可以包含空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-129"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-129"/>
 	[TestMethod]
 	public void Test129()
 	{
@@ -175,7 +175,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 代码块可以是空的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-130"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-130"/>
 	[TestMethod]
 	public void Test130()
 	{
@@ -187,7 +187,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 分隔符可以缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-131"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-131"/>
 	[TestMethod]
 	public void Test131()
 	{
@@ -196,7 +196,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..22, "aaa\r\naaa\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-132"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-132"/>
 	[TestMethod]
 	public void Test132()
 	{
@@ -205,7 +205,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..31, "aaa\r\naaa\r\naaa\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-133"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-133"/>
 	[TestMethod]
 	public void Test133()
 	{
@@ -217,7 +217,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 四个空格就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-134"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-134"/>
 	[TestMethod]
 	public void Test134()
 	{
@@ -229,7 +229,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 结束分隔符前可以有最多三个空格，而且缩进不需要与起始分隔符匹配。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-135"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-135"/>
 	[TestMethod]
 	public void Test135()
 	{
@@ -238,7 +238,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..17, "aaa\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-136"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-136"/>
 	[TestMethod]
 	public void Test136()
 	{
@@ -250,7 +250,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 四个空格的缩进就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-137"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-137"/>
 	[TestMethod]
 	public void Test137()
 	{
@@ -262,7 +262,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 分隔符内部不能包含空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-138"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-138"/>
 	[TestMethod]
 	public void Test138()
 	{
@@ -276,7 +276,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-139"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-139"/>
 	[TestMethod]
 	public void Test139()
 	{
@@ -288,7 +288,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 分隔符代码段可以打断段落，或者直接后跟段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-140"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-140"/>
 	[TestMethod]
 	public void Test140()
 	{
@@ -308,7 +308,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 其它块也可以直接出现在分隔符代码段之前或之后。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-141"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-141"/>
 	[TestMethod]
 	public void Test141()
 	{
@@ -328,7 +328,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 允许提供信息字符串。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-142"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-142"/>
 	[TestMethod]
 	public void Test142()
 	{
@@ -337,7 +337,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..43, "def foo(x)\r\n  return 3\r\nend\r\n", "ruby");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-143"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-143"/>
 	[TestMethod]
 	public void Test143()
 	{
@@ -346,7 +346,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 			CodeBlock(0..70, "def foo(x)\r\n  return 3\r\nend\r\n", "ruby startline=3 $%@#$");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-144"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-144"/>
 	[TestMethod]
 	public void Test144()
 	{
@@ -358,7 +358,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// ` 之后的信息字符串不能包含 `。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-145"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-145"/>
 	[TestMethod]
 	public void Test145()
 	{
@@ -375,7 +375,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// ~ 之后的信息字符串可以包含 ` 或 ~。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-146"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-146"/>
 	[TestMethod]
 	public void Test146()
 	{
@@ -387,7 +387,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	/// <summary>
 	/// 结束分隔符不能包含信息字符串。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-147"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-147"/>
 	[TestMethod]
 	public void Test147()
 	{

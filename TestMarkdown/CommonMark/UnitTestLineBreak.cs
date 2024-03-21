@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 换行的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#autolinks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#autolinks"/>
 [TestClass]
 public class UnitTestLineBreak : BaseTest
 {
 	/// <summary>
 	/// 硬换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-633"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-633"/>
 	[TestMethod]
 	public void Test633_1()
 	{
@@ -43,7 +43,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 使用行尾的 /。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-634"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-634"/>
 	[TestMethod]
 	public void Test634_1()
 	{
@@ -74,7 +74,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 可以多于两个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-635"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-635"/>
 	[TestMethod]
 	public void Test635_1()
 	{
@@ -105,7 +105,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 忽略下一行的行首空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-636"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-636"/>
 	[TestMethod]
 	public void Test636_1()
 	{
@@ -133,7 +133,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-637"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-637"/>
 	[TestMethod]
 	public void Test637_1()
 	{
@@ -164,7 +164,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 允许出现在强调范围内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-638"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-638"/>
 	[TestMethod]
 	public void Test638()
 	{
@@ -181,7 +181,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-639"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-639"/>
 	[TestMethod]
 	public void Test639()
 	{
@@ -201,7 +201,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 不能出现在代码段内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-640"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-640"/>
 	[TestMethod]
 	public void Test640_1()
 	{
@@ -225,7 +225,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-641"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-641"/>
 	[TestMethod]
 	public void Test641_1()
 	{
@@ -251,7 +251,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 也不能出现在 HTML 标签内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-642"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-642"/>
 	[TestMethod]
 	public void Test642_1()
 	{
@@ -274,7 +274,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-643"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-643"/>
 	[TestMethod]
 	public void Test643_1()
 	{
@@ -300,7 +300,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 在块末尾无效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-644"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-644"/>
 	[TestMethod]
 	public void Test644()
 	{
@@ -312,7 +312,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-645"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-645"/>
 	[TestMethod]
 	public void Test645()
 	{
@@ -324,7 +324,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-646"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-646"/>
 	[TestMethod]
 	public void Test646()
 	{
@@ -336,7 +336,7 @@ public class UnitTestLineBreak : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-647"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-647"/>
 	[TestMethod]
 	public void Test647()
 	{
@@ -351,7 +351,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 软换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-648"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-648"/>
 	[TestMethod]
 	public void Test648_1()
 	{
@@ -381,7 +381,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 行末和行首的空格会被移除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-649"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-649"/>
 	[TestMethod]
 	public void Test649_1()
 	{
@@ -429,7 +429,7 @@ public class UnitTestLineBreak : BaseTest
 	/// <summary>
 	/// 行末的 \t 会被保留，但下一行行首的会被全部移除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-649"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-649"/>
 	[TestMethod]
 	public void Test649_3()
 	{

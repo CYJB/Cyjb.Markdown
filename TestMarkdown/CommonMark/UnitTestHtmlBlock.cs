@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// HTML 块的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#html-blocks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#html-blocks"/>
 [TestClass]
 public class UnitTestHtmlBlock : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-148"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-148"/>
 	[TestMethod]
 	public void Test148()
 	{
@@ -29,7 +29,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(56..76, "</td></tr></table>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-149"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-149"/>
 	[TestMethod]
 	public void Test149()
 	{
@@ -42,7 +42,7 @@ public class UnitTestHtmlBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-150"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-150"/>
 	[TestMethod]
 	public void Test150()
 	{
@@ -54,7 +54,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// HTML 块可以以闭合标签开始。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-151"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-151"/>
 	[TestMethod]
 	public void Test151()
 	{
@@ -66,7 +66,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// HTML 块之间可以包含普通的 Markdown 段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-152"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-152"/>
 	[TestMethod]
 	public void Test152()
 	{
@@ -86,7 +86,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 首行标签可以只包含部分，只要在应当是空白的部分分隔开即可。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-153"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-153"/>
 	[TestMethod]
 	public void Test153()
 	{
@@ -95,7 +95,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..39, "<div id=\"foo\"\r\n  class=\"bar\">\r\n</div>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-154"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-154"/>
 	[TestMethod]
 	public void Test154()
 	{
@@ -107,7 +107,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 标签并不需要闭合。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-155"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-155"/>
 	[TestMethod]
 	public void Test155()
 	{
@@ -126,7 +126,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 标签甚至不需要结束。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-156"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-156"/>
 	[TestMethod]
 	public void Test156()
 	{
@@ -135,7 +135,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..21, "<div id=\"foo\"\r\n*hi*\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-157"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-157"/>
 	[TestMethod]
 	public void Test157()
 	{
@@ -147,7 +147,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 起始标签可以不是有效的标签。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-158"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-158"/>
 	[TestMethod]
 	public void Test158()
 	{
@@ -159,7 +159,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 对于 Type 6，起始标签并不需要独占一行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-159"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-159"/>
 	[TestMethod]
 	public void Test159()
 	{
@@ -168,7 +168,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..36, "<div><a href=\"bar\">*foo*</a></div>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-160"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-160"/>
 	[TestMethod]
 	public void Test160()
 	{
@@ -180,7 +180,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 在下一个空行或文档结束前，所有内容都是 HTML 块内的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-161"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-161"/>
 	[TestMethod]
 	public void Test161()
 	{
@@ -192,7 +192,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 如果希望使用 Type 6 中未列出的 HTML 块，必须标签必须完整且独占一行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-162"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-162"/>
 	[TestMethod]
 	public void Test162()
 	{
@@ -204,7 +204,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 对于 Type 7，可以使用任意标签名。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-163"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-163"/>
 	[TestMethod]
 	public void Test163()
 	{
@@ -213,7 +213,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..30, "<Warning>\r\n*bar*\r\n</Warning>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-164"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-164"/>
 	[TestMethod]
 	public void Test164()
 	{
@@ -222,7 +222,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..30, "<i class=\"foo\">\r\n*bar*\r\n</i>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-165"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-165"/>
 	[TestMethod]
 	public void Test165()
 	{
@@ -234,7 +234,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 由于 <c>&lt;del&gt;</c> 独占了一行，因此整体是一个 HTML 块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-166"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-166"/>
 	[TestMethod]
 	public void Test166()
 	{
@@ -246,7 +246,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 由于 <c>&lt;del&gt;</c> 后存在空行，因此内容会作为 Markdown 解析。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-167"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-167"/>
 	[TestMethod]
 	public void Test167()
 	{
@@ -266,7 +266,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// <c>&lt;del&gt;</c> 未独占一行，因此作为行级 HTML 解析。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-168"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-168"/>
 	[TestMethod]
 	public void Test168()
 	{
@@ -286,7 +286,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// pre 标签（Type 1）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-169"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-169"/>
 	[TestMethod]
 	public void Test169()
 	{
@@ -302,7 +302,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// scirpt 标签（Type 1）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-170"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-170"/>
 	[TestMethod]
 	public void Test170()
 	{
@@ -318,7 +318,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// textarea 标签（Type 1）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-171"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-171"/>
 	[TestMethod]
 	public void Test171()
 	{
@@ -330,7 +330,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// style 标签（Type 1）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-172"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-172"/>
 	[TestMethod]
 	public void Test172()
 	{
@@ -346,7 +346,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 没有匹配的结束标签，会直到文档或块的结束。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-173"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-173"/>
 	[TestMethod]
 	public void Test173()
 	{
@@ -355,7 +355,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..35, "<style\r\n  type=\"text/css\">\r\n\r\nfoo\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-174"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-174"/>
 	[TestMethod]
 	public void Test174()
 	{
@@ -371,7 +371,7 @@ public class UnitTestHtmlBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-175"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-175"/>
 	[TestMethod]
 	public void Test175()
 	{
@@ -396,7 +396,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 结束标签和起始标签可以在同一行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-176"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-176"/>
 	[TestMethod]
 	public void Test176()
 	{
@@ -412,7 +412,7 @@ public class UnitTestHtmlBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-177"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-177"/>
 	[TestMethod]
 	public void Test177()
 	{
@@ -431,7 +431,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 最后一行结束标签后的部分也都会计入 HTML 块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-178"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-178"/>
 	[TestMethod]
 	public void Test178()
 	{
@@ -443,7 +443,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 注释（Type 2）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-179"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-179"/>
 	[TestMethod]
 	public void Test179()
 	{
@@ -459,7 +459,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 处理结构（Type 3）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-180"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-180"/>
 	[TestMethod]
 	public void Test180()
 	{
@@ -475,7 +475,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 声明（Type 4）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-181"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-181"/>
 	[TestMethod]
 	public void Test181()
 	{
@@ -487,7 +487,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// CDATA（Type 5）。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-182"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-182"/>
 	[TestMethod]
 	public void Test182()
 	{
@@ -503,7 +503,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 起始标签前最多可以有三个空格的缩进，不能是四个。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-183"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-183"/>
 	[TestMethod]
 	public void Test183()
 	{
@@ -513,7 +513,7 @@ public class UnitTestHtmlBlock : BaseTest
 			CodeBlock(18..36, "<!-- foo -->\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-184"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-184"/>
 	[TestMethod]
 	public void Test184()
 	{
@@ -526,7 +526,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// Type 1 - 6 可以中断段落，并且之前不需要空行分割。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-185"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-185"/>
 	[TestMethod]
 	public void Test185()
 	{
@@ -542,7 +542,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// 但是之后必须有空行分隔，除了文档结束和 Type 1 - 5。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-186"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-186"/>
 	[TestMethod]
 	public void Test186()
 	{
@@ -554,7 +554,7 @@ public class UnitTestHtmlBlock : BaseTest
 	/// <summary>
 	/// Type 7 不能中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-187"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-187"/>
 	[TestMethod]
 	public void Test187()
 	{
@@ -570,7 +570,7 @@ public class UnitTestHtmlBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-188"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-188"/>
 	[TestMethod]
 	public void Test188()
 	{
@@ -588,7 +588,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(31..39, "</div>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-189"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-189"/>
 	[TestMethod]
 	public void Test189()
 	{
@@ -597,7 +597,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(0..35, "<div>\r\n*Emphasized* text.\r\n</div>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-190"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-190"/>
 	[TestMethod]
 	public void Test190()
 	{
@@ -610,7 +610,7 @@ public class UnitTestHtmlBlock : BaseTest
 			HtmlBlock(47..57, "</table>\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-191"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-191"/>
 	[TestMethod]
 	public void Test191()
 	{

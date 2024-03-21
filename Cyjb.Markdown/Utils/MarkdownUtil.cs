@@ -1,3 +1,5 @@
+using Cyjb.Collections;
+
 namespace Cyjb.Markdown.Utils;
 
 /// <summary>
@@ -21,6 +23,11 @@ internal static partial class MarkdownUtil
 	public static readonly char[] WhitespaceCharsWithoutNewLine = new char[] { ' ', '\t' };
 
 	/// <summary>
+	/// Unicode 标点符号的集合。
+	/// </summary>
+	private static readonly ReadOnlyCharSet UnicodePunctuations = GetUnicodePunctuations();
+
+	/// <summary>
 	/// 返回指定字符是否表示 Markdown 空白。
 	/// </summary>
 	/// <param name="ch">要检查的字符。</param>
@@ -38,10 +45,7 @@ internal static partial class MarkdownUtil
 	/// <returns>指定字符是否是 Markdown 的标点符号。</returns>
 	public static bool IsPunctuation(char ch)
 	{
-		return char.IsPunctuation(ch) ||
-			ch == '$' || ch == '+' || ch == '<' || ch == '=' ||
-			ch == '>' || ch == '^' || ch == '`' || ch == '|' ||
-			ch == '~' || ch == '\'';
+		return UnicodePunctuations.Contains(ch);
 	}
 
 	/// <summary>
@@ -89,26 +93,20 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
-	/// 移除指定文本末尾的空白。
+	/// 返回 Unicode 标点符号的集合。
 	/// </summary>
-	/// <param name="text">要移除末尾空白的文本。</param>
-	/// <returns>如果移除了任何末尾空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TrimEnd(ref ReadOnlySpan<char> text)
+	/// <remarks>包含 Unicode P 和 S 类别。</remarks>
+	private static ReadOnlyCharSet GetUnicodePunctuations()
 	{
-		int len = text.Length;
-		text = text.TrimEnd(Whitespace);
-		return text.Length < len;
-	}
-
-	/// <summary>
-	/// 移除指定文本的起始和尾随空白。
-	/// </summary>
-	/// <param name="text">要移除起始和尾随空白的文本。</param>
-	/// <returns>如果移除了任何起始和尾随空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool Trim(ref ReadOnlySpan<char> text)
-	{
-		int len = text.Length;
-		text = text.TrimStart(Whitespace).TrimEnd(Whitespace);
-		return text.Length < len;
+		CharSet set = new();
+		for (int i = 0; i <= char.MaxValue; i++)
+		{
+			char ch = (char)i;
+			if (char.IsPunctuation(ch) || char.IsSymbol(ch))
+			{
+				set.Add(ch);
+			}
+		}
+		return set.AsReadOnly();
 	}
 }

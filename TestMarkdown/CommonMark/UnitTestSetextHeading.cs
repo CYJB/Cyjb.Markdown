@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// Setext 标题的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#setext-headings"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#setext-headings"/>
 [TestClass]
 public partial class UnitTestSetextHeading : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-80"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-80"/>
 	[TestMethod]
 	public void Test80()
 	{
@@ -36,7 +36,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 标题可以包含多行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-81"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-81"/>
 	[TestMethod]
 	public void Test81()
 	{
@@ -57,7 +57,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 标题的内容会移除前后空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-82"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-82"/>
 	[TestMethod]
 	public void Test82()
 	{
@@ -78,7 +78,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 下划线可以是任意长度。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-83"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-83"/>
 	[TestMethod]
 	public void Test83()
 	{
@@ -97,7 +97,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 标题内容最多包含三个空格，不需要与下划线对齐。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-84"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-84"/>
 	[TestMethod]
 	public void Test84()
 	{
@@ -120,7 +120,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 四个空格就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-85"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-85"/>
 	[TestMethod]
 	public void Test85()
 	{
@@ -133,7 +133,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 下划线可以包含最多三个行首空白，和任意个数行尾空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-86"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-86"/>
 	[TestMethod]
 	public void Test86()
 	{
@@ -148,7 +148,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 四个空格就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-87"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-87"/>
 	[TestMethod]
 	public void Test87()
 	{
@@ -165,7 +165,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 下划线不能包含内部空格或 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-88"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-88"/>
 	[TestMethod]
 	public void Test88()
 	{
@@ -187,7 +187,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 标题内容后的空格不会引起硬换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-89"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-89"/>
 	[TestMethod]
 	public void Test89()
 	{
@@ -202,7 +202,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 包括结尾的 \。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-90"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-90"/>
 	[TestMethod]
 	public void Test90()
 	{
@@ -217,7 +217,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 块结构的优先级大于行内结构。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-91"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-91"/>
 	[TestMethod]
 	public void Test91()
 	{
@@ -244,7 +244,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 标题不能是列表项或引用中的延迟延伸行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-92"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-92"/>
 	[TestMethod]
 	public void Test92()
 	{
@@ -260,7 +260,7 @@ public partial class UnitTestSetextHeading : BaseTest
 			ThematicBreak(7..12);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-93"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-93"/>
 	[TestMethod]
 	public void Test93()
 	{
@@ -279,7 +279,7 @@ public partial class UnitTestSetextHeading : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-94"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-94"/>
 	[TestMethod]
 	public void Test94()
 	{
@@ -301,7 +301,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 段落和之后的 Setext 标题之间要有空行，否则都会被识别为标题。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-95"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-95"/>
 	[TestMethod]
 	public void Test95()
 	{
@@ -318,7 +318,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 但是在 Setext 标题前后不需要空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-96"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-96"/>
 	[TestMethod]
 	public void Test96()
 	{
@@ -342,7 +342,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// Setext 标题不能为空。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-97"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-97"/>
 	[TestMethod]
 	public void Test97()
 	{
@@ -357,7 +357,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// Setext 标题的文本不能被解释为段落以外的其它块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-98"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-98"/>
 	[TestMethod]
 	public void Test98()
 	{
@@ -367,7 +367,7 @@ public partial class UnitTestSetextHeading : BaseTest
 			ThematicBreak(5..10);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-99"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-99"/>
 	[TestMethod]
 	public void Test99()
 	{
@@ -386,7 +386,7 @@ public partial class UnitTestSetextHeading : BaseTest
 			ThematicBreak(7..14);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-100"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-100"/>
 	[TestMethod]
 	public void Test100()
 	{
@@ -396,7 +396,7 @@ public partial class UnitTestSetextHeading : BaseTest
 			ThematicBreak(9..14);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-101"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-101"/>
 	[TestMethod]
 	public void Test101()
 	{
@@ -415,7 +415,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 如果需要 <c>&gt; foo</c> 作为普通文本，需要被反斜杠转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-102"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-102"/>
 	[TestMethod]
 	public void Test102()
 	{
@@ -430,7 +430,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 需要避免多行标题，可以插入一个空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-103"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-103"/>
 	[TestMethod]
 	public void Test103()
 	{
@@ -453,7 +453,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 需要解释为分隔线，可以在分隔线前后插入空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-104"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-104"/>
 	[TestMethod]
 	public void Test104()
 	{
@@ -475,7 +475,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 或者可以使用不能当作 Setext 标题下划线的分割线。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-105"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-105"/>
 	[TestMethod]
 	public void Test105()
 	{
@@ -497,7 +497,7 @@ public partial class UnitTestSetextHeading : BaseTest
 	/// <summary>
 	/// 需要解释为段落，可以使用一个反斜杠转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-106"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-106"/>
 	[TestMethod]
 	public void Test106()
 	{

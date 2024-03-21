@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// <see cref="Cyjb.Markdown.ThematicBreak"/> 的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#thematic-breaks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#thematic-breaks"/>
 [TestClass]
 public class UnitTestThematicBreak : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-43"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-43"/>
 	[TestMethod]
 	public void Test43()
 	{
@@ -30,7 +30,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 错误的字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-44"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-44"/>
 	[TestMethod]
 	public void Test44()
 	{
@@ -43,7 +43,7 @@ public class UnitTestThematicBreak : BaseTest
 		});
 	}
 
-	/// <see href="https://spec.commonmark.org/0.30/#example-45"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-45"/>
 	[TestMethod]
 	public void Test45()
 	{
@@ -59,7 +59,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 字符数不足。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-46"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-46"/>
 	[TestMethod]
 	public void Test46()
 	{
@@ -90,7 +90,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 最多允许三个空格缩进。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-47"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-47"/>
 	[TestMethod]
 	public void Test47()
 	{
@@ -111,7 +111,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 四个空格缩进就太多了。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-48"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-48"/>
 	[TestMethod]
 	public void Test48()
 	{
@@ -121,7 +121,7 @@ public class UnitTestThematicBreak : BaseTest
 		});
 	}
 
-	/// <see href="https://spec.commonmark.org/0.30/#example-49"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-49"/>
 	[TestMethod]
 	public void Test49()
 	{
@@ -148,7 +148,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 也可以多于三个字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-50"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-50"/>
 	[TestMethod]
 	public void Test50()
 	{
@@ -161,7 +161,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 字符中间可以存在空格和 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-51"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-51"/>
 	[TestMethod]
 	public void Test51()
 	{
@@ -171,7 +171,7 @@ public class UnitTestThematicBreak : BaseTest
 		});
 	}
 
-	/// <see href="https://spec.commonmark.org/0.30/#example-52"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-52"/>
 	[TestMethod]
 	public void Test52()
 	{
@@ -181,7 +181,7 @@ public class UnitTestThematicBreak : BaseTest
 		});
 	}
 
-	/// <see href="https://spec.commonmark.org/0.30/#example-53"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-53"/>
 	[TestMethod]
 	public void Test53()
 	{
@@ -194,7 +194,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 允许末尾的空格和 Tab。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-54"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-54"/>
 	[TestMethod]
 	public void Test54()
 	{
@@ -207,7 +207,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 但是行内不能存在其它字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-55"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-55"/>
 	[TestMethod]
 	public void Test55()
 	{
@@ -246,7 +246,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 空格和 Tab 之外的所有字符都必须是相同的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-56"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-56"/>
 	[TestMethod]
 	public void Test56()
 	{
@@ -265,7 +265,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 分割线前后不需要空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-57"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-57"/>
 	[TestMethod]
 	public void Test57()
 	{
@@ -298,7 +298,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 分割线可以中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-58"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-58"/>
 	[TestMethod]
 	public void Test58()
 	{
@@ -331,7 +331,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 标题之后的 --- 分割线可能被识别成 setext 头的下划线。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-59"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-59"/>
 	[TestMethod]
 	public void Test59()
 	{
@@ -351,7 +351,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 如果即可能是列表的一部分，有可能是分割线，那么优先被识别为分割线。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-60"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-60"/>
 	[TestMethod]
 	public void Test60()
 	{
@@ -384,7 +384,7 @@ public class UnitTestThematicBreak : BaseTest
 	/// <summary>
 	/// 如果希望使用列表项中的分割线，使用不同的字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-61"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-61"/>
 	[TestMethod]
 	public void Test61()
 	{

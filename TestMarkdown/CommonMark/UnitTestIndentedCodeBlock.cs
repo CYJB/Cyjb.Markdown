@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 缩进代码块的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#indented-code-blocks"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#indented-code-blocks"/>
 [TestClass]
 public partial class UnitTestIndentedCodeBlock : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-107"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-107"/>
 	[TestMethod]
 	public void Test107_1()
 	{
@@ -45,7 +45,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 列表项优先级更高
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-108"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-108"/>
 	[TestMethod]
 	public void Test108()
 	{
@@ -67,7 +67,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-109"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-109"/>
 	[TestMethod]
 	public void Test109()
 	{
@@ -98,7 +98,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 代码块的内容是普通文本，不会按照 Markdown 解析。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-110"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-110"/>
 	[TestMethod]
 	public void Test110()
 	{
@@ -110,7 +110,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 三个空行分隔的块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-111"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-111"/>
 	[TestMethod]
 	public void Test111_1()
 	{
@@ -146,7 +146,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 4 个空格之后的部分都会包含在内容当中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-112"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-112"/>
 	[TestMethod]
 	public void Test112()
 	{
@@ -158,7 +158,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 缩进代码块不能中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-113"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-113"/>
 	[TestMethod]
 	public void Test113()
 	{
@@ -175,7 +175,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 任何缩进小于 4 的非空行都会立即结束代码块。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-114"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-114"/>
 	[TestMethod]
 	public void Test114()
 	{
@@ -191,7 +191,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 缩进代码块可以出现在其它块类型的前后。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-115"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-115"/>
 	[TestMethod]
 	public void Test115()
 	{
@@ -213,7 +213,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 首行可以包含多于 4 个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-116"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-116"/>
 	[TestMethod]
 	public void Test116()
 	{
@@ -225,7 +225,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 缩进代码块前后的空行不会包含在内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-117"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-117"/>
 	[TestMethod]
 	public void Test117()
 	{
@@ -237,7 +237,7 @@ public partial class UnitTestIndentedCodeBlock : BaseTest
 	/// <summary>
 	/// 末尾的空格或 Tab 会被包含在代码块的内容中。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-118"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-118"/>
 	[TestMethod]
 	public void Test118()
 	{

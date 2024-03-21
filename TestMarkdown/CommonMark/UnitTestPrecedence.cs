@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 优先级的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#precedence"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#precedence"/>
 [TestClass]
 public class UnitTestPrecedence : BaseTest
 {
 	/// <summary>
 	/// 块级结构的优先级高于行级结构。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-42"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-42"/>
 	[TestMethod]
 	public void Test42()
 	{

@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 强调的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#emphasis-and-strong-emphasis"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis"/>
 [TestClass]
 public partial class UnitTestEmphasis : BaseTest
 {
 	/// <summary>
 	/// 规则 1。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-350"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-350"/>
 	[TestMethod]
 	public void Test350()
 	{
@@ -30,7 +30,7 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 * 后跟空白，因此不是强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-351"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-351"/>
 	[TestMethod]
 	public void Test351()
 	{
@@ -45,7 +45,7 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 * 前是字符后是后跟标点，因此不是强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-352"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-352"/>
 	[TestMethod]
 	public void Test352()
 	{
@@ -60,7 +60,7 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// Unicode 空白也当作空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-353"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-353"/>
 	[TestMethod]
 	public void Test353()
 	{
@@ -73,11 +73,34 @@ public partial class UnitTestEmphasis : BaseTest
 		});
 	}
 	/// <summary>
-	/// * 可以用于单词内的强调。
+	/// Unicode 符号也会当作标点。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-354"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-354"/>
 	[TestMethod]
 	public void Test354()
+	{
+		AssertMarkdown("*$*alpha.\r\n\r\n*£*bravo.\r\n\r\n*€*charlie.\r\n\r\n", () =>
+		{
+			Paragraph(0..11, () =>
+			{
+				Literal(0..9, "*$*alpha.");
+			});
+			Paragraph(13..24, () =>
+			{
+				Literal(13..22, "*£*bravo.");
+			});
+			Paragraph(26..39, () =>
+			{
+				Literal(26..37, "*€*charlie.");
+			});
+		});
+	}
+	/// <summary>
+	/// * 可以用于单词内的强调。
+	/// </summary>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-355"/>
+	[TestMethod]
+	public void Test355()
 	{
 		AssertMarkdown("foo*bar*", () =>
 		{
@@ -91,9 +114,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-355"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-356"/>
 	[TestMethod]
-	public void Test355()
+	public void Test356()
 	{
 		AssertMarkdown("5*6*78", () =>
 		{
@@ -111,9 +134,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 2。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-356"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-357"/>
 	[TestMethod]
-	public void Test356()
+	public void Test357()
 	{
 		AssertMarkdown("_foo bar_", () =>
 		{
@@ -129,9 +152,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 _ 后跟空白，因此不是强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-357"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-358"/>
 	[TestMethod]
-	public void Test357()
+	public void Test358()
 	{
 		AssertMarkdown("_ foo bar_", () =>
 		{
@@ -144,9 +167,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 _ 前是字符后是后跟标点，因此不是强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-358"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-359"/>
 	[TestMethod]
-	public void Test358()
+	public void Test359()
 	{
 		AssertMarkdown("a_\"foo\"_", () =>
 		{
@@ -159,9 +182,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// _ 不可以用于单词内的强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-359"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-360"/>
 	[TestMethod]
-	public void Test359()
+	public void Test360()
 	{
 		AssertMarkdown("foo_bar_", () =>
 		{
@@ -171,9 +194,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-360"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-361"/>
 	[TestMethod]
-	public void Test360()
+	public void Test361()
 	{
 		AssertMarkdown("5_6_78", () =>
 		{
@@ -183,9 +206,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-361"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-362"/>
 	[TestMethod]
-	public void Test361()
+	public void Test362()
 	{
 		AssertMarkdown("пристаням_стремятся_", () =>
 		{
@@ -198,9 +221,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 这里不是强调，因为第一个分隔符是右侧的，第二个是左侧的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-362"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-363"/>
 	[TestMethod]
-	public void Test362()
+	public void Test363()
 	{
 		AssertMarkdown("aa_\"bb\"_cc", () =>
 		{
@@ -213,9 +236,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 这里是强调，起始分隔符既可以是右侧又可以是左侧。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-363"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-364"/>
 	[TestMethod]
-	public void Test363()
+	public void Test364()
 	{
 		AssertMarkdown("foo-_(bar)_", () =>
 		{
@@ -233,9 +256,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 3。
 	/// 起始和结束分隔符必须相同。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-364"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-365"/>
 	[TestMethod]
-	public void Test364()
+	public void Test365()
 	{
 		AssertMarkdown("_foo*", () =>
 		{
@@ -248,9 +271,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不是强调，后一个 * 前是空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-365"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-366"/>
 	[TestMethod]
-	public void Test365()
+	public void Test366()
 	{
 		AssertMarkdown("*foo bar *", () =>
 		{
@@ -263,9 +286,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 换行也算作空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-366"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-367"/>
 	[TestMethod]
-	public void Test366()
+	public void Test367()
 	{
 		AssertMarkdown("*foo bar\r\n*", () =>
 		{
@@ -280,9 +303,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不是强调，第二个 * 不是右侧的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-367"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-368"/>
 	[TestMethod]
-	public void Test367()
+	public void Test368()
 	{
 		AssertMarkdown("*(*foo)", () =>
 		{
@@ -292,9 +315,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-368"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-369"/>
 	[TestMethod]
-	public void Test368()
+	public void Test369()
 	{
 		AssertMarkdown("*(*foo*)*", () =>
 		{
@@ -315,9 +338,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// * 可以用于单词内的强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-369"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-370"/>
 	[TestMethod]
-	public void Test369()
+	public void Test370()
 	{
 		AssertMarkdown("*foo*bar", () =>
 		{
@@ -335,9 +358,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 4。
 	/// 不是强调，后一个 _ 前是空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-370"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-371"/>
 	[TestMethod]
-	public void Test370()
+	public void Test371()
 	{
 		AssertMarkdown("_foo bar _", () =>
 		{
@@ -350,9 +373,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不是强调，第二个 _ 不是右侧的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-371"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-372"/>
 	[TestMethod]
-	public void Test371()
+	public void Test372()
 	{
 		AssertMarkdown("_(_foo)", () =>
 		{
@@ -362,9 +385,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-372"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-373"/>
 	[TestMethod]
-	public void Test372()
+	public void Test373()
 	{
 		AssertMarkdown("_(_foo_)_", () =>
 		{
@@ -385,9 +408,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// _ 不可以用于单词内的强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-373"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-374"/>
 	[TestMethod]
-	public void Test373()
+	public void Test374()
 	{
 		AssertMarkdown("_foo_bar", () =>
 		{
@@ -397,9 +420,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-374"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-375"/>
 	[TestMethod]
-	public void Test374()
+	public void Test375()
 	{
 		AssertMarkdown("_пристаням_стремятся", () =>
 		{
@@ -409,9 +432,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-375"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-376"/>
 	[TestMethod]
-	public void Test375()
+	public void Test376()
 	{
 		AssertMarkdown("_foo_bar_baz_", () =>
 		{
@@ -427,9 +450,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 这里是强调，结束分隔符既可以是右侧又可以是左侧。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-376"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-377"/>
 	[TestMethod]
-	public void Test376()
+	public void Test377()
 	{
 		AssertMarkdown("_(bar)_.", () =>
 		{
@@ -446,9 +469,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 5。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-377"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-378"/>
 	[TestMethod]
-	public void Test377()
+	public void Test378()
 	{
 		AssertMarkdown("**foo bar**", () =>
 		{
@@ -464,9 +487,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 ** 后跟空白，因此不是加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-378"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-379"/>
 	[TestMethod]
-	public void Test378()
+	public void Test379()
 	{
 		AssertMarkdown("** foo bar**", () =>
 		{
@@ -479,9 +502,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 ** 前是字符后是后跟标点，因此不是加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-379"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-380"/>
 	[TestMethod]
-	public void Test379()
+	public void Test380()
 	{
 		AssertMarkdown("a**\"foo\"**", () =>
 		{
@@ -494,9 +517,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// ** 可以用于单词内的加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-380"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-381"/>
 	[TestMethod]
-	public void Test380()
+	public void Test381()
 	{
 		AssertMarkdown("foo**bar**", () =>
 		{
@@ -513,9 +536,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 6。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-381"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-382"/>
 	[TestMethod]
-	public void Test381()
+	public void Test382()
 	{
 		AssertMarkdown("__foo bar__", () =>
 		{
@@ -531,9 +554,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 __ 后跟空白，因此不是加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-382"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-383"/>
 	[TestMethod]
-	public void Test382()
+	public void Test383()
 	{
 		AssertMarkdown("__ foo bar__", () =>
 		{
@@ -546,9 +569,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 换行被当作空白看待。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-383"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-384"/>
 	[TestMethod]
-	public void Test383()
+	public void Test384()
 	{
 		AssertMarkdown("__\r\nfoo bar__", () =>
 		{
@@ -563,9 +586,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 起始 __ 前是字符后是后跟标点，因此不是加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-384"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-385"/>
 	[TestMethod]
-	public void Test384()
+	public void Test385()
 	{
 		AssertMarkdown("a__\"foo\"__", () =>
 		{
@@ -578,9 +601,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// __ 不可以用于单词内的加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-385"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-386"/>
 	[TestMethod]
-	public void Test385()
+	public void Test386()
 	{
 		AssertMarkdown("foo__bar__", () =>
 		{
@@ -590,9 +613,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-386"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-387"/>
 	[TestMethod]
-	public void Test386()
+	public void Test387()
 	{
 		AssertMarkdown("5__6__78", () =>
 		{
@@ -602,9 +625,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-387"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-388"/>
 	[TestMethod]
-	public void Test387()
+	public void Test388()
 	{
 		AssertMarkdown("пристаням__стремятся__", () =>
 		{
@@ -614,9 +637,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-388"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-389"/>
 	[TestMethod]
-	public void Test388()
+	public void Test389()
 	{
 		AssertMarkdown("__foo, __bar__, baz__", () =>
 		{
@@ -637,9 +660,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 这里是加粗，起始分隔符既可以是右侧又可以是左侧。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-389"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-390"/>
 	[TestMethod]
-	public void Test389()
+	public void Test390()
 	{
 		AssertMarkdown("foo-__(bar)__", () =>
 		{
@@ -657,9 +680,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 7。
 	/// 不是加粗，后一个 ** 前是空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-390"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-391"/>
 	[TestMethod]
-	public void Test390()
+	public void Test391()
 	{
 		AssertMarkdown("**foo bar **", () =>
 		{
@@ -672,9 +695,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不是加粗，第二个 ** 不是右侧的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-391"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-392"/>
 	[TestMethod]
-	public void Test391()
+	public void Test392()
 	{
 		AssertMarkdown("**(**foo)", () =>
 		{
@@ -684,9 +707,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-392"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-393"/>
 	[TestMethod]
-	public void Test392()
+	public void Test393()
 	{
 		AssertMarkdown("*(**foo**)*", () =>
 		{
@@ -704,9 +727,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-393"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-394"/>
 	[TestMethod]
-	public void Test393()
+	public void Test394()
 	{
 		AssertMarkdown("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\r\n*Asclepias physocarpa*)**", () =>
 		{
@@ -730,9 +753,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-394"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-395"/>
 	[TestMethod]
-	public void Test394()
+	public void Test395()
 	{
 		AssertMarkdown("**foo \"*bar*\" foo**", () =>
 		{
@@ -753,9 +776,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// ** 可以用于单词内的加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-395"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-396"/>
 	[TestMethod]
-	public void Test395()
+	public void Test396()
 	{
 		AssertMarkdown("**foo**bar", () =>
 		{
@@ -773,9 +796,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 8。
 	/// 不是加粗，后一个 __ 前是空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-396"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-397"/>
 	[TestMethod]
-	public void Test396()
+	public void Test397()
 	{
 		AssertMarkdown("__foo bar __", () =>
 		{
@@ -788,9 +811,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不是加粗，第二个 __ 不是右侧的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-397"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-398"/>
 	[TestMethod]
-	public void Test397()
+	public void Test398()
 	{
 		AssertMarkdown("__(__foo)", () =>
 		{
@@ -800,9 +823,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-398"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-399"/>
 	[TestMethod]
-	public void Test398()
+	public void Test399()
 	{
 		AssertMarkdown("_(__foo__)_", () =>
 		{
@@ -823,9 +846,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// __ 不可以用于单词内的加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-399"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-400"/>
 	[TestMethod]
-	public void Test399()
+	public void Test400()
 	{
 		AssertMarkdown("__foo__bar", () =>
 		{
@@ -835,9 +858,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-400"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-401"/>
 	[TestMethod]
-	public void Test400()
+	public void Test401()
 	{
 		AssertMarkdown("__пристаням__стремятся", () =>
 		{
@@ -847,9 +870,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-401"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-402"/>
 	[TestMethod]
-	public void Test401()
+	public void Test402()
 	{
 		AssertMarkdown("__foo__bar__baz__", () =>
 		{
@@ -865,9 +888,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 这里是加粗，结束分隔符既可以是右侧又可以是左侧。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-402"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-403"/>
 	[TestMethod]
-	public void Test402()
+	public void Test403()
 	{
 		AssertMarkdown("__(bar)__.", () =>
 		{
@@ -885,9 +908,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 9。
 	/// 非空行内元素序列可以作为强调的内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-403"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-404"/>
 	[TestMethod]
-	public void Test403()
+	public void Test404()
 	{
 		AssertMarkdown("*foo [bar](/url)*", () =>
 		{
@@ -907,9 +930,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 非空行内元素序列可以作为强调的内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-404"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-405"/>
 	[TestMethod]
-	public void Test404()
+	public void Test405()
 	{
 		AssertMarkdown("*foo\r\nbar*", () =>
 		{
@@ -927,9 +950,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 强调和加粗可以嵌套在强调内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-405"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-406"/>
 	[TestMethod]
-	public void Test405()
+	public void Test406()
 	{
 		AssertMarkdown("_foo __bar__ baz_", () =>
 		{
@@ -947,9 +970,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-406"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-407"/>
 	[TestMethod]
-	public void Test406()
+	public void Test407()
 	{
 		AssertMarkdown("_foo _bar_ baz_", () =>
 		{
@@ -967,9 +990,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-407"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-408"/>
 	[TestMethod]
-	public void Test407()
+	public void Test408()
 	{
 		AssertMarkdown("__foo_ bar_", () =>
 		{
@@ -986,9 +1009,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-408"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-409"/>
 	[TestMethod]
-	public void Test408()
+	public void Test409()
 	{
 		AssertMarkdown("*foo *bar**", () =>
 		{
@@ -1005,9 +1028,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-409"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-410"/>
 	[TestMethod]
-	public void Test409()
+	public void Test410()
 	{
 		AssertMarkdown("*foo **bar** baz*", () =>
 		{
@@ -1025,9 +1048,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-410"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-411"/>
 	[TestMethod]
-	public void Test410()
+	public void Test411()
 	{
 		AssertMarkdown("*foo**bar**baz*", () =>
 		{
@@ -1045,9 +1068,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-411"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-412"/>
 	[TestMethod]
-	public void Test411()
+	public void Test412()
 	{
 		AssertMarkdown("*foo**bar*", () =>
 		{
@@ -1060,9 +1083,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-412"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-413"/>
 	[TestMethod]
-	public void Test412()
+	public void Test413()
 	{
 		AssertMarkdown("***foo** bar*", () =>
 		{
@@ -1079,9 +1102,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-413"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-414"/>
 	[TestMethod]
-	public void Test413()
+	public void Test414()
 	{
 		AssertMarkdown("*foo **bar***", () =>
 		{
@@ -1098,9 +1121,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-414"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-415"/>
 	[TestMethod]
-	public void Test414()
+	public void Test415()
 	{
 		AssertMarkdown("*foo**bar***", () =>
 		{
@@ -1120,9 +1143,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 如果起始和结束分隔符长度都是 3 的倍数，那么它们可以互相匹配。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-415"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-416"/>
 	[TestMethod]
-	public void Test415()
+	public void Test416()
 	{
 		AssertMarkdown("foo***bar***baz", () =>
 		{
@@ -1140,9 +1163,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-416"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-417"/>
 	[TestMethod]
-	public void Test416()
+	public void Test417()
 	{
 		AssertMarkdown("foo******bar*********baz", () =>
 		{
@@ -1166,9 +1189,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 允许任意层级的嵌套。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-417"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-418"/>
 	[TestMethod]
-	public void Test417()
+	public void Test418()
 	{
 		AssertMarkdown("*foo **bar *baz* bim** bop*", () =>
 		{
@@ -1191,9 +1214,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-418"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-419"/>
 	[TestMethod]
-	public void Test418()
+	public void Test419()
 	{
 		AssertMarkdown("*foo [*bar*](/url)*", () =>
 		{
@@ -1216,9 +1239,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不允许空的强调或加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-419"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-420"/>
 	[TestMethod]
-	public void Test419()
+	public void Test420()
 	{
 		AssertMarkdown("** is not an empty emphasis", () =>
 		{
@@ -1228,9 +1251,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-420"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-421"/>
 	[TestMethod]
-	public void Test420()
+	public void Test421()
 	{
 		AssertMarkdown("**** is not an empty strong emphasis", () =>
 		{
@@ -1244,9 +1267,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// 规则 10。
 	/// 非空行内元素序列可以作为加粗的内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-421"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-422"/>
 	[TestMethod]
-	public void Test421()
+	public void Test422()
 	{
 		AssertMarkdown("**foo [bar](/url)**", () =>
 		{
@@ -1266,9 +1289,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 非空行内元素序列可以作为加粗的内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-422"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-423"/>
 	[TestMethod]
-	public void Test422()
+	public void Test423()
 	{
 		AssertMarkdown("**foo\r\nbar**", () =>
 		{
@@ -1286,9 +1309,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 强调和加粗可以嵌套在加粗内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-423"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-424"/>
 	[TestMethod]
-	public void Test423()
+	public void Test424()
 	{
 		AssertMarkdown("__foo _bar_ baz__", () =>
 		{
@@ -1306,9 +1329,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-424"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-425"/>
 	[TestMethod]
-	public void Test424()
+	public void Test425()
 	{
 		AssertMarkdown("__foo __bar__ baz__", () =>
 		{
@@ -1326,9 +1349,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-425"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-426"/>
 	[TestMethod]
-	public void Test425()
+	public void Test426()
 	{
 		AssertMarkdown("____foo__ bar__", () =>
 		{
@@ -1345,9 +1368,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-426"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-427"/>
 	[TestMethod]
-	public void Test426()
+	public void Test427()
 	{
 		AssertMarkdown("**foo **bar****", () =>
 		{
@@ -1364,9 +1387,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-427"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-428"/>
 	[TestMethod]
-	public void Test427()
+	public void Test428()
 	{
 		AssertMarkdown("**foo *bar* baz**", () =>
 		{
@@ -1384,9 +1407,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-428"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-429"/>
 	[TestMethod]
-	public void Test428()
+	public void Test429()
 	{
 		AssertMarkdown("**foo*bar*baz**", () =>
 		{
@@ -1404,9 +1427,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-429"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-430"/>
 	[TestMethod]
-	public void Test429()
+	public void Test430()
 	{
 		AssertMarkdown("***foo* bar**", () =>
 		{
@@ -1423,9 +1446,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-430"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-431"/>
 	[TestMethod]
-	public void Test430()
+	public void Test431()
 	{
 		AssertMarkdown("**foo *bar***", () =>
 		{
@@ -1445,9 +1468,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 允许任意层级的嵌套。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-431"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-432"/>
 	[TestMethod]
-	public void Test431()
+	public void Test432()
 	{
 		AssertMarkdown("**foo *bar **baz**\r\nbim* bop**", () =>
 		{
@@ -1471,9 +1494,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-432"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-433"/>
 	[TestMethod]
-	public void Test432()
+	public void Test433()
 	{
 		AssertMarkdown("**foo [*bar*](/url)**", () =>
 		{
@@ -1496,9 +1519,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 不允许空的加粗或加粗。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-433"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-434"/>
 	[TestMethod]
-	public void Test433()
+	public void Test434()
 	{
 		AssertMarkdown("__ is not an empty emphasis", () =>
 		{
@@ -1508,9 +1531,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-434"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-435"/>
 	[TestMethod]
-	public void Test434()
+	public void Test435()
 	{
 		AssertMarkdown("____ is not an empty strong emphasis", () =>
 		{
@@ -1523,9 +1546,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 11。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-435"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-436"/>
 	[TestMethod]
-	public void Test435()
+	public void Test436()
 	{
 		AssertMarkdown("foo ***", () =>
 		{
@@ -1535,9 +1558,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-436"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-437"/>
 	[TestMethod]
-	public void Test436()
+	public void Test437()
 	{
 		AssertMarkdown("foo *\\**", () =>
 		{
@@ -1551,9 +1574,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-437"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-438"/>
 	[TestMethod]
-	public void Test437()
+	public void Test438()
 	{
 		AssertMarkdown("foo *_*", () =>
 		{
@@ -1567,9 +1590,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-438"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-439"/>
 	[TestMethod]
-	public void Test438()
+	public void Test439()
 	{
 		AssertMarkdown("foo *****", () =>
 		{
@@ -1579,9 +1602,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-439"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-440"/>
 	[TestMethod]
-	public void Test439()
+	public void Test440()
 	{
 		AssertMarkdown("foo **\\***", () =>
 		{
@@ -1595,9 +1618,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-440"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-441"/>
 	[TestMethod]
-	public void Test440()
+	public void Test441()
 	{
 		AssertMarkdown("foo **_**", () =>
 		{
@@ -1614,9 +1637,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 在分隔符不匹配时，额外的字符会出现在靠外的位置。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-441"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-442"/>
 	[TestMethod]
-	public void Test441()
+	public void Test442()
 	{
 		AssertMarkdown("**foo*", () =>
 		{
@@ -1630,9 +1653,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-442"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-443"/>
 	[TestMethod]
-	public void Test442()
+	public void Test443()
 	{
 		AssertMarkdown("*foo**", () =>
 		{
@@ -1646,9 +1669,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-443"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-444"/>
 	[TestMethod]
-	public void Test443()
+	public void Test444()
 	{
 		AssertMarkdown("***foo**", () =>
 		{
@@ -1662,9 +1685,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-444"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-445"/>
 	[TestMethod]
-	public void Test444()
+	public void Test445()
 	{
 		AssertMarkdown("****foo*", () =>
 		{
@@ -1678,9 +1701,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-445"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-446"/>
 	[TestMethod]
-	public void Test445()
+	public void Test446()
 	{
 		AssertMarkdown("**foo***", () =>
 		{
@@ -1694,9 +1717,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-446"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-447"/>
 	[TestMethod]
-	public void Test446()
+	public void Test447()
 	{
 		AssertMarkdown("*foo****", () =>
 		{
@@ -1713,9 +1736,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 12。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-447"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-448"/>
 	[TestMethod]
-	public void Test447()
+	public void Test448()
 	{
 		AssertMarkdown("foo ___", () =>
 		{
@@ -1725,9 +1748,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-448"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-449"/>
 	[TestMethod]
-	public void Test448()
+	public void Test449()
 	{
 		AssertMarkdown("foo _\\__", () =>
 		{
@@ -1741,9 +1764,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-449"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-450"/>
 	[TestMethod]
-	public void Test449()
+	public void Test450()
 	{
 		AssertMarkdown("foo _*_", () =>
 		{
@@ -1757,9 +1780,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-450"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-451"/>
 	[TestMethod]
-	public void Test450()
+	public void Test451()
 	{
 		AssertMarkdown("foo _____", () =>
 		{
@@ -1769,9 +1792,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-451"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-452"/>
 	[TestMethod]
-	public void Test451()
+	public void Test452()
 	{
 		AssertMarkdown("foo __\\___", () =>
 		{
@@ -1785,9 +1808,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-452"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-453"/>
 	[TestMethod]
-	public void Test452()
+	public void Test453()
 	{
 		AssertMarkdown("foo __*__", () =>
 		{
@@ -1801,9 +1824,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-453"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-454"/>
 	[TestMethod]
-	public void Test453()
+	public void Test454()
 	{
 		AssertMarkdown("__foo_", () =>
 		{
@@ -1820,9 +1843,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 在分隔符不匹配时，额外的字符会出现在靠外的位置。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-454"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-455"/>
 	[TestMethod]
-	public void Test454()
+	public void Test455()
 	{
 		AssertMarkdown("_foo__", () =>
 		{
@@ -1836,9 +1859,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-455"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-456"/>
 	[TestMethod]
-	public void Test455()
+	public void Test456()
 	{
 		AssertMarkdown("___foo__", () =>
 		{
@@ -1852,9 +1875,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-456"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-457"/>
 	[TestMethod]
-	public void Test456()
+	public void Test457()
 	{
 		AssertMarkdown("____foo_", () =>
 		{
@@ -1868,9 +1891,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-457"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-458"/>
 	[TestMethod]
-	public void Test457()
+	public void Test458()
 	{
 		AssertMarkdown("__foo___", () =>
 		{
@@ -1884,9 +1907,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-458"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-459"/>
 	[TestMethod]
-	public void Test458()
+	public void Test459()
 	{
 		AssertMarkdown("_foo____", () =>
 		{
@@ -1903,9 +1926,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 13。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-459"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-460"/>
 	[TestMethod]
-	public void Test459()
+	public void Test460()
 	{
 		AssertMarkdown("**foo**", () =>
 		{
@@ -1918,9 +1941,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-460"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-461"/>
 	[TestMethod]
-	public void Test460()
+	public void Test461()
 	{
 		AssertMarkdown("*_foo_*", () =>
 		{
@@ -1936,9 +1959,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-461"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-462"/>
 	[TestMethod]
-	public void Test461()
+	public void Test462()
 	{
 		AssertMarkdown("__foo__", () =>
 		{
@@ -1951,9 +1974,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-462"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-463"/>
 	[TestMethod]
-	public void Test462()
+	public void Test463()
 	{
 		AssertMarkdown("_*foo*_", () =>
 		{
@@ -1972,9 +1995,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 嵌套在加粗内的加粗可以不切换分隔符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-463"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-464"/>
 	[TestMethod]
-	public void Test463()
+	public void Test464()
 	{
 		AssertMarkdown("****foo****", () =>
 		{
@@ -1990,9 +2013,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-464"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-465"/>
 	[TestMethod]
-	public void Test464()
+	public void Test465()
 	{
 		AssertMarkdown("____foo____", () =>
 		{
@@ -2011,9 +2034,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 还可以适用于更长的分隔符序列。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-465"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-466"/>
 	[TestMethod]
-	public void Test465()
+	public void Test466()
 	{
 		AssertMarkdown("******foo******", () =>
 		{
@@ -2035,9 +2058,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 14。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-466"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-467"/>
 	[TestMethod]
-	public void Test466()
+	public void Test467()
 	{
 		AssertMarkdown("***foo***", () =>
 		{
@@ -2053,9 +2076,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-467"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-468"/>
 	[TestMethod]
-	public void Test467()
+	public void Test468()
 	{
 		AssertMarkdown("_____foo_____", () =>
 		{
@@ -2077,9 +2100,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 15。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-468"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-469"/>
 	[TestMethod]
-	public void Test468()
+	public void Test469()
 	{
 		AssertMarkdown("*foo _bar* baz_", () =>
 		{
@@ -2093,9 +2116,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-469"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-470"/>
 	[TestMethod]
-	public void Test469()
+	public void Test470()
 	{
 		AssertMarkdown("*foo __bar *baz bim__ bam*", () =>
 		{
@@ -2116,9 +2139,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 16。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-470"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-471"/>
 	[TestMethod]
-	public void Test470()
+	public void Test471()
 	{
 		AssertMarkdown("**foo **bar baz**", () =>
 		{
@@ -2132,9 +2155,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-471"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-472"/>
 	[TestMethod]
-	public void Test471()
+	public void Test472()
 	{
 		AssertMarkdown("*foo *bar baz*", () =>
 		{
@@ -2151,9 +2174,9 @@ public partial class UnitTestEmphasis : BaseTest
 	/// <summary>
 	/// 规则 17。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-472"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-473"/>
 	[TestMethod]
-	public void Test472()
+	public void Test473()
 	{
 		AssertMarkdown("*[bar*](/url)", () =>
 		{
@@ -2167,9 +2190,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-473"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-474"/>
 	[TestMethod]
-	public void Test473()
+	public void Test474()
 	{
 		AssertMarkdown("_foo [bar_](/url)", () =>
 		{
@@ -2183,9 +2206,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-474"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-475"/>
 	[TestMethod]
-	public void Test474()
+	public void Test475()
 	{
 		AssertMarkdown("*<img src=\"foo\" title=\"*\"/>", () =>
 		{
@@ -2196,9 +2219,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-475"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-476"/>
 	[TestMethod]
-	public void Test475()
+	public void Test476()
 	{
 		AssertMarkdown("**<a href=\"**\">", () =>
 		{
@@ -2209,9 +2232,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-476"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-477"/>
 	[TestMethod]
-	public void Test476()
+	public void Test477()
 	{
 		AssertMarkdown("__<a href=\"__\">", () =>
 		{
@@ -2222,9 +2245,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-477"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-478"/>
 	[TestMethod]
-	public void Test477()
+	public void Test478()
 	{
 		AssertMarkdown("*a `*`*", () =>
 		{
@@ -2238,9 +2261,9 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-478"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-479"/>
 	[TestMethod]
-	public void Test478()
+	public void Test479()
 	{
 		AssertMarkdown("_a `_`_", () =>
 		{
@@ -2254,34 +2277,34 @@ public partial class UnitTestEmphasis : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-479"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-480"/>
 	[TestMethod]
-	public void Test479()
+	public void Test480()
 	{
-		AssertMarkdown("**a<http://foo.bar/?q=**>", () =>
+		AssertMarkdown("**a<https://foo.bar/?q=**>", () =>
 		{
-			Paragraph(0..25, () =>
+			Paragraph(0..26, () =>
 			{
 				Literal(0..3, "**a");
-				Link(3..25, "http://foo.bar/?q=**", null, () =>
+				Link(3..26, "https://foo.bar/?q=**", null, () =>
 				{
-					Literal(4..24, "http://foo.bar/?q=**");
+					Literal(4..25, "https://foo.bar/?q=**");
 				});
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-480"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-481"/>
 	[TestMethod]
-	public void Test480()
+	public void Test481()
 	{
-		AssertMarkdown("__a<http://foo.bar/?q=__>", () =>
+		AssertMarkdown("__a<https://foo.bar/?q=__>", () =>
 		{
-			Paragraph(0..25, () =>
+			Paragraph(0..26, () =>
 			{
 				Literal(0..3, "__a");
-				Link(3..25, "http://foo.bar/?q=__", null, () =>
+				Link(3..26, "https://foo.bar/?q=__", null, () =>
 				{
-					Literal(4..24, "http://foo.bar/?q=__");
+					Literal(4..25, "https://foo.bar/?q=__");
 				});
 			});
 		});

@@ -16,22 +16,22 @@ public class UnitTestRender
 	/// <summary>
 	/// 测试 CommonMark 规范。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/"/>
 	[TestMethod]
 	public void TestCommonMark()
 	{
-		SpecItem[] items = ReadSpec("CommonMark.0.30.spec.json");
+		SpecItem[] items = ReadSpec("CommonMark.0.31.2.spec.json");
 		// 渲染结果会与 CommonMark 略有差异。
 		foreach (SpecItem item in items)
 		{
 			// HTML 属性里的 & 可以不被编码为 &amp;
-			if (item.Example == 572 || item.Example == 575 || item.Example == 576)
+			if (item.Example == 573 || item.Example == 576 || item.Example == 577)
 			{
 				item.Html = "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train & tracks\" /></p>\n";
 			}
-			else if (item.Example == 594)
+			else if (item.Example == 595)
 			{
-				item.Html = "<p><a href=\"http://foo.bar.baz/test?q=hello&id=22&boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n";
+				item.Html = "<p><a href=\"https://foo.bar.baz/test?q=hello&id=22&boolean\">https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n";
 			}
 		}
 		TestRender(items, ParseOptions.CommonMark);

@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// <see cref="LinkDestination"/> 的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#link-reference-definitions"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#link-reference-definitions"/>
 [TestClass]
 public partial class UnitTestLinkDefinition : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-192"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-192"/>
 	[TestMethod]
 	public void Test192()
 	{
@@ -18,7 +18,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			LinkDefinition(0..21, "foo", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-193"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-193"/>
 	[TestMethod]
 	public void Test193()
 	{
@@ -34,7 +34,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-194"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-194"/>
 	[TestMethod]
 	public void Test194()
 	{
@@ -50,7 +50,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-195"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-195"/>
 	[TestMethod]
 	public void Test195()
 	{
@@ -69,7 +69,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 标题可以跨多行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-196"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-196"/>
 	[TestMethod]
 	public void Test196()
 	{
@@ -88,7 +88,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 但是不能包含空行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-197"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-197"/>
 	[TestMethod]
 	public void Test197()
 	{
@@ -111,7 +111,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接标题可以省略。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-198"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-198"/>
 	[TestMethod]
 	public void Test198()
 	{
@@ -130,7 +130,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接目标不可以省略。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-199"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-199"/>
 	[TestMethod]
 	public void Test199()
 	{
@@ -149,7 +149,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 但是空的链接目标可以使用尖括号括起来。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-200"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-200"/>
 	[TestMethod]
 	public void Test200()
 	{
@@ -168,7 +168,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 标题与目标间必须使用空格或 Tab 分割。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-201"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-201"/>
 	[TestMethod]
 	public void Test201()
 	{
@@ -189,7 +189,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 目标和标题都可以被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-202"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-202"/>
 	[TestMethod]
 	public void Test202()
 	{
@@ -208,7 +208,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接可以出现在定义之前。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-203"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-203"/>
 	[TestMethod]
 	public void Test203()
 	{
@@ -227,7 +227,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 存在多个匹配时，使用第一个。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-204"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-204"/>
 	[TestMethod]
 	public void Test204()
 	{
@@ -247,7 +247,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 标签的匹配是忽略大小写的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-205"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-205"/>
 	[TestMethod]
 	public void Test205()
 	{
@@ -263,7 +263,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-206"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-206"/>
 	[TestMethod]
 	public void Test206()
 	{
@@ -282,7 +282,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接定义不会生成可见内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-207"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-207"/>
 	[TestMethod]
 	public void Test207()
 	{
@@ -291,7 +291,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			LinkDefinition(0..13, "foo", "/url");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-208"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-208"/>
 	[TestMethod]
 	public void Test208()
 	{
@@ -307,7 +307,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 不是链接定义，因为在标题后存在其它内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-209"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-209"/>
 	[TestMethod]
 	public void Test209()
 	{
@@ -322,7 +322,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 是链接定义，但没有标题。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-210"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-210"/>
 	[TestMethod]
 	public void Test210()
 	{
@@ -338,7 +338,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 不是链接定义，因为缩进了 4 个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-211"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-211"/>
 	[TestMethod]
 	public void Test211()
 	{
@@ -354,7 +354,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 不是链接定义，因为出现在代码块内。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-212"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-212"/>
 	[TestMethod]
 	public void Test212()
 	{
@@ -370,7 +370,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接定义不能中断段落。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-213"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-213"/>
 	[TestMethod]
 	public void Test213()
 	{
@@ -391,7 +391,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接定义可以直接后跟块节点。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-214"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-214"/>
 	[TestMethod]
 	public void Test214()
 	{
@@ -414,7 +414,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-215"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-215"/>
 	[TestMethod]
 	public void Test215()
 	{
@@ -434,7 +434,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-216"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-216"/>
 	[TestMethod]
 	public void Test216()
 	{
@@ -455,7 +455,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 多个链接定义可以依次紧挨着。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-217"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-217"/>
 	[TestMethod]
 	public void Test217()
 	{
@@ -488,7 +488,7 @@ public partial class UnitTestLinkDefinition : BaseTest
 	/// <summary>
 	/// 链接定义可以出现在其它块容器内，但会在文档范围生效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-218"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-218"/>
 	[TestMethod]
 	public void Test218()
 	{

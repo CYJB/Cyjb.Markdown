@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 制表符的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#tabs"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#tabs"/>
 [TestClass]
 public class UnitTestTabs : BaseTest
 {
 	/// <summary>
 	/// Tab 可以在缩进时当作 4 个空格使用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-1"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-1"/>
 	[TestMethod]
 	public void Test1()
 	{
@@ -21,7 +21,7 @@ public class UnitTestTabs : BaseTest
 			CodeBlock(0..15, "foo\tbar\t\tbim\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-2"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-2"/>
 	[TestMethod]
 	public void Test2()
 	{
@@ -30,7 +30,7 @@ public class UnitTestTabs : BaseTest
 			CodeBlock(0..17, "foo\tbar\t\tbim\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-3"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-3"/>
 	[TestMethod]
 	public void Test3()
 	{
@@ -42,7 +42,7 @@ public class UnitTestTabs : BaseTest
 	/// <summary>
 	/// 在列表项的连续段落中，Tab 与四个空格的缩进有同样的效果。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-4"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-4"/>
 	[TestMethod]
 	public void Test4()
 	{
@@ -64,7 +64,7 @@ public class UnitTestTabs : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-5"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-5"/>
 	[TestMethod]
 	public void Test5()
 	{
@@ -86,7 +86,7 @@ public class UnitTestTabs : BaseTest
 	/// <summary>
 	/// 引用的起始 <c>&gt;</c> 后可以跟一个可选的空格，不会作为内容的一部分。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-6"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-6"/>
 	[TestMethod]
 	public void Test6()
 	{
@@ -98,7 +98,7 @@ public class UnitTestTabs : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-7"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-7"/>
 	[TestMethod]
 	public void Test7()
 	{
@@ -113,7 +113,7 @@ public class UnitTestTabs : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-8"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-8"/>
 	[TestMethod]
 	public void Test8()
 	{
@@ -122,7 +122,7 @@ public class UnitTestTabs : BaseTest
 			CodeBlock(0..15, "foo\r\nbar\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-9"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-9"/>
 	[TestMethod]
 	public void Test9()
 	{
@@ -160,7 +160,7 @@ public class UnitTestTabs : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-10"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-10"/>
 	[TestMethod]
 	public void Test10()
 	{
@@ -172,7 +172,7 @@ public class UnitTestTabs : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-11"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-11"/>
 	[TestMethod]
 	public void Test11()
 	{

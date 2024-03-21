@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 行内代码片段的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#backslash-escapes"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#backslash-escapes"/>
 [TestClass]
 public partial class UnitTestCodeSpan : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-327"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-327"/>
 	[TestMethod]
 	public void Test327()
 	{
@@ -22,7 +22,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-328"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-328"/>
 	[TestMethod]
 	public void Test328()
 	{
@@ -34,7 +34,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-329"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-329"/>
 	[TestMethod]
 	public void Test329()
 	{
@@ -49,7 +49,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 移除前后空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-330"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-330"/>
 	[TestMethod]
 	public void Test330()
 	{
@@ -64,7 +64,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 只有一个空格会被移除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-331"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-331"/>
 	[TestMethod]
 	public void Test331()
 	{
@@ -79,7 +79,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 只会在两端都有空格时才会移除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-332"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-332"/>
 	[TestMethod]
 	public void Test332()
 	{
@@ -94,7 +94,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 只移除空格，不移除 Unicode 空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-333"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-333"/>
 	[TestMethod]
 	public void Test333()
 	{
@@ -109,7 +109,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 代码中只包含空格时也不移除。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-334"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-334"/>
 	[TestMethod]
 	public void Test334()
 	{
@@ -135,7 +135,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 换行被当作空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-335"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-335"/>
 	[TestMethod]
 	public void Test335()
 	{
@@ -154,7 +154,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-336"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-336"/>
 	[TestMethod]
 	public void Test336()
 	{
@@ -176,7 +176,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 内部空白不会被折叠。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-337"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-337"/>
 	[TestMethod]
 	public void Test337()
 	{
@@ -198,7 +198,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 会忽略内部的反斜杠转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-338"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-338"/>
 	[TestMethod]
 	public void Test338()
 	{
@@ -214,7 +214,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 使用不同的 <c>`</c> 个数。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-339"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-339"/>
 	[TestMethod]
 	public void Test339()
 	{
@@ -226,7 +226,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-340"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-340"/>
 	[TestMethod]
 	public void Test340()
 	{
@@ -241,7 +241,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 优先级高于强调符号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-341"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-341"/>
 	[TestMethod]
 	public void Test341()
 	{
@@ -257,7 +257,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 优先级高于链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-342"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-342"/>
 	[TestMethod]
 	public void Test342()
 	{
@@ -274,7 +274,7 @@ public partial class UnitTestCodeSpan : BaseTest
 	/// <summary>
 	/// 优先级与 HTML 标签、自动链接一致。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-343"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-343"/>
 	[TestMethod]
 	public void Test343()
 	{
@@ -287,7 +287,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-344"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-344"/>
 	[TestMethod]
 	public void Test344()
 	{
@@ -300,39 +300,39 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-345"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-345"/>
 	[TestMethod]
 	public void Test345()
 	{
-		AssertMarkdown("`<http://foo.bar.`baz>`", () =>
+		AssertMarkdown("`<https://foo.bar.`baz>`", () =>
 		{
-			Paragraph(0..23, () =>
+			Paragraph(0..24, () =>
 			{
-				CodeSpan(0..18, "<http://foo.bar.");
-				Literal(18..23, "baz>`");
+				CodeSpan(0..19, "<https://foo.bar.");
+				Literal(19..24, "baz>`");
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-346"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-346"/>
 	[TestMethod]
 	public void Test346()
 	{
-		AssertMarkdown("<http://foo.bar.`baz>`", () =>
+		AssertMarkdown("<https://foo.bar.`baz>`", () =>
 		{
-			Paragraph(0..22, () =>
+			Paragraph(0..23, () =>
 			{
-				Link(0..21, "http://foo.bar.`baz", null, () =>
+				Link(0..22, "https://foo.bar.`baz", null, () =>
 				{
-					Literal(1..20, "http://foo.bar.`baz");
+					Literal(1..21, "https://foo.bar.`baz");
 				});
-				Literal(21..22, "`");
+				Literal(22..23, "`");
 			});
 		});
 	}
 	/// <summary>
 	/// 未被匹配关闭的直接当作普通文本。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-347"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-347"/>
 	[TestMethod]
 	public void Test347()
 	{
@@ -344,7 +344,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-348"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-348"/>
 	[TestMethod]
 	public void Test348()
 	{
@@ -356,7 +356,7 @@ public partial class UnitTestCodeSpan : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-349"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-349"/>
 	[TestMethod]
 	public void Test349()
 	{

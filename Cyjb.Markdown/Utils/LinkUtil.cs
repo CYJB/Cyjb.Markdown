@@ -73,7 +73,7 @@ internal static class LinkUtil
 	/// <returns>标准化后的标签。</returns>
 	public static string NormalizeLabel(ReadOnlySpan<char> label)
 	{
-		MarkdownUtil.Trim(ref label);
+		label = label.Trim(MarkdownUtil.Whitespace);
 		if (label.IsEmpty)
 		{
 			return string.Empty;

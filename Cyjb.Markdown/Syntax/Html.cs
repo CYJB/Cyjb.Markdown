@@ -146,22 +146,32 @@ public sealed class Html : InlineNode, IEquatable<Html>
 		switch (kind)
 		{
 			case MarkdownKind.HtmlStartTag:
-				ReadOnlySpan<char> span = text.AsSpan()[1..];
-				int idx = span.IndexOfAny(" \t\r\n>");
-				if (idx > 0)
 				{
-					span = span[..idx];
+					ReadOnlySpan<char> span = text.AsSpan(1);
+					int idx = span.IndexOfAny(" \t\r\n>");
+					if (idx > 0)
+					{
+						span = span[..idx];
+					}
+					return span.Trim().ToString();
 				}
-				return span.Trim().ToString();
 			case MarkdownKind.HtmlEndTag:
 			case MarkdownKind.HtmlDeclaration:
-				return text.AsSpan()[2..^1].Trim().ToString();
+				return text.AsSpan(2, text.Length - 3).Trim().ToString();
 			case MarkdownKind.HtmlComment:
-				return text.AsSpan()[4..^3].Trim().ToString();
+				{
+					// 存在 <!--> 等总长度不足 7 的场景。
+					int len = text.Length - 7;
+					if (len <= 0)
+					{
+						return string.Empty;
+					}
+					return text.AsSpan(4, len).Trim().ToString();
+				}
 			case MarkdownKind.HtmlCData:
-				return text.AsSpan()[9..^3].Trim().ToString();
+				return text.AsSpan(9, text.Length - 12).Trim().ToString();
 			case MarkdownKind.HtmlProcessing:
-				return text.AsSpan()[2..^2].Trim().ToString();
+				return text.AsSpan(2, text.Length - 4).Trim().ToString();
 			default:
 				throw CommonExceptions.Unreachable();
 		}

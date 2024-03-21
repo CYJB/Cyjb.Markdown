@@ -5,11 +5,11 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 转义字符串的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#backslash-escapes"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#backslash-escapes"/>
 [TestClass]
 public class UnitTestEscapes : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-12"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-12"/>
 	[TestMethod]
 	public void Test12()
 	{
@@ -21,7 +21,7 @@ public class UnitTestEscapes : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-13"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-13"/>
 	[TestMethod]
 	public void Test13()
 	{
@@ -33,7 +33,7 @@ public class UnitTestEscapes : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-14"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-14"/>
 	[TestMethod]
 	public void Test14()
 	{
@@ -72,7 +72,7 @@ public class UnitTestEscapes : BaseTest
 	/// <summary>
 	/// 如果反斜杠本身被转义了，之后的字符不会被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-15"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-15"/>
 	[TestMethod]
 	public void Test15()
 	{
@@ -88,7 +88,7 @@ public class UnitTestEscapes : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-16"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-16"/>
 	[TestMethod]
 	public void Test16_1()
 	{
@@ -118,7 +118,7 @@ public class UnitTestEscapes : BaseTest
 	/// <summary>
 	/// 反斜杠转义在代码块、代码段、自动链接和 HTML 中不生效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-17"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-17"/>
 	[TestMethod]
 	public void Test17()
 	{
@@ -130,7 +130,7 @@ public class UnitTestEscapes : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-18"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-18"/>
 	[TestMethod]
 	public void Test18()
 	{
@@ -139,7 +139,7 @@ public class UnitTestEscapes : BaseTest
 			CodeBlock(0..10, "\\[\\]\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-19"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-19"/>
 	[TestMethod]
 	public void Test19()
 	{
@@ -148,22 +148,22 @@ public class UnitTestEscapes : BaseTest
 			CodeBlock(0..16, "\\[\\]\r\n");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-20"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-20"/>
 	[TestMethod]
 	public void Test20()
 	{
-		AssertMarkdown("<http://example.com?find=\\*>\r\n", () =>
+		AssertMarkdown("<https://example.com?find=\\*>\r\n", () =>
 		{
-			Paragraph(0..30, () =>
+			Paragraph(0..31, () =>
 			{
-				Link(0..28, "http://example.com?find=\\*", null, () =>
+				Link(0..29, "https://example.com?find=\\*", null, () =>
 				{
-					Literal(1..27, "http://example.com?find=\\*");
+					Literal(1..28, "https://example.com?find=\\*");
 				});
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-21"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-21"/>
 	[TestMethod]
 	public void Test21()
 	{
@@ -175,7 +175,7 @@ public class UnitTestEscapes : BaseTest
 	/// <summary>
 	/// 但是在其他上下文中都能够生效。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-22"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-22"/>
 	[TestMethod]
 	public void Test22()
 	{
@@ -190,7 +190,7 @@ public class UnitTestEscapes : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-23"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-23"/>
 	[TestMethod]
 	public void Test23()
 	{
@@ -206,7 +206,7 @@ public class UnitTestEscapes : BaseTest
 			LinkDefinition(9..34, "foo", "/bar*", "ti*tle");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-24"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-24"/>
 	[TestMethod]
 	public void Test24()
 	{

@@ -30,7 +30,7 @@ Console.WriteLine(renderer);
 
 ## 支持的 Markdown 特性
 
-- 支持完整的 [CommonMark 0.30](https://spec.commonmark.org/0.30)，具体请参见[这里](https://commonmark.org/help/)。
+- 支持完整的 [CommonMark 0.31.2](https://spec.commonmark.org/0.31.2)，具体请参见[这里](https://commonmark.org/help/)。
 - 支持部分 [GitHub Flavored Markdown (GFM)](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)，具体包括：
 	- [删除线](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text)：`~~ ~~`。
 	- [任务列表](https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#task-lists)：`- [ ] task`。
@@ -59,3 +59,8 @@ Markdown 解析用到了由 [Cyjb.Compilers.Design](https://github.com/CYJB/Cyjb
 
 欢迎访问我的[博客](http://www.cnblogs.com/cyjb/)获取更多信息。
 
+## 参考
+
+- [CommonMark Spec](https://spec.commonmark.org/)
+- [babelmark3](https://babelmark.github.io/)
+- [AST Explorer](https://astexplorer.net/)

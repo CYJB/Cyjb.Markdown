@@ -63,6 +63,14 @@ f2 f3=a/ a4="""" a5='
 		Assert.AreEqual(0, node2.Attributes.Count);
 		Assert.AreNotEqual(node, node2);
 
+		node = new(MarkdownKind.HtmlComment, "<!-->");
+		Assert.AreEqual("", node.Value);
+		Assert.AreEqual(0, node.Attributes.Count);
+
+		node = new(MarkdownKind.HtmlComment, "<!--->");
+		Assert.AreEqual("", node.Value);
+		Assert.AreEqual(0, node.Attributes.Count);
+
 		node = new(MarkdownKind.HtmlComment, "<!---->");
 		Assert.AreEqual("", node.Value);
 		Assert.AreEqual(0, node.Attributes.Count);

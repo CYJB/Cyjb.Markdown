@@ -10,7 +10,7 @@ namespace Cyjb.Markdown.ParseInline;
 /// <summary>
 /// 表示 Markdown 的行级元素语法分析器。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#inlines"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#inlines"/>
 [LexerRejectable]
 [LexerInclusiveContext("LinkClose")]
 [LexerRegex("WS", @"[ \t]*\r?\n?[ \t]*")]
@@ -263,20 +263,13 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// HTML 注释的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]!---->", Kind = InlineKind.Node)]
-	[LexerSymbol(@"[<]!--[^>-]-->", RegexOptions.Singleline, Kind = InlineKind.Node)]
-	[LexerSymbol(@"[<]!--[^>].*[^-]-->", RegexOptions.Singleline, Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]!-->", Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"[<]!--->", Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"[<]!---->", Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"[<]!--.*-->", RegexOptions.Singleline, Kind = InlineKind.Node, UseShortest = true)]
 	private void HtmlCommentAction()
 	{
-		var content = Text[4..^3];
-		if (content.StartsWith("->") || content.Contains("--", StringComparison.Ordinal))
-		{
-			Reject();
-		}
-		else
-		{
-			Accept(new Html(MarkdownKind.HtmlComment, Text.ToString(), Span));
-		}
+		Accept(new Html(MarkdownKind.HtmlComment, Text.ToString(), Span));
 	}
 
 	/// <summary>

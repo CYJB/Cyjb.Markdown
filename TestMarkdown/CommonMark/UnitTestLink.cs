@@ -5,13 +5,13 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// 链接的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#links"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#links"/>
 [TestClass]
 public class UnitTestLink : BaseTest
 {
-	/// <see href="https://spec.commonmark.org/0.30/#example-481"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-482"/>
 	[TestMethod]
-	public void Test481()
+	public void Test482()
 	{
 		AssertMarkdown("[link](/uri \"title\")", () =>
 		{
@@ -27,9 +27,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 标题、连接文本甚至 URL 都可以省略。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-482"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-483"/>
 	[TestMethod]
-	public void Test482()
+	public void Test483()
 	{
 		AssertMarkdown("[link](/uri)", () =>
 		{
@@ -42,9 +42,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-483"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-484"/>
 	[TestMethod]
-	public void Test483()
+	public void Test484()
 	{
 		AssertMarkdown("[](./target.md)", () =>
 		{
@@ -54,9 +54,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-484"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-485"/>
 	[TestMethod]
-	public void Test484()
+	public void Test485()
 	{
 		AssertMarkdown("[link]()", () =>
 		{
@@ -69,9 +69,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-485"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-486"/>
 	[TestMethod]
-	public void Test485()
+	public void Test486()
 	{
 		AssertMarkdown("[link](<>)", () =>
 		{
@@ -84,9 +84,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-486"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-487"/>
 	[TestMethod]
-	public void Test486()
+	public void Test487()
 	{
 		AssertMarkdown("[]()", () =>
 		{
@@ -99,9 +99,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接目标仅在使用尖括号包起来时才能使用空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-487"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-488"/>
 	[TestMethod]
-	public void Test487()
+	public void Test488()
 	{
 		AssertMarkdown("[link](/my uri)", () =>
 		{
@@ -111,9 +111,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-488"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-489"/>
 	[TestMethod]
-	public void Test488()
+	public void Test489()
 	{
 		AssertMarkdown("[link](</my uri>)", () =>
 		{
@@ -129,9 +129,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接目标不能包含换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-489"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-490"/>
 	[TestMethod]
-	public void Test489()
+	public void Test490()
 	{
 		AssertMarkdown("[link](foo\r\nbar)", () =>
 		{
@@ -143,9 +143,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-490"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-491"/>
 	[TestMethod]
-	public void Test490()
+	public void Test491()
 	{
 		AssertMarkdown("[link](<foo\r\nbar>)", () =>
 		{
@@ -160,9 +160,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接目标被尖括号包起来时可以包含 )。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-491"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-492"/>
 	[TestMethod]
-	public void Test491()
+	public void Test492()
 	{
 		AssertMarkdown("[a](<b)c>)", () =>
 		{
@@ -178,9 +178,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 包裹的尖括号不能被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-492"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-493"/>
 	[TestMethod]
-	public void Test492()
+	public void Test493()
 	{
 		AssertMarkdown(@"[link](<foo\>)", () =>
 		{
@@ -193,9 +193,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接的 ( 必须匹配。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-493"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-494"/>
 	[TestMethod]
-	public void Test493()
+	public void Test494()
 	{
 		AssertMarkdown("[a](<b)c\r\n[a](<b)c>\r\n[a](<b>c)", () =>
 		{
@@ -214,9 +214,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接目标中的括号应该被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-494"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-495"/>
 	[TestMethod]
-	public void Test494()
+	public void Test495()
 	{
 		AssertMarkdown(@"[link](\(foo\))", () =>
 		{
@@ -232,9 +232,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 允许个数平衡的非转义括号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-495"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-496"/>
 	[TestMethod]
-	public void Test495()
+	public void Test496()
 	{
 		AssertMarkdown(@"[link](foo(and(bar)))", () =>
 		{
@@ -250,9 +250,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 但是未平衡的括号，必须转义或者使用尖括号包起来。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-496"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-497"/>
 	[TestMethod]
-	public void Test496()
+	public void Test497()
 	{
 		AssertMarkdown(@"[link](foo(and(bar))", () =>
 		{
@@ -262,9 +262,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-497"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-498"/>
 	[TestMethod]
-	public void Test497()
+	public void Test498()
 	{
 		AssertMarkdown(@"[link](foo\(and\(bar\))", () =>
 		{
@@ -277,9 +277,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-498"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-499"/>
 	[TestMethod]
-	public void Test498()
+	public void Test499()
 	{
 		AssertMarkdown(@"[link](<foo(and(bar)>)", () =>
 		{
@@ -295,9 +295,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 支持其它转义字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-499"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-500"/>
 	[TestMethod]
-	public void Test499()
+	public void Test500()
 	{
 		AssertMarkdown(@"[link](foo\)\:)", () =>
 		{
@@ -313,15 +313,15 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接可以包含 fragment 和查询。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-500"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-501"/>
 	[TestMethod]
-	public void Test500()
+	public void Test501()
 	{
 		AssertMarkdown(@"[link](#fragment)
 
-[link](http://example.com#fragment)
+[link](https://example.com#fragment)
 
-[link](http://example.com?foo=3#frag)", () =>
+[link](https://example.com?foo=3#frag)", () =>
 		{
 			Paragraph(0..19, () =>
 			{
@@ -331,19 +331,19 @@ public class UnitTestLink : BaseTest
 				});
 			});
 
-			Paragraph(21..58, () =>
+			Paragraph(21..59, () =>
 			{
-				Link(21..56, "http://example.com#fragment", null, () =>
+				Link(21..57, "https://example.com#fragment", null, () =>
 				{
 					Literal(22..26, "link");
 				});
 			});
 
-			Paragraph(60..97, () =>
+			Paragraph(61..99, () =>
 			{
-				Link(60..97, "http://example.com?foo=3#frag", null, () =>
+				Link(61..99, "https://example.com?foo=3#frag", null, () =>
 				{
-					Literal(61..65, "link");
+					Literal(62..66, "link");
 				});
 			});
 		});
@@ -351,9 +351,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 非可转义字符前的反斜杠会被原样保留。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-501"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-502"/>
 	[TestMethod]
-	public void Test501()
+	public void Test502()
 	{
 		AssertMarkdown(@"[link](foo\bar)", () =>
 		{
@@ -369,9 +369,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// URL 编码的字符会被原样保留。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-502"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-503"/>
 	[TestMethod]
-	public void Test502()
+	public void Test503()
 	{
 		AssertMarkdown("[link](foo%20b&auml;)", () =>
 		{
@@ -387,9 +387,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 保留标题但忽略目标时，标题很可能会被解析为目标。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-503"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-504"/>
 	[TestMethod]
-	public void Test503()
+	public void Test504()
 	{
 		AssertMarkdown("[link](\"title\")", () =>
 		{
@@ -405,9 +405,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 标题可以使用单引号、双引号或括号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-504"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-505"/>
 	[TestMethod]
-	public void Test504()
+	public void Test505()
 	{
 		AssertMarkdown(@"[link](/url ""title"")
 [link](/url 'title')
@@ -437,9 +437,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 标题可以使用转义或实体。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-505"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-506"/>
 	[TestMethod]
-	public void Test505()
+	public void Test506()
 	{
 		AssertMarkdown(@"[link](/url ""title \""&quot;"")", () =>
 		{
@@ -455,9 +455,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 必须使用空格、Tab 或最多一个换行分割，其它 Unicode 空白不会当作分割符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-506"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-507"/>
 	[TestMethod]
-	public void Test506()
+	public void Test507()
 	{
 		AssertMarkdown("[link](/url\xA0\"title\")", () =>
 		{
@@ -473,9 +473,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 嵌套的引号必须被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-507"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-508"/>
 	[TestMethod]
-	public void Test507()
+	public void Test508()
 	{
 		AssertMarkdown("[link](/url \"title \"and\" title\")", () =>
 		{
@@ -488,9 +488,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 可以使用不同类型的引号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-508"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-509"/>
 	[TestMethod]
-	public void Test508()
+	public void Test509()
 	{
 		AssertMarkdown("[link](/url 'title \"and\" title')", () =>
 		{
@@ -506,9 +506,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接目标和标题前可以有空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-509"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-510"/>
 	[TestMethod]
-	public void Test509()
+	public void Test510()
 	{
 		AssertMarkdown("[link](   /uri\r\n  \"title\"  )", () =>
 		{
@@ -524,9 +524,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 但链接文本和后续括号间不能有空白。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-510"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-511"/>
 	[TestMethod]
-	public void Test510()
+	public void Test511()
 	{
 		AssertMarkdown("[link] (/uri)", () =>
 		{
@@ -539,9 +539,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本可以包含平衡的括号，但不平衡的括号必须被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-511"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-512"/>
 	[TestMethod]
-	public void Test511()
+	public void Test512()
 	{
 		AssertMarkdown("[link [foo [bar]]](/uri)", () =>
 		{
@@ -554,9 +554,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-512"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-513"/>
 	[TestMethod]
-	public void Test512()
+	public void Test513()
 	{
 		AssertMarkdown("[link] bar](/uri)", () =>
 		{
@@ -566,9 +566,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-513"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-514"/>
 	[TestMethod]
-	public void Test513()
+	public void Test514()
 	{
 		AssertMarkdown("[link [bar](/uri)", () =>
 		{
@@ -582,9 +582,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-514"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-515"/>
 	[TestMethod]
-	public void Test514()
+	public void Test515()
 	{
 		AssertMarkdown(@"[link \[bar](/uri)", () =>
 		{
@@ -600,9 +600,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本可以包含行内元素。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-515"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-516"/>
 	[TestMethod]
-	public void Test515()
+	public void Test516()
 	{
 		AssertMarkdown("[link *foo **bar** `#`*](/uri)", () =>
 		{
@@ -625,9 +625,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-516"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-517"/>
 	[TestMethod]
-	public void Test516()
+	public void Test517()
 	{
 		AssertMarkdown("[![moon](moon.jpg)](/uri)", () =>
 		{
@@ -646,9 +646,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 但是链接不能包含其它链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-517"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-518"/>
 	[TestMethod]
-	public void Test517()
+	public void Test518()
 	{
 		AssertMarkdown("[foo [bar](/uri)](/uri)", () =>
 		{
@@ -663,9 +663,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-518"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-519"/>
 	[TestMethod]
-	public void Test518()
+	public void Test519()
 	{
 		AssertMarkdown("[foo *[bar [baz](/uri)](/uri)*](/uri)", () =>
 		{
@@ -685,9 +685,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-519"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-520"/>
 	[TestMethod]
-	public void Test519()
+	public void Test520()
 	{
 		AssertMarkdown("![[[foo](uri1)](uri2)](uri3)", () =>
 		{
@@ -708,9 +708,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本优先级高于强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-520"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-521"/>
 	[TestMethod]
-	public void Test520()
+	public void Test521()
 	{
 		AssertMarkdown("*[foo*](/uri)", () =>
 		{
@@ -724,9 +724,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-521"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-522"/>
 	[TestMethod]
-	public void Test521()
+	public void Test522()
 	{
 		AssertMarkdown("[foo *bar](baz*)", () =>
 		{
@@ -742,9 +742,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 非链接一部分的括号没有优先级。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-522"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-523"/>
 	[TestMethod]
-	public void Test522()
+	public void Test523()
 	{
 		AssertMarkdown("*foo [bar* baz]", () =>
 		{
@@ -761,9 +761,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// HTML 标签、代码段、自动链接的优先级高于链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-523"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-524"/>
 	[TestMethod]
-	public void Test523()
+	public void Test524()
 	{
 		AssertMarkdown("[foo <bar attr=\"](baz)\">", () =>
 		{
@@ -774,9 +774,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-524"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-525"/>
 	[TestMethod]
-	public void Test524()
+	public void Test525()
 	{
 		AssertMarkdown("[foo`](/uri)`", () =>
 		{
@@ -787,18 +787,18 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-525"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-526"/>
 	[TestMethod]
-	public void Test525()
+	public void Test526()
 	{
-		AssertMarkdown("[foo<http://example.com/?search=](uri)>", () =>
+		AssertMarkdown("[foo<https://example.com/?search=](uri)>", () =>
 		{
-			Paragraph(0..39, () =>
+			Paragraph(0..40, () =>
 			{
 				Literal(0..4, "[foo");
-				Link(4..39, "http://example.com/?search=](uri)", null, () =>
+				Link(4..40, "https://example.com/?search=](uri)", null, () =>
 				{
-					Literal(5..38, "http://example.com/?search=](uri)");
+					Literal(5..39, "https://example.com/?search=](uri)");
 				});
 			});
 		});
@@ -806,9 +806,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-526"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-527"/>
 	[TestMethod]
-	public void Test526()
+	public void Test527()
 	{
 		AssertMarkdown("[foo][bar]\r\n\r\n[bar]: /url \"title\"", () =>
 		{
@@ -825,9 +825,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本可以包含平衡的括号，或被转义的非平衡括号。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-527"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-528"/>
 	[TestMethod]
-	public void Test527()
+	public void Test528()
 	{
 		AssertMarkdown("[link [foo [bar]]][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -841,9 +841,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(27..38, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-528"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-529"/>
 	[TestMethod]
-	public void Test528()
+	public void Test529()
 	{
 		AssertMarkdown("[link \\[bar][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -860,9 +860,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本可以包含行内内容。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-529"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-530"/>
 	[TestMethod]
-	public void Test529()
+	public void Test530()
 	{
 		AssertMarkdown("[link *foo **bar** `#`*][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -886,9 +886,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(33..44, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-530"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-531"/>
 	[TestMethod]
-	public void Test530()
+	public void Test531()
 	{
 		AssertMarkdown("[![moon](moon.jpg)][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -908,9 +908,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接不能包含链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-531"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-532"/>
 	[TestMethod]
-	public void Test531()
+	public void Test532()
 	{
 		AssertMarkdown("[foo [bar](/uri)][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -931,9 +931,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(26..37, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-532"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-533"/>
 	[TestMethod]
-	public void Test532()
+	public void Test533()
 	{
 		AssertMarkdown("[foo *bar [baz][ref]*][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -960,9 +960,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本优先级高于强调。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-533"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-534"/>
 	[TestMethod]
-	public void Test533()
+	public void Test534()
 	{
 		AssertMarkdown("*[foo*][ref]\r\n\r\n[ref]: /uri", () =>
 		{
@@ -977,9 +977,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(16..27, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-534"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-535"/>
 	[TestMethod]
-	public void Test534()
+	public void Test535()
 	{
 		AssertMarkdown("[foo *bar][ref]*\r\n\r\n[ref]: /uri", () =>
 		{
@@ -997,9 +997,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// HTML 标签、代码段、自动链接的优先级高于链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-535"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-536"/>
 	[TestMethod]
-	public void Test535()
+	public void Test536()
 	{
 		AssertMarkdown("[foo <bar attr=\"][ref]\">\r\n\r\n[ref]: /uri", () =>
 		{
@@ -1011,9 +1011,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(28..39, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-536"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-537"/>
 	[TestMethod]
-	public void Test536()
+	public void Test537()
 	{
 		AssertMarkdown("[foo`][ref]`\r\n\r\n[ref]: /uri", () =>
 		{
@@ -1025,29 +1025,29 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(16..27, "ref", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-537"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-538"/>
 	[TestMethod]
-	public void Test537()
+	public void Test538()
 	{
-		AssertMarkdown("[foo<http://example.com/?search=][ref]>\r\n\r\n[ref]: /uri", () =>
+		AssertMarkdown("[foo<https://example.com/?search=][ref]>\r\n\r\n[ref]: /uri", () =>
 		{
-			Paragraph(0..41, () =>
+			Paragraph(0..42, () =>
 			{
 				Literal(0..4, "[foo");
-				Link(4..39, "http://example.com/?search=][ref]", null, () =>
+				Link(4..40, "https://example.com/?search=][ref]", null, () =>
 				{
-					Literal(5..38, "http://example.com/?search=][ref]");
+					Literal(5..39, "https://example.com/?search=][ref]");
 				});
 			});
-			LinkDefinition(43..54, "ref", "/uri", null);
+			LinkDefinition(44..55, "ref", "/uri", null);
 		});
 	}
 	/// <summary>
 	/// 匹配是大小写无关的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-538"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-539"/>
 	[TestMethod]
-	public void Test538()
+	public void Test539()
 	{
 		AssertMarkdown("[foo][BaR]\r\n\r\n[bar]: /url \"title\"", () =>
 		{
@@ -1064,9 +1064,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 会使用 Unicode case fold。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-539"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-540"/>
 	[TestMethod]
-	public void Test539()
+	public void Test540()
 	{
 		AssertMarkdown("[ẞ]\r\n\r\n[SS]: /url", () =>
 		{
@@ -1083,9 +1083,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 连续的空白、Tab 和换行会当作一个空格。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-540"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-541"/>
 	[TestMethod]
-	public void Test540()
+	public void Test541()
 	{
 		AssertMarkdown("[Foo\r\n  bar]: /url\r\n\r\n[Baz][Foo bar]", () =>
 		{
@@ -1102,9 +1102,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本和标签间不能存在空格、Tab 或换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-541"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-542"/>
 	[TestMethod]
-	public void Test541()
+	public void Test542()
 	{
 		AssertMarkdown("[foo] [bar]\r\n\r\n[bar]: /url \"title\"", () =>
 		{
@@ -1119,9 +1119,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(15..34, "bar", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-542"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-543"/>
 	[TestMethod]
-	public void Test542()
+	public void Test543()
 	{
 		AssertMarkdown("[foo]\r\n[bar]\r\n\r\n[bar]: /url \"title\"", () =>
 		{
@@ -1140,9 +1140,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 多个链接定义时，会使用第一个。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-543"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-544"/>
 	[TestMethod]
-	public void Test543()
+	public void Test544()
 	{
 		AssertMarkdown("[foo]: /url1\r\n\r\n[foo]: /url2\r\n\r\n[bar][foo]", () =>
 		{
@@ -1160,9 +1160,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签不会解析行内元素。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-544"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-545"/>
 	[TestMethod]
-	public void Test544()
+	public void Test545()
 	{
 		AssertMarkdown("[bar][foo\\!]\r\n\r\n[foo!]: /url", () =>
 		{
@@ -1176,9 +1176,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签不能包含方括号，除非被转义。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-545"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-546"/>
 	[TestMethod]
-	public void Test545()
+	public void Test546()
 	{
 		AssertMarkdown("[foo][ref[]\r\n\r\n[ref[]: /uri", () =>
 		{
@@ -1192,9 +1192,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-546"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-547"/>
 	[TestMethod]
-	public void Test546()
+	public void Test547()
 	{
 		AssertMarkdown("[foo][ref[bar]]\r\n\r\n[ref[bar]]: /uri", () =>
 		{
@@ -1208,9 +1208,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-547"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-548"/>
 	[TestMethod]
-	public void Test547()
+	public void Test548()
 	{
 		AssertMarkdown("[[[foo]]]\r\n\r\n[[[foo]]]: /url", () =>
 		{
@@ -1224,9 +1224,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-548"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-549"/>
 	[TestMethod]
-	public void Test548()
+	public void Test549()
 	{
 		AssertMarkdown("[foo][ref\\[]\r\n\r\n[ref\\[]: /uri", () =>
 		{
@@ -1240,9 +1240,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(16..29, "ref\\[", "/uri", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-549"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-550"/>
 	[TestMethod]
-	public void Test549()
+	public void Test550()
 	{
 		AssertMarkdown("[bar\\\\]: /uri\r\n\r\n[bar\\\\]", () =>
 		{
@@ -1259,9 +1259,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签需要包含至少一个非空白字符。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-550"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-551"/>
 	[TestMethod]
-	public void Test550()
+	public void Test551()
 	{
 		AssertMarkdown("[]\r\n\r\n[]: /uri", () =>
 		{
@@ -1275,9 +1275,9 @@ public class UnitTestLink : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-551"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-552"/>
 	[TestMethod]
-	public void Test551()
+	public void Test552()
 	{
 		AssertMarkdown("[\r\n ]\r\n\r\n[\r\n ]: /uri", () =>
 		{
@@ -1298,9 +1298,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签可以为空。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-552"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-553"/>
 	[TestMethod]
-	public void Test552()
+	public void Test553()
 	{
 		AssertMarkdown("[foo][]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1314,9 +1314,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(11..30, "foo", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-553"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-554"/>
 	[TestMethod]
-	public void Test553()
+	public void Test554()
 	{
 		AssertMarkdown("[*foo* bar][]\r\n\r\n[*foo* bar]: /url \"title\"", () =>
 		{
@@ -1337,9 +1337,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签是忽略大小写的。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-554"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-555"/>
 	[TestMethod]
-	public void Test554()
+	public void Test555()
 	{
 		AssertMarkdown("[Foo][]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1356,9 +1356,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 两个方括号之间也是不允许存在空格、Tab 或换行。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-555"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-556"/>
 	[TestMethod]
-	public void Test555()
+	public void Test556()
 	{
 		AssertMarkdown("[foo] \r\n[]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1377,9 +1377,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 简写的链接引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-556"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-557"/>
 	[TestMethod]
-	public void Test556()
+	public void Test557()
 	{
 		AssertMarkdown("[foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1393,9 +1393,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(9..28, "foo", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-557"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-558"/>
 	[TestMethod]
-	public void Test557()
+	public void Test558()
 	{
 		AssertMarkdown("[*foo* bar]\r\n\r\n[*foo* bar]: /url \"title\"", () =>
 		{
@@ -1413,9 +1413,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(15..40, "*foo* bar", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-558"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-559"/>
 	[TestMethod]
-	public void Test558()
+	public void Test559()
 	{
 		AssertMarkdown("[[*foo* bar]]\r\n\r\n[*foo* bar]: /url \"title\"", () =>
 		{
@@ -1435,9 +1435,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(17..42, "*foo* bar", "/url", "title");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-559"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-560"/>
 	[TestMethod]
-	public void Test559()
+	public void Test560()
 	{
 		AssertMarkdown("[[bar [foo]\r\n\r\n[foo]: /url", () =>
 		{
@@ -1455,9 +1455,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接标签忽略大小写。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-560"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-561"/>
 	[TestMethod]
-	public void Test560()
+	public void Test561()
 	{
 		AssertMarkdown("[Foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1474,9 +1474,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接文本后的空格应当被保留。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-561"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-562"/>
 	[TestMethod]
-	public void Test561()
+	public void Test562()
 	{
 		AssertMarkdown("[foo] bar\r\n\r\n[foo]: /url", () =>
 		{
@@ -1494,9 +1494,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 可以通过转义避免识别为链接。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-562"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-563"/>
 	[TestMethod]
-	public void Test562()
+	public void Test563()
 	{
 		AssertMarkdown("\\[foo]\r\n\r\n[foo]: /url \"title\"", () =>
 		{
@@ -1510,9 +1510,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 链接的优先级比强调高。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-563"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-564"/>
 	[TestMethod]
-	public void Test563()
+	public void Test564()
 	{
 		AssertMarkdown("[foo*]: /url\r\n\r\n*[foo*]", () =>
 		{
@@ -1530,9 +1530,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 完整链接的优先级更高。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-564"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-565"/>
 	[TestMethod]
-	public void Test564()
+	public void Test565()
 	{
 		AssertMarkdown("[foo][bar]\r\n\r\n[foo]: /url1\r\n[bar]: /url2", () =>
 		{
@@ -1547,9 +1547,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(28..40, "bar", "/url2", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-565"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-566"/>
 	[TestMethod]
-	public void Test565()
+	public void Test566()
 	{
 		AssertMarkdown("[foo][]\r\n\r\n[foo]: /url1", () =>
 		{
@@ -1566,9 +1566,9 @@ public class UnitTestLink : BaseTest
 	/// <summary>
 	/// 行内链接的优先级更高。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-566"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-567"/>
 	[TestMethod]
-	public void Test566()
+	public void Test567()
 	{
 		AssertMarkdown("[foo]()\r\n\r\n[foo]: /url1", () =>
 		{
@@ -1582,9 +1582,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(11..23, "foo", "/url1", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-567"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-568"/>
 	[TestMethod]
-	public void Test567()
+	public void Test568()
 	{
 		AssertMarkdown("[foo](not a link)\r\n\r\n[foo]: /url1", () =>
 		{
@@ -1599,9 +1599,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(21..33, "foo", "/url1", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-568"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-569"/>
 	[TestMethod]
-	public void Test568()
+	public void Test569()
 	{
 		AssertMarkdown("[foo][bar][baz]\r\n\r\n[baz]: /url", () =>
 		{
@@ -1616,9 +1616,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(19..30, "baz", "/url", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-569"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-570"/>
 	[TestMethod]
-	public void Test569()
+	public void Test570()
 	{
 		AssertMarkdown("[foo][bar][baz]\r\n\r\n[baz]: /url1\r\n[bar]: /url2", () =>
 		{
@@ -1637,9 +1637,9 @@ public class UnitTestLink : BaseTest
 			LinkDefinition(33..45, "bar", "/url2", null);
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-579"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-571"/>
 	[TestMethod]
-	public void Test570()
+	public void Test571()
 	{
 		AssertMarkdown("[foo][bar][baz]\r\n\r\n[baz]: /url1\r\n[foo]: /url2", () =>
 		{

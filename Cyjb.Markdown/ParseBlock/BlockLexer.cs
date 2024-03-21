@@ -8,7 +8,7 @@ namespace Cyjb.Markdown.ParseBlock;
 /// <summary>
 /// 表示 Markdown 的块级元素词法分析器。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/"/>
+/// <see href="https://spec.commonmark.org/0.31.2/"/>
 [LexerRejectable]
 [LexerRegex("WS", "[ \t]")]
 [LexerRegex("WS_1", @"[ \t]+|[ \t]*\r?\n[ \t]*")]
@@ -273,7 +273,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		"nav|noframes|" +
 		"ol|optgroup|option|" +
 		"p|param|" +
-		"section|source|summary|" +
+		"search|section|summary|" +
 		"table|tbody|td|tfoot|th|thead|title|tr|track|" +
 		"ul" +
 		")(( |\t|\\/?>).*)?$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]

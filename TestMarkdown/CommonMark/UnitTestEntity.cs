@@ -5,14 +5,14 @@ namespace TestMarkdown.CommonMark;
 /// <summary>
 /// HTML 实体字符串的单元测试。
 /// </summary>
-/// <see href="https://spec.commonmark.org/0.30/#backslash-escapes"/>
+/// <see href="https://spec.commonmark.org/0.31.2/#backslash-escapes"/>
 [TestClass]
 public class UnitTestEntity : BaseTest
 {
 	/// <summary>
 	/// HTML 实体。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-25"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-25"/>
 	[TestMethod]
 	public void Test25()
 	{
@@ -31,7 +31,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 十进制数字字符引用。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-26"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-26"/>
 	[TestMethod]
 	public void Test26()
 	{
@@ -47,7 +47,7 @@ public class UnitTestEntity : BaseTest
 	/// 十六进制数字字符引用。
 	/// https://spec.commonmark.org/0.30/#example-26
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-27"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-27"/>
 	[TestMethod]
 	public void Test27()
 	{
@@ -62,7 +62,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 非实体。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-28"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-28"/>
 	[TestMethod]
 	public void Test28()
 	{
@@ -83,7 +83,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 只允许后跟 ; 的实体。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-29"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-29"/>
 	[TestMethod]
 	public void Test29()
 	{
@@ -98,7 +98,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 不在 HTML5 列表中的实体当作普通字符看待。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-30"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-30"/>
 	[TestMethod]
 	public void Test30()
 	{
@@ -113,7 +113,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 除了代码，其他场景都会识别实体。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-31"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-31"/>
 	[TestMethod]
 	public void Test31()
 	{
@@ -122,7 +122,7 @@ public class UnitTestEntity : BaseTest
 			HtmlBlock(0..28, "<a href=\"&ouml;&ouml;.html\">");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-32"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-32"/>
 	[TestMethod]
 	public void Test32()
 	{
@@ -137,7 +137,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-33"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-33"/>
 	[TestMethod]
 	public void Test33()
 	{
@@ -153,7 +153,7 @@ public class UnitTestEntity : BaseTest
 			LinkDefinition(9..46, "foo", "/föö", "föö");
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-34"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-34"/>
 	[TestMethod]
 	public void Test34()
 	{
@@ -165,7 +165,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 在代码中会被当作字面量文本。
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-35"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-35"/>
 	[TestMethod]
 	public void Test35()
 	{
@@ -177,7 +177,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-36"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-36"/>
 	[TestMethod]
 	public void Test36_1()
 	{
@@ -197,7 +197,7 @@ public class UnitTestEntity : BaseTest
 	/// <summary>
 	/// 不能当作 Markdown 结构来用
 	/// </summary>
-	/// <see href="https://spec.commonmark.org/0.30/#example-37"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-37"/>
 	[TestMethod]
 	public void Test37()
 	{
@@ -214,7 +214,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-38"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-38"/>
 	[TestMethod]
 	public void Test38()
 	{
@@ -236,7 +236,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-39"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-39"/>
 	[TestMethod]
 	public void Test39()
 	{
@@ -248,7 +248,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-40"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-40"/>
 	[TestMethod]
 	public void Test40()
 	{
@@ -260,7 +260,7 @@ public class UnitTestEntity : BaseTest
 			});
 		});
 	}
-	/// <see href="https://spec.commonmark.org/0.30/#example-41"/>
+	/// <see href="https://spec.commonmark.org/0.31.2/#example-41"/>
 	[TestMethod]
 	public void Test41()
 	{
