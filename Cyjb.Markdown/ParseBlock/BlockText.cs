@@ -37,7 +37,7 @@ internal sealed class BlockText
 		}
 	}
 	/// <summary>
-	/// 获取文本的结束位置。
+	/// 获取文本的结束位置。}
 	/// </summary>
 	public int End
 	{
@@ -106,33 +106,6 @@ internal sealed class BlockText
 			}
 		}
 		return true;
-	}
-
-	/// <summary>
-	/// 返回指定索引的文本。
-	/// </summary>
-	/// <param name="index">要检查的索引。</param>
-	/// <returns>指定索引的文本。</returns>
-	public char this[int index]
-	{
-		get
-		{
-			int count = tokens.Count;
-			for (int i = 0; i < count; i++)
-			{
-				StringView text = tokens[i].Text;
-				int textLen = text.Length;
-				if (index >= textLen)
-				{
-					index -= textLen;
-				}
-				else
-				{
-					return text[index];
-				}
-			}
-			return SourceReader.InvalidCharacter;
-		}
 	}
 
 	/// <summary>
@@ -466,8 +439,57 @@ internal sealed class BlockText
 		{
 			text.Append(tokens[i].Text.AsSpan());
 		}
-		string result = text.ToString();
-		StringBuilderPool.Return(text);
-		return result;
+		return StringBuilderPool.GetStringAndReturn(text);
+	}
+
+	/// <summary>
+	/// 返回当前对象的字符串视图表示形式。
+	/// </summary>
+	/// <param name="start">转换为字符串视图的起始索引。</param>
+	/// <returns>当前对象的字符串视图表示形式。</returns>
+	public StringView ToStringView(int start)
+	{
+		int count = tokens.Count;
+		if (count == 0)
+		{
+			return StringView.Empty;
+		}
+		else if (count == 1)
+		{
+			return tokens[0].Text.Substring(start);
+		}
+		// 优先连接字符串视图。
+		StringView view = StringView.Empty;
+		int i = 0;
+		for (; i < count; i++)
+		{
+			StringView curView = tokens[i].Text;
+			if (curView.Length <= start)
+			{
+				start -= curView.Length;
+				continue;
+			}
+			start = 0;
+			if (view.TryConcat(curView.Substring(start), out var newView))
+			{
+				view = newView;
+			}
+			else
+			{
+				break;
+			}
+		}
+		if (i >= count)
+		{
+			return view;
+		}
+		// 存在无法连接的字符串，改为使用 StringBuilder 拼接。
+		StringBuilder text = StringBuilderPool.Rent(length);
+		text.Append(view.AsSpan());
+		for (; i < count; i++)
+		{
+			text.Append(tokens[i].Text.AsSpan());
+		}
+		return StringBuilderPool.GetStringAndReturn(text);
 	}
 }

@@ -10,9 +10,18 @@ namespace Cyjb.Markdown.Renderer;
 public class HtmlRenderer : BaseRenderer
 {
 	/// <summary>
+	/// 需要被转义的字符。
+	/// </summary>
+	private static readonly char[] EscapedChars = new char[] { '&', '<', '>', '\"' };
+
+	/// <summary>
 	/// HTML 属性修改器。
 	/// </summary>
 	private readonly List<IAttributeModifier> attributeModifiers = new();
+	/// <summary>
+	/// HTML 属性修改器的个数。
+	/// </summary>
+	private int attributeModifierCount = 0;
 	/// <summary>
 	/// 文本构造器。
 	/// </summary>
@@ -49,6 +58,7 @@ public class HtmlRenderer : BaseRenderer
 		if (modifier != null)
 		{
 			attributeModifiers.Add(modifier);
+			attributeModifierCount++;
 		}
 	}
 
@@ -646,9 +656,12 @@ public class HtmlRenderer : BaseRenderer
 		{
 			return;
 		}
-		foreach (char ch in str)
+		int start = 0;
+		int idx = str.IndexOfAny(EscapedChars, start);
+		while (idx >= 0)
 		{
-			switch (ch)
+			text.Append(str, start, idx - start);
+			switch (str[idx])
 			{
 				case '&':
 					text.Append("&amp;");
@@ -662,11 +675,11 @@ public class HtmlRenderer : BaseRenderer
 				case '\"':
 					text.Append("&quot;");
 					break;
-				default:
-					text.Append(ch);
-					break;
 			}
+			start = idx + 1;
+			idx = str.IndexOfAny(EscapedChars, start);
 		}
+		text.Append(str, start, str.Length - start);
 	}
 
 	/// <summary>
@@ -705,14 +718,14 @@ public class HtmlRenderer : BaseRenderer
 		text.Append('<');
 		text.Append(tagName);
 		attrs ??= GetHtmlAttributeList();
-		foreach (IAttributeModifier modifier in attributeModifiers)
+		for (int i = 0; i < attributeModifierCount; i++)
 		{
-			modifier.UpdateAttributes(node, tagName, attrs);
+			attributeModifiers[i].UpdateAttributes(node, tagName, attrs);
 		}
 		if (attrs.Count > 0)
 		{
 			text.Append(' ');
-			text.Append(attrs.ToString());
+			attrs.AppendTo(text);
 		}
 		if (closed)
 		{

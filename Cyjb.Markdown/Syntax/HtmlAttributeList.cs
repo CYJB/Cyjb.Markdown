@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Cyjb.Collections;
+using System.Text;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Markdown.Syntax;
@@ -34,8 +34,8 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	/// </summary>
 	public string? Id
 	{
-		get => this[IdKey];
-		set => this[IdKey] = value;
+		get => GetInternal(IdKey);
+		set => AddInternal(IdKey, value);
 	}
 
 	/// <summary>
@@ -52,16 +52,7 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 			{
 				return null;
 			}
-			key = key.ToLowerInvariant();
-			int idx = GetIndex(key);
-			if (idx >= 0)
-			{
-				return list[idx].Value;
-			}
-			else
-			{
-				return null;
-			}
+			return GetInternal(key.ToLowerInvariant());
 		}
 		set
 		{
@@ -69,23 +60,7 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 			{
 				return;
 			}
-			key = key.ToLowerInvariant();
-			int idx = GetIndex(key);
-			if (idx >= 0)
-			{
-				if (value == null)
-				{
-					list.RemoveAt(idx);
-				}
-				else
-				{
-					list[idx] = new KeyValuePair<string, string>(key, value);
-				}
-			}
-			else if (value != null)
-			{
-				list.Add(new KeyValuePair<string, string>(key, value));
-			}
+			AddInternal(key.ToLowerInvariant(), value);
 		}
 	}
 
@@ -101,7 +76,7 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 			// 不添加 null 的值。
 			return;
 		}
-		this[key] = value;
+		AddInternal(key.ToLowerInvariant(), value);
 	}
 
 	/// <summary>
@@ -112,13 +87,14 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	{
 		foreach (KeyValuePair<string, string> attr in attrs)
 		{
-			if (attr.Key.ToLowerInvariant() == "class")
+			string key = attr.Key.ToLowerInvariant();
+			if (key == ClassKey)
 			{
 				AddClass(attr.Value);
 			}
 			else
 			{
-				this[attr.Key] = attr.Value;
+				AddInternal(key, attr.Value);
 			}
 		}
 	}
@@ -175,28 +151,32 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	}
 
 	/// <summary>
-	/// 返回指定键的索引。
-	/// </summary>
-	/// <param name="key">要检查的键。</param>
-	/// <returns>指定键的索引，如果未找到键，则返回 <c>-1</c>。</returns>
-	private int GetIndex(string key)
-	{
-		for (int i = 0; i < list.Count; i++)
-		{
-			if (list[i].Key == key)
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/// <summary>
 	/// 从当前集合中移除所有元素。
 	/// </summary>
 	public void Clear()
 	{
 		list.Clear();
+	}
+
+	/// <summary>
+	/// 将属性内容添加到指定文本。
+	/// </summary>
+	/// <param name="text">要添加到的文本。</param>
+	public void AppendTo(StringBuilder text)
+	{
+		int count = list.Count;
+		for (int i = 0; i < count; i++)
+		{
+			if (i > 0)
+			{
+				text.Append(' ');
+			}
+			var item = list[i];
+			text.Append(item.Key);
+			text.Append("=\"");
+			text.Append(item.Value.Replace("\"", "&quot;"));
+			text.Append('\"');
+		}
 	}
 
 	/// <summary>
@@ -273,23 +253,67 @@ public sealed class HtmlAttributeList : ReadOnlyListBase<KeyValuePair<string, st
 	/// <returns>当前对象的字符串表示形式。</returns>
 	public override string ToString()
 	{
-		using ValueList<char> text = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
-		bool isFirst = true;
-		foreach (KeyValuePair<string, string> item in list)
+		StringBuilder text = new();
+		AppendTo(text);
+		return text.ToString();
+	}
+
+	/// <summary>
+	/// 返回指定键的索引。
+	/// </summary>
+	/// <param name="key">要检查的键，要求已经转换为小写。</param>
+	/// <returns>指定键的索引，如果未找到键，则返回 <c>-1</c>。</returns>
+	private int GetIndex(string key)
+	{
+		for (int i = 0; i < list.Count; i++)
 		{
-			if (isFirst)
+			if (list[i].Key == key)
 			{
-				isFirst = false;
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/// <summary>
+	/// 返回指定的键值。
+	/// </summary>
+	/// <param name="key">属性的键，要求已经转换为小写。</param>
+	private string? GetInternal(string key)
+	{
+		int idx = GetIndex(key);
+		if (idx >= 0)
+		{
+			return list[idx].Value;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// 添加指定的键值。
+	/// </summary>
+	/// <param name="key">属性的键，要求已经转换为小写。</param>
+	/// <param name="value">属性的值。</param>
+	private void AddInternal(string key, string? value)
+	{
+		int idx = GetIndex(key);
+		if (idx >= 0)
+		{
+			if (value == null)
+			{
+				list.RemoveAt(idx);
 			}
 			else
 			{
-				text.Add(' ');
+				list[idx] = new KeyValuePair<string, string>(key, value);
 			}
-			text.Add(item.Key);
-			text.Add("=\"");
-			text.Add(item.Value.Replace("\"", "&quot;"));
-			text.Add('\"');
 		}
-		return text.ToString();
+		else if (value != null)
+		{
+			list.Add(new KeyValuePair<string, string>(key, value));
+		}
 	}
 }

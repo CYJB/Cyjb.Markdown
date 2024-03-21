@@ -17,40 +17,17 @@ internal static partial class MarkdownUtil
 	/// <param name="label">解析得到的链接标签。</param>
 	/// <returns>如果解析成功，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
 	/// <remarks>认为已经读入了 <c>[</c> 字符，会在 <c>]</c> 字符之前结束。</remarks>
-	public static bool TryParseLinkLabel(ref ReadOnlySpan<char> text,
-		[MaybeNullWhen(false)] out string label)
+	public static bool TryParseLinkLabel(ref ReadOnlySpan<char> text, ref ReadOnlySpan<char> label)
 	{
 		int idx = text.IndexOfUnescaped(']');
 		if (idx > 1000)
 		{
 			// [ 和 ] 之间最多允许 999 个字符。
-			label = null;
 			return false;
 		}
-		label = text[0..idx].ToString();
-		text = text[(idx + 1)..];
+		label = text[0..idx];
+		text = text.Slice(idx + 1);
 		return true;
-	}
-
-	/// <summary>
-	/// 尝试解析链接目标。
-	/// </summary>
-	/// <param name="text">要解析的字符串。</param>
-	/// <param name="destination">解析得到的链接目标</param>
-	/// <returns>如果解析成功返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseLinkDestination(ref StringView text,
-		[MaybeNullWhen(false)] out string destination)
-	{
-		ReadOnlySpan<char> span = text;
-		if (TryParseLinkDestination(ref span, out destination))
-		{
-			text = text.Substring(text.Length - span.Length);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
 	}
 
 	/// <summary>
@@ -128,31 +105,30 @@ internal static partial class MarkdownUtil
 	/// <param name="text">要解析的字符串。</param>
 	/// <param name="title">解析得到的链接标题</param>
 	/// <returns>如果解析成功返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TryParseLinkTitle(ref StringView text, out string? title)
+	public static bool TryParseLinkTitle(ref ReadOnlySpan<char> text, out string? title)
 	{
 		title = null;
 		if (text.Length == 0)
 		{
 			return true;
 		}
-		ReadOnlySpan<char> span = text;
-		char ch = span[0];
+		char ch = text[0];
 		int idx;
 		switch (ch)
 		{
 			case '"':
 			case '\'':
-				idx = span.IndexOfUnescaped(ch, 1);
+				idx = text.IndexOfUnescaped(ch, 1);
 				break;
 			case '(':
-				idx = span.IndexOfUnescaped(')', '(', 1);
+				idx = text.IndexOfUnescaped(')', '(', 1);
 				break;
 			default:
 				return true;
 		}
 		if (idx >= 0)
 		{
-			title = span[1..idx].Unescape();
+			title = text[1..idx].Unescape();
 			text = text[(idx + 1)..];
 			return true;
 		}

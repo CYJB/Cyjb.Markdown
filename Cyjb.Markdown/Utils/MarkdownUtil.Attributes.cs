@@ -199,7 +199,7 @@ internal static partial class MarkdownUtil
 			attrs ??= new HtmlAttributeList();
 			if (text[0] == '#')
 			{
-				attrs["id"] = value.ToString();
+				attrs.Id = value.ToString();
 			}
 			else
 			{

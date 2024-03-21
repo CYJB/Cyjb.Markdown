@@ -170,10 +170,9 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		int idx = Text.IndexOf('>');
 		string url = Text[1..idx].ToString();
 		// 解析属性。
-		StringView attrText = Text[(idx + 1)..];
+		ReadOnlySpan<char> attrText = Text.AsSpan(idx + 1);
 		int attrLen = attrText.Length;
-		if (options.UseLinkAttributes && attrText.Length > 0 &&
-			attrText[0] == '{' && attrText[^1] == '}')
+		if (options.UseLinkAttributes && attrLen > 0 && attrText[0] == '{' && attrText[^1] == '}')
 		{
 			attrs = MarkdownUtil.ParseAttributes(ref attrText);
 			if (attrs == null || attrText.Length > 0)
@@ -309,8 +308,9 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	{
 		InlineParser parser = (InlineParser)SharedContext!;
 		// 标签不为空，使用标签本身。
-		ReadOnlySpan<char> text = Text[2..];
-		if (!MarkdownUtil.TryParseLinkLabel(ref text, out string? label))
+		ReadOnlySpan<char> text = Text.AsSpan(2);
+		ReadOnlySpan<char> label = ReadOnlySpan<char>.Empty;
+		if (!MarkdownUtil.TryParseLinkLabel(ref text, ref label))
 		{
 			Reject();
 			return;
@@ -320,7 +320,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			// 标签为空，将前面的文本作为标签使用。
 			label = parser.GetCurrentLinkText(Start);
 		}
-		if (label != null && parser.TryGetLinkDefine(LinkUtil.NormalizeLabel(label), out LinkDefinition? define))
+		if (!label.IsEmpty && parser.TryGetLinkDefine(LinkUtil.NormalizeLabel(label), out LinkDefinition? define))
 		{
 			Accept(define);
 		}
@@ -337,8 +337,8 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	[LexerSymbol(@"<LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?", Kind = InlineKind.LinkClose)]
 	private void LinkBodyAction()
 	{
-		StringView text = Text[2..];
-		MarkdownUtil.TrimStart(ref text);
+		ReadOnlySpan<char> text = Text.AsSpan(2);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		// 解析链接目标和标题。
 		if (!MarkdownUtil.TryParseLinkDestination(ref text, out string? destination))
 		{
@@ -351,19 +351,18 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			Reject();
 			return;
 		}
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		// 链接目标和标题要求以 ) 闭合。
-		if (text.Length == 0 || text[0] != ')')
+		if (text.IsEmpty || text[0] != ')')
 		{
 			Reject();
 			return;
 		}
-		text = text[1..];
+		text = text.Slice(1);
 		LinkBody body = new(destination, title);
 		// 解析属性。
 		int attrLen = text.Length;
-		if (options.UseLinkAttributes && text.Length > 0 &&
-			text[0] == '{' && text[^1] == '}')
+		if (options.UseLinkAttributes && attrLen > 0 && text[0] == '{' && text[^1] == '}')
 		{
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
 			if (attrs == null || text.Length > 0)

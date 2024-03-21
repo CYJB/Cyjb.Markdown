@@ -230,15 +230,18 @@ public abstract class BaseRenderer : SyntaxWalker
 		if (node is INodeContainer<InlineNode> inlineContainer)
 		{
 			// 特殊处理 FootnoteBackref
-			foreach (InlineNode subNode in inlineContainer.Children)
+			NodeList<InlineNode> children = inlineContainer.Children;
+			int count = children.Count;
+			for (int i = 0; i < count; i++)
 			{
-				if (subNode is FootnoteBackref backref)
+				var childNode = children[i];
+				if (childNode is FootnoteBackref backref)
 				{
 					VisitFootnoteBackRef(backref);
 				}
 				else
 				{
-					subNode.Accept(this);
+					childNode.Accept(this);
 				}
 			}
 		}
@@ -255,8 +258,10 @@ public abstract class BaseRenderer : SyntaxWalker
 	/// <param name="footnotes">要写入的脚注列表。</param>
 	protected virtual void WriteFootnotes(Document doc, List<Footnote> footnotes)
 	{
-		foreach (Footnote footnote in footnotes)
+		int count = footnotes.Count;
+		for (int i = 0; i < count; i++)
 		{
+			Footnote footnote = footnotes[i];
 			FootnoteInfo? info = footnoteInfo.GetValueOrDefault(footnote);
 			// 只输出被使用的脚注。
 			if (info != null)

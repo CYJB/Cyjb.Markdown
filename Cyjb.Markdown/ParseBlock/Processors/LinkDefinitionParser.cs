@@ -191,7 +191,7 @@ internal sealed class LinkDefinitionParser
 	/// <returns>是否解析成功。</returns>
 	private bool ParseStartDefinition(ref ReadOnlySpan<char> text, TextSpan span)
 	{
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		if (text.Length == 0 || text[0] != '[')
 		{
 			return false;
@@ -224,7 +224,7 @@ internal sealed class LinkDefinitionParser
 			idx = text.Length;
 		}
 		builder.Add(text[..idx]);
-		text = text[idx..];
+		text = text.Slice(idx);
 		if (text.Length == 0)
 		{
 			return true;
@@ -240,17 +240,16 @@ internal sealed class LinkDefinitionParser
 			return false;
 		}
 		// 链接定义中不允许使用空白的标签。
-		ReadOnlySpan<char> labelSpan = builder.AsSpan();
-		MarkdownUtil.TrimStart(ref labelSpan);
+		ReadOnlySpan<char> labelSpan = builder.AsSpan().TrimStart(MarkdownUtil.Whitespace);
 		if (labelSpan.Length == 0)
 		{
 			return false;
 		}
 		label = builder.ToString();
-		text = text[2..];
+		text = text.Slice(2);
 		state = State.Destination;
 		// 移除后面的空白，避免空白字符串进入到解析链接定义的流程中。
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		return true;
 	}
 
@@ -262,7 +261,7 @@ internal sealed class LinkDefinitionParser
 	/// <returns>是否解析成功。</returns>
 	private bool ParseDestination(ref ReadOnlySpan<char> text, TextSpan span)
 	{
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		// 解析链接目标，在定义中不允许使用空目标。
 		if (!MarkdownUtil.TryParseLinkDestination(ref text, out destination) || destination == null)
 		{
@@ -286,7 +285,7 @@ internal sealed class LinkDefinitionParser
 		state = State.StartTitleOrAttr;
 		title = null;
 		// 移除后面的空白，避免空白字符串进入到解析链接标题起始的流程中。
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		return true;
 	}
 
@@ -297,7 +296,7 @@ internal sealed class LinkDefinitionParser
 	/// <returns>是否解析成功。</returns>
 	private bool ParseStartTitleOrAttr(ref ReadOnlySpan<char> text)
 	{
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		if (text.Length == 0)
 		{
 			state = State.StartDefinition;
@@ -340,9 +339,8 @@ internal sealed class LinkDefinitionParser
 	/// </summary>
 	private void EnterAttribute(ref ReadOnlySpan<char> text)
 	{
-		text = text[1..];
 		// 移除掉行首的空白，避免被识别为空行。
-		MarkdownUtil.TrimStart(ref text);
+		text = text.Slice(1).TrimStart(MarkdownUtil.Whitespace);
 		state = State.Attributes;
 		attributes?.Clear();
 	}
@@ -430,11 +428,11 @@ internal sealed class LinkDefinitionParser
 	/// <returns>是否解析成功。</returns>
 	private bool ParseStartAttribute(ref ReadOnlySpan<char> text)
 	{
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		if (text.Length > 0 && text[0] == '{')
 		{
 			EnterAttribute(ref text);
-			MarkdownUtil.TrimStart(ref text);
+			text = text.TrimStart(MarkdownUtil.Whitespace);
 		}
 		else
 		{
@@ -453,7 +451,7 @@ internal sealed class LinkDefinitionParser
 	/// <returns>是否解析成功。</returns>
 	private bool ParseAttributes(ref ReadOnlySpan<char> text, TextSpan span)
 	{
-		MarkdownUtil.TrimStart(ref text);
+		text = text.TrimStart(MarkdownUtil.Whitespace);
 		if (text.Length == 0)
 		{
 			// 属性解析过程中的空白行会导致链接解析失败。
@@ -514,7 +512,7 @@ internal sealed class LinkDefinitionParser
 		{
 			// 属性解析结束，要求属性后不能有其它非空白字符。
 			text = text[1..];
-			MarkdownUtil.TrimStart(ref text);
+			text = text.TrimStart(MarkdownUtil.Whitespace);
 			if (text.Length > 0)
 			{
 				// 后面有非空白字符，清理失效数据。

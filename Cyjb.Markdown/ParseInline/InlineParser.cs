@@ -216,7 +216,7 @@ internal sealed class InlineParser
 			return true;
 		}
 		else if (!opener.BracketAfter && reader.Peek() != '[' &&
-			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(reader.Index - 1)!), out LinkDefinition? linkDefine2))
+			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(reader.Index - 1)), out LinkDefinition? linkDefine2))
 		{
 			// 是 ]，后面没有 URL 或标签。
 			// 如果没有更多待匹配的括号，缺失第二个 label 时会将当前文本当作标签解析。
@@ -266,12 +266,12 @@ internal sealed class InlineParser
 		{
 			return false;
 		}
-		string label = GetCurrentLinkText(reader.Index - 1)!;
+		ReadOnlySpan<char> label = GetCurrentLinkText(reader.Index - 1);
 		if (!MarkdownUtil.IsFootnotesLabel(label))
 		{
 			return false;
 		}
-		return footnotes.TryGetValue(LinkUtil.NormalizeLabel(label.AsSpan(1)), out footnote);
+		return footnotes.TryGetValue(LinkUtil.NormalizeLabel(label.Slice(1)), out footnote);
 	}
 
 	/// <summary>
@@ -451,14 +451,14 @@ internal sealed class InlineParser
 	/// </summary>
 	/// <param name="endIndex">链接文本的结束索引（不含）。</param>
 	/// <returns>当前的链接文本。</returns>
-	internal string? GetCurrentLinkText(int endIndex)
+	internal StringView GetCurrentLinkText(int endIndex)
 	{
 		if (brackets.Count == 0)
 		{
-			return null;
+			return StringView.Empty;
 		}
 		BracketInfo info = brackets.Peek();
-		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index).ToString();
+		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
 	}
 
 	/// <summary>

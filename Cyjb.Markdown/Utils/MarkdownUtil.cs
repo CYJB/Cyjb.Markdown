@@ -81,18 +81,6 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
-	/// 移除指定文本的起始空白。
-	/// </summary>
-	/// <param name="text">要移除起始空白的文本。</param>
-	/// <returns>如果移除了任何起始空白，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool TrimStart(ref StringView text)
-	{
-		int len = text.Length;
-		text = text.TrimStart(WhitespaceChars);
-		return text.Length < len;
-	}
-
-	/// <summary>
 	/// 返回 Unicode 标点符号的集合。
 	/// </summary>
 	/// <remarks>包含 Unicode P 和 S 类别。</remarks>

@@ -137,22 +137,12 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				// 未找到起始 {。
 				return null;
 			}
-			ValueList<char> list = new(stackalloc char[ValueList.StackallocCharSizeLimit]);
-			for (int i = startIdx; i < text.Length; i++)
-			{
-				list.Add(text[i]);
-			}
-			ReadOnlySpan<char> span = list.AsSpan();
+			ReadOnlySpan<char> span = text.ToStringView(startIdx).AsSpan();
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref span);
 			if (attrs != null)
 			{
-				list.Dispose();
 				// 移除行中不需要的部分。
 				text.RemoteEnd(text.Length - startIdx);
-			}
-			else
-			{
-				list.Dispose();
 			}
 			return attrs;
 		}

@@ -118,9 +118,10 @@ internal sealed class TableProcessor : BlockProcessor
 	/// <param name="parser">行内节点的解析器。</param>
 	public override void ParseInline(InlineParser parser)
 	{
-		foreach (CellInfo info in cellInfos)
+		int count = cellInfos.Count;
+		for (int i = 0; i < count; i++)
 		{
-			info.ParseInline(parser);
+			cellInfos[i].ParseInline(parser);
 		}
 	}
 

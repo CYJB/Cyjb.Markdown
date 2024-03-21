@@ -36,9 +36,7 @@ internal static class LinkUtil
 	/// <returns>标准化后的标签。</returns>
 	public static string NormalizeLabel(BlockText label)
 	{
-		using ValueList<char> text = label.Length <= ValueList.StackallocCharSizeLimit
-			? new ValueList<char>(stackalloc char[label.Length])
-			: new ValueList<char>(label.Length);
+		StringBuilder text = StringBuilderPool.Rent(label.Length);
 		int count = label.Tokens.Count;
 		bool isWhitespace = true;
 		for (int i = 0; i < count; i++)
@@ -53,17 +51,17 @@ internal static class LinkUtil
 					if (!isWhitespace)
 					{
 						isWhitespace = true;
-						text.Add(' ');
+						text.Append(' ');
 					}
 				}
 				else
 				{
 					isWhitespace = false;
-					text.Add(UnicodeCaseFolding.GetCaseFolding(ch));
+					text.Append(UnicodeCaseFolding.GetCaseFolding(ch));
 				}
 			}
 		}
-		return text.ToString();
+		return StringBuilderPool.GetStringAndReturn(text);
 	}
 
 	/// <summary>
@@ -78,9 +76,7 @@ internal static class LinkUtil
 		{
 			return string.Empty;
 		}
-		using ValueList<char> text = label.Length <= ValueList.StackallocCharSizeLimit
-			? new ValueList<char>(stackalloc char[label.Length])
-			: new ValueList<char>(label.Length);
+		StringBuilder text = StringBuilderPool.Rent(label.Length);
 		bool isWhitespace = false;
 		foreach (char ch in label)
 		{
@@ -90,16 +86,16 @@ internal static class LinkUtil
 				if (!isWhitespace)
 				{
 					isWhitespace = true;
-					text.Add(' ');
+					text.Append(' ');
 				}
 			}
 			else
 			{
 				isWhitespace = false;
-				text.Add(UnicodeCaseFolding.GetCaseFolding(ch));
+				text.Append(UnicodeCaseFolding.GetCaseFolding(ch));
 			}
 		}
-		return text.ToString();
+		return StringBuilderPool.GetStringAndReturn(text);
 	}
 
 	/// <summary>

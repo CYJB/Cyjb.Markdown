@@ -158,7 +158,8 @@ internal sealed class BlockParser
 		int end = token.Span.Start;
 		CloseProcessor(document, end);
 		// 合并标题引用。
-		if (headingReferences.Count > 0)
+		int count = headingReferences.Count;
+		if (count > 0)
 		{
 			foreach (var pair in headingReferences)
 			{
@@ -182,7 +183,7 @@ internal sealed class BlockParser
 			doc.Accept(walker);
 		}
 		// 填充标题的链接声明
-		if (headingReferences.Count > 0)
+		if (count > 0)
 		{
 			foreach (var tuple in headingReferences.Values)
 			{
