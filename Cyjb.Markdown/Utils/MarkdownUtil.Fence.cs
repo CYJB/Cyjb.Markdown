@@ -47,8 +47,7 @@ internal static partial class MarkdownUtil
 		fenceLength = GetFenceLength(token.Text);
 		if (token.Kind is BlockKind.CodeFenceStart or BlockKind.MathFenceStart or BlockKind.CustomContainerFenceStart)
 		{
-			ReadOnlySpan<char> text = token.Text.AsSpan(fenceLength).Trim(MarkdownUtil.Whitespace);
-			info = text.Unescape();
+			info = token.Text.AsSpan(fenceLength).Trim(Whitespace).Unescape();
 			if (info.Length == 0)
 			{
 				info = null;

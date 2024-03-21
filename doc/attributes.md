@@ -1,6 +1,6 @@
 # 属性
 
-版本：`1.0`
+版本：`1.1`
 
 参考：[pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes)
 
@@ -151,11 +151,24 @@ value }
 <p>}</p>
 ```
 
+属性值中不允许包含换行。
+
+<a id="example-8" href="#example-8">示例 8</a>
+
+```markdown
+# foo { key="val
+ue" }
+```
+```html
+<h1>foo { key=&quot;val</h1>
+<p>ue&quot; }</p>
+```
+
 ## 代码块属性
 
 可以在代码块信息的末尾指定属性，属性会附加到代码块的元素上。
 
-<a id="example-8" href="#example-8">示例 8</a>
+<a id="example-9" href="#example-9">示例 9</a>
 
 `````markdown
 ``` foo {#id .class attr=value attr2="value={2}"}
@@ -174,7 +187,7 @@ bim
 
 允许在代码块中使用多行属性，起始 `{` 必须与代码块的信息在一行内。
 
-<a id="example-9" href="#example-9">示例 9</a>
+<a id="example-10" href="#example-10">示例 10</a>
 
 ```markdown
 ~~~ foo {
@@ -201,7 +214,7 @@ bar
 
 会忽略属性后的空格或 Tab。
 
-<a id="example-10" href="#example-10">示例 10</a>
+<a id="example-11" href="#example-11">示例 11</a>
 
 ```markdown
 ~~~ foo {key=value}   
@@ -215,7 +228,7 @@ bar
 
 如果属性不合法，或者不在代码块信息的末尾，那么会当成普通文本。
 
-<a id="example-11" href="#example-11">示例 11</a>
+<a id="example-12" href="#example-12">示例 12</a>
 
 ```markdown
 ~~~ foo {
@@ -246,7 +259,7 @@ b4
 
 属性前不能是未转义的 `\` 符号。
 
-<a id="example-12" href="#example-12">示例 12</a>
+<a id="example-13" href="#example-13">示例 13</a>
 
 ```markdown
 ~~~ foo \{#id}
@@ -265,7 +278,7 @@ bar
 
 `#` 或 `.` 后面必须包含有效字符，`=` 前后也必须紧跟属性键或值。
 
-<a id="example-13" href="#example-13">示例 13</a>
+<a id="example-14" href="#example-14">示例 14</a>
 
 ```markdown
 ~~~foo{#}
@@ -289,7 +302,7 @@ bar
 
 属性中至多使用一个换行分割，不能包含更多换行。
 
-<a id="example-14" href="#example-14">示例 14</a>
+<a id="example-15" href="#example-15">示例 15</a>
 
 ```markdown
 ~~~ foo {
@@ -317,11 +330,25 @@ value }
 </code></pre>
 ```
 
+属性值中不允许包含换行。
+
+<a id="example-16" href="#example-16">示例 16</a>
+
+```markdown
+~~~ foo { key="
+value"}
+~~~
+```
+```html
+<pre><code class="language-foo">value&quot;}
+</code></pre>
+```
+
 ## 链接属性
 
 可以在链接的末尾指定属性，属性会附加到链接的元素上。如果是附加到链接声明的属性，会附加到所有相关链接。
 
-<a id="example-15" href="#example-15">示例 15</a>
+<a id="example-17" href="#example-17">示例 17</a>
 
 ```markdown
 <http://foo>{#id .class attr=value attr2="value={2}"}
@@ -342,7 +369,7 @@ value }
 
 链接与属性之前不能有空白，但是在链接声明中，属性之前必须要有空白。
 
-<a id="example-16" href="#example-16">示例 16</a>
+<a id="example-18" href="#example-18">示例 18</a>
 
 ```markdown
 <http://foo> {#id}
@@ -362,7 +389,7 @@ value }
 
 使用链接声明时，只会使用链接声明中的属性，而不会再识别附加的属性。
 
-<a id="example-17" href="#example-17">示例 17</a>
+<a id="example-19" href="#example-19">示例 19</a>
 
 ```markdown
 [baz]{#id}
@@ -377,7 +404,7 @@ value }
 
 允许在链接中使用多行属性。
 
-<a id="example-18" href="#example-18">示例 18</a>
+<a id="example-20" href="#example-20">示例 20</a>
 
 ```markdown
 <http://foo>{
@@ -404,7 +431,7 @@ value }
 
 链接属性后的内容会当作普通字符处理，链接声明的属性后不能包含其它内容。
 
-<a id="example-19" href="#example-19">示例 19</a>
+<a id="example-21" href="#example-21">示例 21</a>
 
 ```markdown
 <http://foo>{key=value} 	
@@ -427,7 +454,7 @@ value }
 
 属性前不能是未转义的 `\` 符号。
 
-<a id="example-20" href="#example-20">示例 20</a>
+<a id="example-22" href="#example-22">示例 22</a>
 
 ```markdown
 [foo]
@@ -444,7 +471,7 @@ value }
 
 `#` 或 `.` 后面必须包含有效字符，`=` 前后也必须紧跟属性键或值。
 
-<a id="example-21" href="#example-21">示例 21</a>
+<a id="example-23" href="#example-23">示例 23</a>
 
 ```markdown
 <http://foo>{#}
@@ -468,7 +495,7 @@ value }
 
 属性中至多使用一个换行分割，不能包含更多换行。
 
-<a id="example-22" href="#example-22">示例 22</a>
+<a id="example-24" href="#example-24">示例 24</a>
 
 ```markdown
 <http://foo>{
@@ -492,4 +519,18 @@ value }
 <p>[baz]:/uri2 {
 .class</p>
 <p>}</p>
+```
+
+属性值中不允许包含换行。
+
+<a id="example-25" href="#example-25">示例 25</a>
+
+```markdown
+<https://foo>{#id key="v'
+ alue'" }
+~~~
+```
+```html
+<p><a href="https://foo">https://foo</a>{#id key=&quot;
+alue'&quot; }</p>
 ```

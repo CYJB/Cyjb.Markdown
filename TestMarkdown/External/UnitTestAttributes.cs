@@ -186,7 +186,7 @@ public class UnitTestAttributes : BaseTest
 	}
 
 	/// <summary>
-	/// <c>#</c> 或 <c>.</c> 后面必须包含有效字符，<c>=</c> 前后也必须包含属性键或值。
+	/// 属性中至多使用一个换行分割，不能包含更多换行。
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-7"/>
 	[TestMethod]
@@ -226,11 +226,31 @@ public class UnitTestAttributes : BaseTest
 	}
 
 	/// <summary>
-	/// 可以在代码块信息的末尾指定属性，属性会附加到代码块的元素上。
+	/// 属性值中不允许包含换行。
 	/// </summary>
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-8"/>
 	[TestMethod]
 	public void Test8()
+	{
+		AssertMarkdown("# foo { key=\"val\r\nue\" }", () =>
+		{
+			Heading(0..18, 1, new HtmlAttributeList() { { "id", "foo-keyval" } }, () =>
+			{
+				Literal(2..16, "foo { key=\"val");
+			});
+			Paragraph(18..23, () =>
+			{
+				Literal(18..23, "ue\" }");
+			});
+		});
+	}
+
+	/// <summary>
+	/// 可以在代码块信息的末尾指定属性，属性会附加到代码块的元素上。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-9"/>
+	[TestMethod]
+	public void Test9()
 	{
 		AssertMarkdown("``` foo {#id .class attr=value attr2=\"value={2}\"}\r\n  bar\r\n```\r\n``` baz { .class2  #id2 .class2 .class3}\r\nbim\r\n```\r\n", () =>
 		{
@@ -252,9 +272,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 允许在代码块中使用多行属性，起始 <c>{</c> 必须与代码块的信息在一行内。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-9"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-10"/>
 	[TestMethod]
-	public void Test9()
+	public void Test10()
 	{
 		AssertMarkdown("~~~ foo {\r\n     key='value'   \r\n    }\r\nbar\r\n~~~\r\n~~~~~ baz  \r\n{   \r\n  .class\r\n    }\r\n  bim  \r\n~~~~~\r\n", () =>
 		{
@@ -266,9 +286,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 会忽略属性后的空格或 Tab。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-10"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-11"/>
 	[TestMethod]
-	public void Test10()
+	public void Test11()
 	{
 		AssertMarkdown("~~~ foo {key=value}   \r\nbar\r\n~~~\r\n", () =>
 		{
@@ -279,9 +299,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 如果属性不合法，或者不在代码块信息的末尾，那么会当成普通文本。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-11"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-12"/>
 	[TestMethod]
-	public void Test11()
+	public void Test12()
 	{
 		AssertMarkdown("~~~ foo {\r\n  #id-foo\r\n} bar\r\n~~~\r\n~~~ bim { # }\r\nboo\r\n~~~\r\n~~~ b1 \\{#id}  \r\nb2\r\n~~~\r\n~~~ b3 \\{#id} {#id2} {#id3}\r\nb4\r\n~~~\r\n", () =>
 		{
@@ -295,9 +315,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 属性前不能是未转义的 <c>\</c> 符号。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-12"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-13"/>
 	[TestMethod]
-	public void Test12()
+	public void Test13()
 	{
 		AssertMarkdown("~~~ foo \\{#id}\r\nbar\r\n~~~\r\n~~~ foo\\\\{#id myKey}\r\nbar\r\n~~~\r\n", () =>
 		{
@@ -312,9 +332,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// <c>#</c> 或 <c>.</c> 后面必须包含有效字符，<c>=</c> 前后也必须包含属性键或值。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-13"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-14"/>
 	[TestMethod]
-	public void Test13()
+	public void Test14()
 	{
 		AssertMarkdown("~~~foo{#}\r\n~~~\r\n~~~ bar{ . }\r\n~~~\r\n~~~ baz{ = }\r\n~~~\r\n~~~ bim { =value }\r\n~~~\r\n~~~ boo{k = v}\r\n~~~\r\n", () =>
 		{
@@ -329,9 +349,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 属性中至多使用一个换行分割，不能包含更多换行。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-14"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-15"/>
 	[TestMethod]
-	public void Test14()
+	public void Test15()
 	{
 		AssertMarkdown("~~~ foo {\r\n\r\n  #id }\r\n~~~\r\n~~~ bar { key=\r\nvalue }\r\n~~~\r\n~~~ baz {\r\n.class\r\n\r\n}\r\n", () =>
 		{
@@ -342,11 +362,24 @@ public class UnitTestAttributes : BaseTest
 	}
 
 	/// <summary>
+	/// 属性值中不允许包含换行。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-16"/>
+	[TestMethod]
+	public void Test16()
+	{
+		AssertMarkdown("~~~ foo { key=\"\r\nvalue\"}\r\n~~~\r\n", () =>
+		{
+			CodeBlock(0..31, "value\"}\r\n", "foo { key=\"");
+		});
+	}
+
+	/// <summary>
 	/// 可以在链接的末尾指定属性，属性会附加到链接的元素上。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-15"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-17"/>
 	[TestMethod]
-	public void Test15()
+	public void Test17()
 	{
 		AssertMarkdown("<http://foo>{#id .class attr=value attr2=\"value={2}\"}\r\n\r\n[bar](/uri){ .class2  #id2 .class2 .class3}\r\n\r\n[baz text][baz]\r\n[baz]\r\n\r\n[baz]:/uri2 {#id #id3}\r\n", () =>
 		{
@@ -393,9 +426,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 链接与属性之前不能有空白，但是在链接声明中，属性之前必须要有空白。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-16"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-18"/>
 	[TestMethod]
-	public void Test16()
+	public void Test18()
 	{
 		AssertMarkdown("<http://foo> {#id}\r\n[bar](/uri)\r\n{.class}\r\n[baz]\r\n\r\n[baz]:/uri2{#id #id3}\r\n", () =>
 		{
@@ -426,9 +459,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 使用链接声明时，只会使用链接声明中的属性，而不会再识别附加的属性。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-17"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-19"/>
 	[TestMethod]
-	public void Test17()
+	public void Test19()
 	{
 		AssertMarkdown("[baz]{#id}\r\n[baz text][baz]{#id}\r\n\r\n[baz]:/uri \"title\" {.class}\r\n", () =>
 		{
@@ -453,9 +486,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 允许在链接中使用多行属性。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-18"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-20"/>
 	[TestMethod]
-	public void Test18()
+	public void Test20()
 	{
 		AssertMarkdown("<http://foo>{\r\n   key='value'   \r\n}\r\n[bar](/uri){.class\r\n#id}\r\n[baz]\r\n\r\n[baz]:/uri2  \r\n{\r\n  #id2 key=\"v\r\n  alue\"\r\n  .class  .class2\r\n  key2=value2\r\n}\r\n", () =>
 		{
@@ -496,9 +529,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 会忽略属性后的空格或 Tab。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-19"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-21"/>
 	[TestMethod]
-	public void Test19()
+	public void Test21()
 	{
 		AssertMarkdown("<http://foo>{key=value} \t\r\n[bar](/uri){ .class }  text\r\n[baz]\r\n[baz3]\r\n\r\n[baz]:/uri2  \r\n  \"title\" { key=\"value{}\"}  \r\n[baz3]:/uri3  \r\n  \"title3\" {#id3} other\r\n", () =>
 		{
@@ -538,9 +571,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 属性前不能是未转义的 <c>\</c> 符号。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-20"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-22"/>
 	[TestMethod]
-	public void Test20()
+	public void Test22()
 	{
 		AssertMarkdown("[foo]\r\n\r\n[foo]:/uri \\{#id}\r\n\r\n[foo]:/uri2 \\\\{#id}\r\n", () =>
 		{
@@ -562,9 +595,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// <c>#</c> 或 <c>.</c> 后面必须包含有效字符，<c>=</c> 前后也必须包含属性键或值。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-21"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-23"/>
 	[TestMethod]
-	public void Test21()
+	public void Test23()
 	{
 		AssertMarkdown("<http://foo>{#}\r\n[bar](/uri){ . }\r\n[baz]\r\n\r\n[baz]:/uri2 { = }\r\n\r\n[baz]:/uri3 { =value }\r\n\r\n[baz]:/uri3 { k = v }\r\n", () =>
 		{
@@ -602,9 +635,9 @@ public class UnitTestAttributes : BaseTest
 	/// <summary>
 	/// 属性中至多使用一个换行分割，不能包含更多换行。
 	/// </summary>
-	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-22"/>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-24"/>
 	[TestMethod]
-	public void Test22()
+	public void Test24()
 	{
 		AssertMarkdown("<http://foo>{\r\n\r\n  #id }\r\n[bar](/uri){ key=\r\nvalue }\r\n[baz]\r\n\r\n[baz]:/uri2 {\r\n.class\r\n\r\n}\r\n", () =>
 		{
@@ -639,6 +672,28 @@ public class UnitTestAttributes : BaseTest
 			Paragraph(88..91, () =>
 			{
 				Literal(88..89, "}");
+			});
+		});
+	}
+
+	/// <summary>
+	/// 属性值中不允许包含换行。
+	/// </summary>
+	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/attributes.md#example-25"/>
+	[TestMethod]
+	public void Test25()
+	{
+		AssertMarkdown("<https://foo>{#id key=\"v'\r\n alue'\" }\r\n", () =>
+		{
+			Paragraph(0..38, () =>
+			{
+				Link(0..13, "https://foo", null, () =>
+				{
+					Literal(1..12, "https://foo");
+				});
+				Literal(13..25, "{#id key=\"v'");
+				SoftBreak(25..28);
+				Literal(28..36, "alue'\" }");
 			});
 		});
 	}

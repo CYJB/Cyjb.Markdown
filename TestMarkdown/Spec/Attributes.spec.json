@@ -1,134 +1,152 @@
 [
   {
-    "markdown": "# foo {#id .class attr=value attr2=\"value={2}\"}\n\nbar { .class2  #id2 .class2 .class3}\n---\n\n### baz {#other}{#id #id3}\n",
-    "html": "<h1 id=\"id\" class=\"class\" attr=\"value\" attr2=\"value={2}\">foo</h1>\n<h2 class=\"class2 class2 class3\" id=\"id2\">bar</h2>\n<h3 id=\"id3\">baz {#other}</h3>\n",
-    "example": 1,
-    "section": "Attributes"
+	"markdown": "# foo {#id .class attr=value attr2=\"value={2}\"}\n\nbar { .class2  #id2 .class2 .class3}\n---\n\n### baz {#other}{#id #id3}\n",
+	"html": "<h1 id=\"id\" class=\"class\" attr=\"value\" attr2=\"value={2}\">foo</h1>\n<h2 class=\"class2 class2 class3\" id=\"id2\">bar</h2>\n<h3 id=\"id3\">baz {#other}</h3>\n",
+	"example": 1,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo {\n#id-foo\n   key='value'   \n}\n\nbar\n{\n  .class\n}\n---\n",
-    "html": "<h1 id=\"id-foo\" key=\"value\">foo</h1>\n<h2 class=\"class\">bar\n</h2>\n",
-    "example": 2,
-    "section": "Attributes"
+	"markdown": "# foo {\n#id-foo\n   key='value'   \n}\n\nbar\n{\n  .class\n}\n---\n",
+	"html": "<h1 id=\"id-foo\" key=\"value\">foo</h1>\n<h2 class=\"class\">bar\n</h2>\n",
+	"example": 2,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo {key=value} \t\n\nbar { .class }  \t\n---\n",
-    "html": "<h1 key=\"value\">foo</h1>\n<h2 class=\"class\">bar</h2>\n",
-    "example": 3,
-    "section": "Attributes"
+	"markdown": "# foo {key=value} \t\n\nbar { .class }  \t\n---\n",
+	"html": "<h1 key=\"value\">foo</h1>\n<h2 class=\"class\">bar</h2>\n",
+	"example": 3,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo {\n#id-foo\n} bar\n\nbar { # }\n---\n# baz \\{#id}  \n# bim \\{#id} {#id2} {#id3}\n",
-    "html": "<h1>foo {</h1>\n<p>#id-foo\n} bar</p>\n<h2>bar { # }</h2>\n<h1>baz {#id}</h1>\n<h1 id=\"id3\">bim {#id} {#id2}</h1>\n",
-    "example": 4,
-    "section": "Attributes"
+	"markdown": "# foo {\n#id-foo\n} bar\n\nbar { # }\n---\n# baz \\{#id}  \n# bim \\{#id} {#id2} {#id3}\n",
+	"html": "<h1>foo {</h1>\n<p>#id-foo\n} bar</p>\n<h2>bar { # }</h2>\n<h1>baz {#id}</h1>\n<h1 id=\"id3\">bim {#id} {#id2}</h1>\n",
+	"example": 4,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo \\{#id}\n# foo \\\\{#id my-key}\n",
-    "html": "<h1>foo {#id}</h1>\n<h1 id=\"id\" my-key=\"\">foo \\</h1>\n",
-    "example": 5,
-    "section": "Attributes"
+	"markdown": "# foo \\{#id}\n# foo \\\\{#id my-key}\n",
+	"html": "<h1>foo {#id}</h1>\n<h1 id=\"id\" my-key=\"\">foo \\</h1>\n",
+	"example": 5,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo {#}\n# bar { . }\n# baz { = }\n# bim { =value }\n# boo { k = v}\n",
-    "html": "<h1>foo {#}</h1>\n<h1>bar { . }</h1>\n<h1>baz { = }</h1>\n<h1>bim { =value }</h1>\n<h1>boo { k = v}</h1>\n",
-    "example": 6,
-    "section": "Attributes"
+	"markdown": "# foo {#}\n# bar { . }\n# baz { = }\n# bim { =value }\n# boo { k = v}\n",
+	"html": "<h1>foo {#}</h1>\n<h1>bar { . }</h1>\n<h1>baz { = }</h1>\n<h1>bim { =value }</h1>\n<h1>boo { k = v}</h1>\n",
+	"example": 6,
+	"section": "Attributes"
   },
   {
-    "markdown": "# foo {\n\n  #id }\n# bar { key=\nvalue }\n# baz {\n.class\n\n}\n",
-    "html": "<h1>foo {</h1>\n<p>#id }</p>\n<h1>bar { key=</h1>\n<p>value }</p>\n<h1>baz {</h1>\n<p>.class</p>\n<p>}</p>\n",
-    "example": 7,
-    "section": "Attributes"
+	"markdown": "# foo {\n\n  #id }\n# bar { key=\nvalue }\n# baz {\n.class\n\n}\n",
+	"html": "<h1>foo {</h1>\n<p>#id }</p>\n<h1>bar { key=</h1>\n<p>value }</p>\n<h1>baz {</h1>\n<p>.class</p>\n<p>}</p>\n",
+	"example": 7,
+	"section": "Attributes"
   },
   {
-    "markdown": "``` foo {#id .class attr=value attr2=\"value={2}\"}\n  bar\n```\n``` baz { .class2  #id2 .class2 .class3}\nbim\n```\n",
-    "html": "<pre><code class=\"language-foo class\" id=\"id\" attr=\"value\" attr2=\"value={2}\">  bar\n</code></pre>\n<pre><code class=\"language-baz class2 class2 class3\" id=\"id2\">bim\n</code></pre>\n",
-    "example": 8,
-    "section": "Attributes"
+	"markdown": "# foo { key=\"val\nue\" }\n",
+	"html": "<h1>foo { key=&quot;val</h1>\n<p>ue&quot; }</p>\n",
+	"example": 8,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~ foo {\n     key='value'   \n    }\nbar\n~~~\n~~~~~ baz  \n{   \n  .class\n    }\n  bim  \n~~~~~\n",
-    "html": "<pre><code class=\"language-foo\" key=\"value\">bar\n</code></pre>\n<pre><code class=\"language-baz\">{   \n  .class\n    }\n  bim  \n</code></pre>\n",
-    "example": 9,
-    "section": "Attributes"
+	"markdown": "``` foo {#id .class attr=value attr2=\"value={2}\"}\n  bar\n```\n``` baz { .class2  #id2 .class2 .class3}\nbim\n```\n",
+	"html": "<pre><code class=\"language-foo class\" id=\"id\" attr=\"value\" attr2=\"value={2}\">  bar\n</code></pre>\n<pre><code class=\"language-baz class2 class2 class3\" id=\"id2\">bim\n</code></pre>\n",
+	"example": 9,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~ foo {key=value}   \nbar\n~~~\n",
-    "html": "<pre><code class=\"language-foo\" key=\"value\">bar\n</code></pre>\n",
-    "example": 10,
-    "section": "Attributes"
+	"markdown": "~~~ foo {\n     key='value'   \n    }\nbar\n~~~\n~~~~~ baz  \n{   \n  .class\n    }\n  bim  \n~~~~~\n",
+	"html": "<pre><code class=\"language-foo\" key=\"value\">bar\n</code></pre>\n<pre><code class=\"language-baz\">{   \n  .class\n    }\n  bim  \n</code></pre>\n",
+	"example": 10,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~ foo {\n  #id-foo\n} bar\n~~~\n~~~ bim { # }\nboo\n~~~\n~~~ b1 \\{#id}  \nb2\n~~~\n~~~ b3 \\{#id} {#id2} {#id3}\nb4\n~~~\n",
-    "html": "<pre><code class=\"language-foo\">  #id-foo\n} bar\n</code></pre>\n<pre><code class=\"language-bim\">boo\n</code></pre>\n<pre><code class=\"language-b1\">b2\n</code></pre>\n<pre><code class=\"language-b3\" id=\"id3\">b4\n</code></pre>\n",
-    "example": 11,
-    "section": "Attributes"
+	"markdown": "~~~ foo {key=value}   \nbar\n~~~\n",
+	"html": "<pre><code class=\"language-foo\" key=\"value\">bar\n</code></pre>\n",
+	"example": 11,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~ foo \\{#id}\nbar\n~~~\n~~~ foo\\\\{#id my-key}\nbar\n~~~\n",
-    "html": "<pre><code class=\"language-foo\">bar\n</code></pre>\n<pre><code class=\"language-foo\\\" id=\"id\" my-key=\"\">bar\n</code></pre>\n",
-    "example": 12,
-    "section": "Attributes"
+	"markdown": "~~~ foo {\n  #id-foo\n} bar\n~~~\n~~~ bim { # }\nboo\n~~~\n~~~ b1 \\{#id}  \nb2\n~~~\n~~~ b3 \\{#id} {#id2} {#id3}\nb4\n~~~\n",
+	"html": "<pre><code class=\"language-foo\">  #id-foo\n} bar\n</code></pre>\n<pre><code class=\"language-bim\">boo\n</code></pre>\n<pre><code class=\"language-b1\">b2\n</code></pre>\n<pre><code class=\"language-b3\" id=\"id3\">b4\n</code></pre>\n",
+	"example": 12,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~foo{#}\n~~~\n~~~ bar{ . }\n~~~\n~~~ baz{ = }\n~~~\n~~~ bim { =value }\n~~~\n~~~ boo{k = v}\n~~~\n",
-    "html": "<pre><code class=\"language-foo{#}\"></code></pre>\n<pre><code class=\"language-bar{\"></code></pre>\n<pre><code class=\"language-baz{\"></code></pre>\n<pre><code class=\"language-bim\"></code></pre>\n<pre><code class=\"language-boo{k\"></code></pre>\n",
-    "example": 13,
-    "section": "Attributes"
+	"markdown": "~~~ foo \\{#id}\nbar\n~~~\n~~~ foo\\\\{#id my-key}\nbar\n~~~\n",
+	"html": "<pre><code class=\"language-foo\">bar\n</code></pre>\n<pre><code class=\"language-foo\\\" id=\"id\" my-key=\"\">bar\n</code></pre>\n",
+	"example": 13,
+	"section": "Attributes"
   },
   {
-    "markdown": "~~~ foo {\n\n  #id }\n~~~\n~~~ bar { key=\nvalue }\n~~~\n~~~ baz {\n.class\n\n}\n~~~\n",
-    "html": "<pre><code class=\"language-foo\">\n  #id }\n</code></pre>\n<pre><code class=\"language-bar\">value }\n</code></pre>\n<pre><code class=\"language-baz\">.class\n\n}\n</code></pre>\n",
-    "example": 14,
-    "section": "Attributes"
+	"markdown": "~~~foo{#}\n~~~\n~~~ bar{ . }\n~~~\n~~~ baz{ = }\n~~~\n~~~ bim { =value }\n~~~\n~~~ boo{k = v}\n~~~\n",
+	"html": "<pre><code class=\"language-foo{#}\"></code></pre>\n<pre><code class=\"language-bar{\"></code></pre>\n<pre><code class=\"language-baz{\"></code></pre>\n<pre><code class=\"language-bim\"></code></pre>\n<pre><code class=\"language-boo{k\"></code></pre>\n",
+	"example": 14,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo>{#id .class attr=value attr2=\"value={2}\"}\n\n[bar](/uri){ .class2  #id2 .class2 .class3}\n\n[baz text][baz]\n[baz]\n\n[baz]:/uri2 {#id #id3}\n",
-    "html": "<p><a id=\"id\" class=\"class\" attr=\"value\" attr2=\"value={2}\" href=\"http://foo\">http://foo</a></p>\n<p><a class=\"class2 class2 class3\" id=\"id2\" href=\"/uri\">bar</a></p>\n<p><a id=\"id3\" href=\"/uri2\">baz text</a>\n<a id=\"id3\" href=\"/uri2\">baz</a></p>\n",
-    "example": 15,
-    "section": "Attributes"
+	"markdown": "~~~ foo {\n\n  #id }\n~~~\n~~~ bar { key=\nvalue }\n~~~\n~~~ baz {\n.class\n\n}\n~~~\n",
+	"html": "<pre><code class=\"language-foo\">\n  #id }\n</code></pre>\n<pre><code class=\"language-bar\">value }\n</code></pre>\n<pre><code class=\"language-baz\">.class\n\n}\n</code></pre>\n",
+	"example": 15,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo> {#id}\n[bar](/uri)\n{.class}\n[baz]\n\n[baz]:/uri2{#id #id3}\n",
-    "html": "<p><a href=\"http://foo\">http://foo</a> {#id}\n<a href=\"/uri\">bar</a>\n{.class}\n[baz]</p>\n<p>[baz]:/uri2{#id #id3}</p>\n",
-    "example": 16,
-    "section": "Attributes"
+	"markdown": "~~~ foo { key=\"\nvalue\"}\n",
+	"html": "<pre><code class=\"language-foo\">value&quot;}\n</code></pre>\n",
+	"example": 16,
+	"section": "Attributes"
   },
   {
-    "markdown": "[baz]{#id}\n[baz text][baz]{#id}\n\n[baz]:/uri \"title\" {.class}\n",
-    "html": "<p><a class=\"class\" href=\"/uri\" title=\"title\">baz</a>{#id}\n<a class=\"class\" href=\"/uri\" title=\"title\">baz text</a>{#id}</p>\n",
-    "example": 17,
-    "section": "Attributes"
+	"markdown": "<http://foo>{#id .class attr=value attr2=\"value={2}\"}\n\n[bar](/uri){ .class2  #id2 .class2 .class3}\n\n[baz text][baz]\n[baz]\n\n[baz]:/uri2 {#id #id3}\n",
+	"html": "<p><a id=\"id\" class=\"class\" attr=\"value\" attr2=\"value={2}\" href=\"http://foo\">http://foo</a></p>\n<p><a class=\"class2 class2 class3\" id=\"id2\" href=\"/uri\">bar</a></p>\n<p><a id=\"id3\" href=\"/uri2\">baz text</a>\n<a id=\"id3\" href=\"/uri2\">baz</a></p>\n",
+	"example": 17,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo>{\n   key='value'   \n}\n[bar](/uri){.class\n#id}\n[baz]\n\n[baz]:/uri2  \n{\n  #id2 key=\"v\n  alue\"\n  .class  .class2\n  key2=value2\n}\n",
-    "html": "<p><a key=\"value\" href=\"http://foo\">http://foo</a>\n<a class=\"class\" id=\"id\" href=\"/uri\">bar</a>\n<a id=\"id2\" key=\"v\n  alue\" class=\"class class2\" key2=\"value2\" href=\"/uri2\">baz</a></p>\n",
-    "example": 18,
-    "section": "Attributes"
+	"markdown": "<http://foo> {#id}\n[bar](/uri)\n{.class}\n[baz]\n\n[baz]:/uri2{#id #id3}\n",
+	"html": "<p><a href=\"http://foo\">http://foo</a> {#id}\n<a href=\"/uri\">bar</a>\n{.class}\n[baz]</p>\n<p>[baz]:/uri2{#id #id3}</p>\n",
+	"example": 18,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo>{key=value} \t\n[bar](/uri){ .class }  text\n[baz]\n[baz3]\n\n[baz]:/uri2  \n  \"title\" { key=\"value{}\"}  \n[baz3]:/uri3  \n  \"title3\" {#id3} other\n",
-    "html": "<p><a key=\"value\" href=\"http://foo\">http://foo</a> \t\n<a class=\"class\" href=\"/uri\">bar</a>  text\n<a key=\"value{}\" href=\"/uri2\" title=\"title\">baz</a>\n<a href=\"/uri3\">baz3</a></p>\n<p>&quot;title3&quot; {#id3} other</p>\n",
-    "example": 19,
-    "section": "Attributes"
+	"markdown": "[baz]{#id}\n[baz text][baz]{#id}\n\n[baz]:/uri \"title\" {.class}\n",
+	"html": "<p><a class=\"class\" href=\"/uri\" title=\"title\">baz</a>{#id}\n<a class=\"class\" href=\"/uri\" title=\"title\">baz text</a>{#id}</p>\n",
+	"example": 19,
+	"section": "Attributes"
   },
   {
-    "markdown": "[foo]\n\n[foo]:/uri \\{#id}\n\n[foo]:/uri2 \\\\{#id}\n",
-    "html": "<p>[foo]</p>\n<p>[foo]:/uri {#id}</p>\n<p>[foo]:/uri2 \\{#id}</p>\n",
-    "example": 20,
-    "section": "Attributes"
+	"markdown": "<http://foo>{\n   key='value'   \n}\n[bar](/uri){.class\n#id}\n[baz]\n\n[baz]:/uri2  \n{\n  #id2 key=\"v\n  alue\"\n  .class  .class2\n  key2=value2\n}\n",
+	"html": "<p><a key=\"value\" href=\"http://foo\">http://foo</a>\n<a class=\"class\" id=\"id\" href=\"/uri\">bar</a>\n<a id=\"id2\" key=\"v\n  alue\" class=\"class class2\" key2=\"value2\" href=\"/uri2\">baz</a></p>\n",
+	"example": 20,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo>{#}\n[bar](/uri){ . }\n[baz]\n\n[baz]:/uri2 { = }\n\n[baz]:/uri3 { =value }\n\n[baz]:/uri3 { k = v }\n",
-    "html": "<p><a href=\"http://foo\">http://foo</a>{#}\n<a href=\"/uri\">bar</a>{ . }\n[baz]</p>\n<p>[baz]:/uri2 { = }</p>\n<p>[baz]:/uri3 { =value }</p>\n<p>[baz]:/uri3 { k = v }</p>\n",
-    "example": 21,
-    "section": "Attributes"
+	"markdown": "<http://foo>{key=value} \t\n[bar](/uri){ .class }  text\n[baz]\n[baz3]\n\n[baz]:/uri2  \n  \"title\" { key=\"value{}\"}  \n[baz3]:/uri3  \n  \"title3\" {#id3} other\n",
+	"html": "<p><a key=\"value\" href=\"http://foo\">http://foo</a> \t\n<a class=\"class\" href=\"/uri\">bar</a>  text\n<a key=\"value{}\" href=\"/uri2\" title=\"title\">baz</a>\n<a href=\"/uri3\">baz3</a></p>\n<p>&quot;title3&quot; {#id3} other</p>\n",
+	"example": 21,
+	"section": "Attributes"
   },
   {
-    "markdown": "<http://foo>{\n\n  #id }\n[bar](/uri){ key=\nvalue }\n[baz]\n\n[baz]:/uri2 {\n.class\n\n}\n",
-    "html": "<p><a href=\"http://foo\">http://foo</a>{</p>\n<p>#id }\n<a href=\"/uri\">bar</a>{ key=\nvalue }\n[baz]</p>\n<p>[baz]:/uri2 {\n.class</p>\n<p>}</p>\n",
-    "example": 22,
-    "section": "Attributes"
+	"markdown": "[foo]\n\n[foo]:/uri \\{#id}\n\n[foo]:/uri2 \\\\{#id}\n",
+	"html": "<p>[foo]</p>\n<p>[foo]:/uri {#id}</p>\n<p>[foo]:/uri2 \\{#id}</p>\n",
+	"example": 22,
+	"section": "Attributes"
+  },
+  {
+	"markdown": "<http://foo>{#}\n[bar](/uri){ . }\n[baz]\n\n[baz]:/uri2 { = }\n\n[baz]:/uri3 { =value }\n\n[baz]:/uri3 { k = v }\n",
+	"html": "<p><a href=\"http://foo\">http://foo</a>{#}\n<a href=\"/uri\">bar</a>{ . }\n[baz]</p>\n<p>[baz]:/uri2 { = }</p>\n<p>[baz]:/uri3 { =value }</p>\n<p>[baz]:/uri3 { k = v }</p>\n",
+	"example": 23,
+	"section": "Attributes"
+  },
+  {
+	"markdown": "<http://foo>{\n\n  #id }\n[bar](/uri){ key=\nvalue }\n[baz]\n\n[baz]:/uri2 {\n.class\n\n}\n",
+	"html": "<p><a href=\"http://foo\">http://foo</a>{</p>\n<p>#id }\n<a href=\"/uri\">bar</a>{ key=\nvalue }\n[baz]</p>\n<p>[baz]:/uri2 {\n.class</p>\n<p>}</p>\n",
+	"example": 24,
+	"section": "Attributes"
+  },
+  {
+	"markdown": "<https://foo>{#id key=\"v'\n alue'\" }\n",
+	"html": "<p><a href=\"https://foo\">https://foo</a>{#id key=&quot;v'\nalue'&quot; }</p>\n",
+	"example": 25,
+	"section": "Attributes"
   }
 ]
