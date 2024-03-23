@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -116,6 +117,26 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 			definition = value;
 		}
 	}
+
+	/// <summary>
+	/// 获取是否包含属性。
+	/// </summary>
+	[MemberNotNullWhen(true, nameof(attributes))]
+	public bool HasAttribute
+	{
+		get
+		{
+			if (definition == null)
+			{
+				return attributes?.Count > 0;
+			}
+			else
+			{
+				return definition.HasAttribute;
+			}
+		}
+	}
+
 	/// <summary>
 	/// 获取链接的属性列表。
 	/// </summary>
@@ -159,7 +180,7 @@ public sealed class Link : InlineNode, INodeContainer<InlineNode>
 		url = definition.URL;
 		title = definition.Title;
 		attributes?.Clear();
-		if (definition.attributes != null && definition.attributes.Count > 0)
+		if (definition.HasAttribute)
 		{
 			Attributes.AddRange(definition.attributes);
 		}

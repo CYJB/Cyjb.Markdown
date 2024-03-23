@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -51,6 +52,12 @@ public sealed class Heading : BlockNode, INodeContainer<InlineNode>
 			depth = value;
 		}
 	}
+
+	/// <summary>
+	/// 获取是否包含属性。
+	/// </summary>
+	[MemberNotNullWhen(true, nameof(attributes))]
+	public bool HasAttribute => attributes?.Count > 0;
 
 	/// <summary>
 	/// 获取标题的属性列表。

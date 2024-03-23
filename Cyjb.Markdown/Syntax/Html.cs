@@ -189,7 +189,7 @@ public sealed class Html : InlineNode, IEquatable<Html>
 		if (kind == MarkdownKind.HtmlStartTag)
 		{
 			ReadOnlySpan<char> span = text.AsSpan()[1..^1];
-			int idx = span.IndexOfAny(" \t\r\n");
+			int idx = span.IndexOfAny(MarkdownUtil.Whitespace);
 			if (idx > 0)
 			{
 				span = span[idx..].Trim();

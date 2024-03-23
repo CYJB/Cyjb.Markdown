@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Cyjb.Text;
 
 namespace Cyjb.Markdown.Syntax;
@@ -55,6 +56,12 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 	}
 
 	/// <summary>
+	/// 获取是否包含属性。
+	/// </summary>
+	[MemberNotNullWhen(true, nameof(attributes))]
+	public bool HasAttribute => attributes?.Count > 0;
+
+	/// <summary>
 	/// 获取数学公式的属性列表。
 	/// </summary>
 	public HtmlAttributeList Attributes => attributes ??= new HtmlAttributeList();
@@ -101,7 +108,7 @@ public sealed class MathBlock : BlockNode, IEquatable<MathBlock>
 			info = info,
 			Locator = Locator,
 		};
-		if (attributes != null && attributes.Count > 0)
+		if (HasAttribute)
 		{
 			attributes.CloneTo(node.Attributes);
 		}

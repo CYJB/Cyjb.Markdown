@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Cyjb.Markdown.Utils;
 using Cyjb.Text;
 
@@ -89,6 +90,11 @@ public sealed class LinkDefinition : BlockNode
 	/// </summary>
 	public string? Title { get; set; }
 	/// <summary>
+	/// 获取是否包含属性。
+	/// </summary>
+	[MemberNotNullWhen(true, nameof(attributes))]
+	public bool HasAttribute => attributes?.Count > 0;
+	/// <summary>
 	/// 获取链接定义的属性列表。
 	/// </summary>
 	public HtmlAttributeList Attributes => attributes ??= new HtmlAttributeList();
@@ -131,7 +137,7 @@ public sealed class LinkDefinition : BlockNode
 			identifier = identifier,
 			Locator = Locator,
 		};
-		if (attributes != null && attributes.Count > 0)
+		if (HasAttribute)
 		{
 			attributes.CloneTo(node.Attributes);
 		}

@@ -13,6 +13,10 @@ public class HtmlRenderer : BaseRenderer
 	/// 需要被转义的字符。
 	/// </summary>
 	private static readonly char[] EscapedChars = new char[] { '&', '<', '>', '\"' };
+	/// <summary>
+	/// heading 的标签名。
+	/// </summary>
+	private static readonly string[] HeadingTagNames = new string[] { "h1", "h2", "h3", "h4", "h5", "h6" };
 
 	/// <summary>
 	/// HTML 属性修改器。
@@ -90,10 +94,13 @@ public class HtmlRenderer : BaseRenderer
 	/// <param name="node">要访问的标题节点。</param>
 	public override void VisitHeading(Heading node)
 	{
-		string tagName = $"h{node.Depth}";
+		string tagName = HeadingTagNames[node.Depth - 1];
 		WriteLine();
 		HtmlAttributeList attrs = GetHtmlAttributeList();
-		attrs.AddRange(node.Attributes);
+		if (node.HasAttribute)
+		{
+			attrs.AddRange(node.Attributes);
+		}
 		WriteStartTag(node, tagName, attrs);
 		DefaultVisit(node);
 		WriteEndTag(tagName);
@@ -115,7 +122,10 @@ public class HtmlRenderer : BaseRenderer
 		{
 			attrs.AddClass(CodeBlockLanguagePrefix + lang);
 		}
-		attrs.AddRange(node.Attributes);
+		if (node.HasAttribute)
+		{
+			attrs.AddRange(node.Attributes);
+		}
 
 		WriteStartTag(node, "code", attrs);
 		Write(node.Content);
@@ -352,7 +362,7 @@ public class HtmlRenderer : BaseRenderer
 	{
 		HtmlAttributeList attrs = GetHtmlAttributeList();
 		attrs.AddClass("math");
-		if (node.Attributes != null)
+		if (node.HasAttribute)
 		{
 			attrs.AddRange(node.Attributes);
 		}
@@ -376,7 +386,7 @@ public class HtmlRenderer : BaseRenderer
 		{
 			attrs.AddClass(type);
 		}
-		if (node.Attributes != null)
+		if (node.HasAttribute)
 		{
 			attrs.AddRange(node.Attributes);
 		}
@@ -443,7 +453,10 @@ public class HtmlRenderer : BaseRenderer
 	public override void VisitLink(Link node)
 	{
 		HtmlAttributeList attrs = GetHtmlAttributeList();
-		attrs.AddRange(node.Attributes);
+		if (node.HasAttribute)
+		{
+			attrs.AddRange(node.Attributes);
+		}
 		if (node.Kind == MarkdownKind.Link)
 		{
 			attrs["href"] = LinkUtil.EncodeURL(node.URL);
