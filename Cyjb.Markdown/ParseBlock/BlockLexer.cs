@@ -16,18 +16,68 @@ namespace Cyjb.Markdown.ParseBlock;
 [LexerRegex("WS_P", "{WS}+")]
 [LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
 [LexerRegex("ExtAttr", @"\{([^""'<>`'{}]*|'[^'\r\n]*'|\""[^""\r\n]*\"")*\}{WS_O}")]
-[LexerSymbol(@"\r|\r?\n", Kind = BlockKind.NewLine)]
-[LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
-[LexerSymbol(@"`{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
-[LexerSymbol(@"~{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
-[LexerSymbol(@"=+{WS_O}$", Kind = BlockKind.SetextUnderline)]
-[LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
 internal partial class BlockLexer : LexerController<BlockKind>
 {
 	/// <summary>
 	/// 获取解析选项。
 	/// </summary>
-	private ParseOptions Options => (ParseOptions)SharedContext!;
+	private ParseOptions Options => (SharedContext as BlockParser)!.Options;
+	/// <summary>
+	/// 当前行。
+	/// </summary>
+	private BlockLine line;
+
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
+	public BlockLexer()
+	{
+	}
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
+
+	/// <summary>
+	/// 已加载源读取器。
+	/// </summary>
+	protected override void SourceLoaded()
+	{
+		base.SourceLoaded();
+		line = new BlockLine(Source.Locator!);
+	}
+
+	/// <summary>
+	/// 换行的动作。
+	/// </summary>
+	[LexerSymbol(@"\r|\r?\n", Kind = BlockKind.NewLine)]
+	private void NewLineAction()
+	{
+		AcceptToken();
+		(SharedContext as BlockParser)?.ParseLine(line);
+		line.Clear();
+	}
+
+	/// <summary>
+	/// 文件结束的动作。
+	/// </summary>
+	[LexerSymbol("<<EOF>>")]
+	private void EndOfFindAction()
+	{
+		if (!line.IsEmpty)
+		{
+			(SharedContext as BlockParser)?.ParseLine(line);
+			line.Clear();
+		}
+	}
+
+	/// <summary>
+	/// 通用操作。
+	/// </summary>
+	[LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
+	[LexerSymbol(@"`{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
+	[LexerSymbol(@"~{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
+	[LexerSymbol(@"=+{WS_O}$", Kind = BlockKind.SetextUnderline)]
+	[LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
+	private void CommonAction()
+	{
+		AcceptToken();
+	}
 
 	/// <summary>
 	/// 带有额外属性的 ATX 标题。
@@ -41,8 +91,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
 			if (attrs != null)
 			{
-				Text = text;
-				Accept(attrs);
+				AcceptToken(text, attrs);
 				return;
 			}
 		}
@@ -54,7 +103,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"#{1,6}({WS_P}.*)?$", Kind = BlockKind.ATXHeading)]
 	private void ATXHeadingAction()
 	{
-		Accept();
+		AcceptToken();
 	}
 	/// <summary>
 	/// 带有额外属性的代码分隔符起始。
@@ -69,8 +118,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
 			if (attrs != null)
 			{
-				Text = text;
-				Accept(attrs);
+				AcceptToken(text, attrs);
 				return;
 			}
 		}
@@ -83,7 +131,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"~{3,}.+$", Kind = BlockKind.CodeFenceStart)]
 	private void CodeFenceStartAction()
 	{
-		Accept();
+		AcceptToken();
 	}
 	/// <summary>
 	/// 缩进的动作。
@@ -92,7 +140,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"{WS_P}/[^ \t]", Kind = BlockKind.Indent, UseShortest = true)]
 	private void IndentAction()
 	{
-		Accept();
+		AcceptToken();
 	}
 	/// <summary>
 	/// 无序列表标志的动作。
@@ -101,7 +149,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"(-|\+|\*)$", Kind = BlockKind.UnorderedListMarker)]
 	private void UnorderedListMarkerAction()
 	{
-		Accept(ListStyleType.Unordered);
+		AcceptToken(ListStyleType.Unordered);
 	}
 
 	/// <summary>
@@ -111,7 +159,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"[0-9]{1,9}(\.|\))$", Kind = BlockKind.OrderedListMarker)]
 	private void OrderedListMarkerAction()
 	{
-		Accept(ListStyleType.OrderedNumber);
+		AcceptToken(ListStyleType.OrderedNumber);
 	}
 
 	/// <summary>
@@ -123,7 +171,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseExtraListStyleType)
 		{
-			Accept(ListStyleType.OrderedLowerAlpha);
+			AcceptToken(ListStyleType.OrderedLowerAlpha);
 		}
 		else
 		{
@@ -140,7 +188,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseExtraListStyleType)
 		{
-			Accept(ListStyleType.OrderedUpperAlpha);
+			AcceptToken(ListStyleType.OrderedUpperAlpha);
 		}
 		else
 		{
@@ -158,7 +206,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseExtraListStyleType)
 		{
-			Accept(ListStyleType.OrderedLowerRoman);
+			AcceptToken(ListStyleType.OrderedLowerRoman);
 		}
 		else
 		{
@@ -176,7 +224,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseExtraListStyleType)
 		{
-			Accept(ListStyleType.OrderedUpperRoman);
+			AcceptToken(ListStyleType.OrderedUpperRoman);
 		}
 		else
 		{
@@ -193,7 +241,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseExtraListStyleType)
 		{
-			Accept(ListStyleType.OrderedLowerGreek);
+			AcceptToken(ListStyleType.OrderedLowerGreek);
 		}
 		else
 		{
@@ -209,7 +257,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"(\*{WS_O}){3,}|(-{WS_O}){3,}|(_{WS_O}){3,}$", Kind = BlockKind.ThematicBreak)]
 	private void ThematicBreakAction()
 	{
-		Accept();
+		AcceptToken();
 	}
 
 	/// <summary>
@@ -218,7 +266,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol("[<](script|pre|style|textarea)([ \t>].*)?$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlPairAction()
 	{
-		Accept(HtmlInfo.HtmlPair);
+		AcceptToken(HtmlInfo.HtmlPair);
 	}
 
 	/// <summary>
@@ -227,7 +275,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol("[<]!--.*$", Kind = BlockKind.HtmlStart)]
 	private void HtmlCommendAction()
 	{
-		Accept(HtmlInfo.HtmlComment);
+		AcceptToken(HtmlInfo.HtmlComment);
 	}
 
 	/// <summary>
@@ -236,7 +284,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"[<]\?.*$", Kind = BlockKind.HtmlStart)]
 	private void HtmlProcessingAction()
 	{
-		Accept(HtmlInfo.HtmlProcessing);
+		AcceptToken(HtmlInfo.HtmlProcessing);
 	}
 
 	/// <summary>
@@ -245,7 +293,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol("[<]![a-z].*$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlDeclarationAction()
 	{
-		Accept(HtmlInfo.HtmlDeclaration);
+		AcceptToken(HtmlInfo.HtmlDeclaration);
 	}
 
 	/// <summary>
@@ -254,7 +302,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"[<]!\[CDATA\[.*$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlCDataAction()
 	{
-		Accept(HtmlInfo.HtmlCData);
+		AcceptToken(HtmlInfo.HtmlCData);
 	}
 
 	/// <summary>
@@ -279,7 +327,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		")(( |\t|\\/?>).*)?$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlSingleAction()
 	{
-		Accept(HtmlInfo.HtmlSingle);
+		AcceptToken(HtmlInfo.HtmlSingle);
 	}
 
 	/// <summary>
@@ -291,7 +339,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@"[<]\/{TagName}{WS_O}>{WS_O}$", Kind = BlockKind.HtmlStart)]
 	private void HtmlOtherAction()
 	{
-		Accept(HtmlInfo.HtmlOther);
+		AcceptToken(HtmlInfo.HtmlOther);
 	}
 
 	/// <summary>
@@ -304,7 +352,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		// 要求必须包含至少一个竖划线。
 		if (Options.UseTable && Text.Contains('|'))
 		{
-			Accept();
+			AcceptToken();
 		}
 		else
 		{
@@ -321,7 +369,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseMath)
 		{
-			Accept();
+			AcceptToken();
 		}
 		else
 		{
@@ -341,8 +389,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
 			if (attrs != null)
 			{
-				Text = text;
-				Accept(attrs);
+				AcceptToken(text, attrs);
 				return;
 			}
 		}
@@ -357,7 +404,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseFootnotes)
 		{
-			Accept(Text[2..^2]);
+			AcceptToken(Text[2..^2] as object);
 		}
 		else
 		{
@@ -374,7 +421,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	{
 		if (Options.UseCustomContainers)
 		{
-			Accept();
+			AcceptToken();
 		}
 		else
 		{
@@ -394,8 +441,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
 			if (attrs != null)
 			{
-				Text = text;
-				Accept(attrs);
+				AcceptToken(text, attrs);
 				return;
 			}
 		}
@@ -408,6 +454,25 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	[LexerSymbol(@".+$", Kind = BlockKind.TextLine)]
 	private void TextAction()
 	{
-		Accept(Text);
+		AcceptToken();
+	}
+
+	/// <summary>
+	/// 将当前内容添加到行。
+	/// </summary>
+	/// <param name="value">当前词法单元的值。</param>
+	private void AcceptToken(object? value = null)
+	{
+		line.Add(Kind!.Value, Text, Span, value);
+	}
+
+	/// <summary>
+	/// 将当前内容添加到行。
+	/// </summary>
+	/// <param name="text">当前词法单元的文本。</param>
+	/// <param name="value">当前词法单元的值。</param>
+	private void AcceptToken(StringView text, object? value = null)
+	{
+		line.Add(Kind!.Value, text, Span, value);
 	}
 }

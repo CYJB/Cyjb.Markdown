@@ -41,17 +41,13 @@ internal sealed class BlockParser
 	};
 
 	/// <summary>
-	/// 块级词法分析器。
-	/// </summary>
-	private readonly LexerTokenizer<BlockKind> tokenizer = BlockLexer.Factory.CreateTokenizer();
-	/// <summary>
 	/// 行列定位器。
 	/// </summary>
 	private readonly LineLocator locator;
 	/// <summary>
 	/// 源文件读取器。
 	/// </summary>
-	private readonly SourceReader reader;
+	private readonly SourceReader source;
 	/// <summary>
 	/// 解析的选项。
 	/// </summary>
@@ -94,12 +90,10 @@ internal sealed class BlockParser
 	public BlockParser(TextReader text, ParseOptions? options)
 	{
 		// 为了正确处理 Tab 的位置，解析块时需要对列定位。
-		reader = new SourceReader(text);
-		reader.UseLineLocator();
-		locator = reader.Locator!;
+		source = new SourceReader(text);
+		source.UseLineLocator();
+		locator = source.Locator!;
 		this.options = options ?? ParseOptions.Default;
-		tokenizer.Load(reader);
-		tokenizer.SharedContext = this.options;
 		openedProcessors.Push(document);
 	}
 
@@ -129,33 +123,12 @@ internal sealed class BlockParser
 	/// </summary>
 	public Document Parse()
 	{
-		Token<BlockKind> token;
-		BlockLine line = new(locator);
-		while (true)
-		{
-			// 清除行的旧数据。
-			line.Clear();
-			// 添加所有换行符前的 Token。
-			while (!(token = tokenizer.Read()).IsEndOfFile)
-			{
-				line.Add(token);
-				if (token.Kind == BlockKind.NewLine)
-				{
-					ParseLine(line);
-					break;
-				}
-			}
-			if (token.IsEndOfFile)
-			{
-				if (!line.IsEmpty)
-				{
-					ParseLine(line);
-				}
-				break;
-			}
-		}
+		LexerRunner<BlockKind> runner = BlockLexer.Factory.CreateRunner();
+		runner.SharedContext = this;
+		runner.Parse(source);
+
 		// 栈底总是文档，总是不需要 Close。
-		int end = token.Span.Start;
+		int end = source.Index;
 		CloseProcessor(document, end);
 		// 合并标题引用。
 		int count = headingReferences.Count;
@@ -205,7 +178,7 @@ internal sealed class BlockParser
 	/// 解析指定行。
 	/// </summary>
 	/// <param name="line">要解析的行。</param>
-	private void ParseLine(BlockLine line)
+	public void ParseLine(BlockLine line)
 	{
 		int lineStart = line.Start;
 		// 栈底总是 document，总是可以接受任何行，因此总是跳过。

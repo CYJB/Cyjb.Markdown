@@ -11,9 +11,9 @@ namespace Cyjb.Markdown.ParseBlock;
 internal sealed class BlockText
 {
 	/// <summary>
-	/// 词法单元队列。
+	/// 文本项队列。
 	/// </summary>
-	private readonly Deque<Token<BlockKind>> tokens = new();
+	private readonly Deque<BlockTextItem> items = new();
 	/// <summary>
 	/// 文本的长度。
 	/// </summary>
@@ -26,9 +26,9 @@ internal sealed class BlockText
 	{
 		get
 		{
-			if (tokens.TryPeekFront(out var token))
+			if (items.TryPeekFront(out var item))
 			{
-				return token.Span.Start;
+				return item.StartIndex;
 			}
 			else
 			{
@@ -43,9 +43,9 @@ internal sealed class BlockText
 	{
 		get
 		{
-			if (tokens.TryPeekBack(out var token))
+			if (items.TryPeekBack(out var item))
 			{
-				return token.Span.End;
+				return item.EndIndex;
 			}
 			else
 			{
@@ -60,18 +60,19 @@ internal sealed class BlockText
 	{
 		get
 		{
-			int count = tokens.Count;
+			int count = items.Count;
 			if (count == 0)
 			{
 				return new TextSpan();
 			}
 			else if (count == 1)
 			{
-				return tokens.PeekFront().Span;
+				var item = items.PeekFront();
+				return new TextSpan(item.StartIndex, item.EndIndex);
 			}
 			else
 			{
-				return new TextSpan(tokens.PeekFront().Span.Start, tokens.PeekBack().Span.End);
+				return new TextSpan(items.PeekFront().StartIndex, items.PeekBack().EndIndex);
 			}
 		}
 	}
@@ -80,10 +81,48 @@ internal sealed class BlockText
 	/// 获取文本的长度。
 	/// </summary>
 	public int Length => length;
+
 	/// <summary>
-	/// 获取词法单元列表。
+	/// 文本项队列。
 	/// </summary>
-	public IReadOnlyList<Token<BlockKind>> Tokens => tokens;
+	public Deque<BlockTextItem> Items => items;
+
+	/// <summary>
+	/// 添加新的文本。
+	/// </summary>
+	/// <param name="text">要添加的文本。</param>
+	/// <param name="startIndex">起始索引。</param>
+	public void Add(StringView text, int startIndex)
+	{
+		length += text.Length;
+		if (items.Count > 0)
+		{
+			var lastItem = items.PeekBack();
+			if (lastItem.Text.TryConcat(text, out var concated))
+			{
+				items[^1] = lastItem with
+				{
+					Text = concated,
+				};
+				return;
+			}
+		}
+		items.PushBack(new BlockTextItem(text, startIndex));
+	}
+
+	/// <summary>
+	/// 添加新的文本的一部分。
+	/// </summary>
+	/// <param name="item">要添加的文本。</param>
+	/// <param name="start">要添加的起始索引。</param>
+	/// <param name="length">要添加的长度。</param>
+	public void Add(BlockTextItem item, int start, int length)
+	{
+		if (length > 0)
+		{
+			Add(item.Text.Slice(start, length), item.StartIndex + start);
+		}
+	}
 
 	/// <summary>
 	/// 检查是否是单行文本。
@@ -91,14 +130,10 @@ internal sealed class BlockText
 	/// <returns>如果是单行文本，会返回 <c>true</c>；否则返回 <c>false</c>。</returns>
 	public bool IsSingleLine()
 	{
-		int count = tokens.Count;
+		int count = items.Count;
 		for (int i = 0; i < count; i++)
 		{
-			if (tokens[i].Kind == BlockKind.NewLine)
-			{
-				return i == count - 1;
-			}
-			ReadOnlySpan<char> span = tokens[i].Text;
+			ReadOnlySpan<char> span = items[i].Text;
 			int idx = span.IndexOf('\n');
 			if (idx >= 0 && idx < span.Length - 1)
 			{
@@ -109,54 +144,25 @@ internal sealed class BlockText
 	}
 
 	/// <summary>
-	/// 移除起始位置的多个字符。
-	/// </summary>
-	/// <param name="length">要移除的字符个数。</param>
-	public void RemoteStart(int length)
-	{
-		this.length -= length;
-		while (tokens.TryPeekFront(out var token))
-		{
-			StringView text = token.Text;
-			int textLen = text.Length;
-			if (length >= textLen)
-			{
-				length -= textLen;
-				tokens.PopFront();
-			}
-			else
-			{
-				token.Text = text.Substring(length);
-				token.Span = token.Span with
-				{
-					Start = token.Span.Start + length,
-				};
-				break;
-			}
-		}
-	}
-
-	/// <summary>
 	/// 移除结束位置的多个字符。
 	/// </summary>
 	/// <param name="length">要移除的字符个数。</param>
 	public void RemoteEnd(int length)
 	{
 		this.length -= length;
-		while (tokens.TryPeekBack(out var token))
+		while (items.TryPeekBack(out var item))
 		{
-			StringView text = token.Text;
+			StringView text = item.Text;
 			length -= text.Length;
 			if (length >= 0)
 			{
-				tokens.PopBack();
+				items.PopBack();
 			}
 			else
 			{
-				token.Text = text[..-length];
-				token.Span = token.Span with
+				items[^1] = item with
 				{
-					End = token.Span.Start - length,
+					Text = text[..-length],
 				};
 				break;
 			}
@@ -170,9 +176,9 @@ internal sealed class BlockText
 	public bool TrimStart()
 	{
 		int diff = 0;
-		while (tokens.TryPeekFront(out var token))
+		while (items.TryPeekFront(out var item))
 		{
-			StringView text = token.Text;
+			StringView text = item.Text;
 			int textLen = text.Length;
 			text = text.TrimStart(MarkdownUtil.WhitespaceChars);
 			textLen -= text.Length;
@@ -183,15 +189,11 @@ internal sealed class BlockText
 			diff += textLen;
 			if (text.IsEmpty)
 			{
-				tokens.PopFront();
+				items.PopFront();
 			}
 			else
 			{
-				token.Text = text;
-				token.Span = token.Span with
-				{
-					Start = token.Span.Start + textLen,
-				};
+				items[0] = new BlockTextItem(text, item.StartIndex + textLen);
 				break;
 			}
 		}
@@ -211,9 +213,9 @@ internal sealed class BlockText
 	{
 		int diff = 0;
 		char[] chars = trimNewLine ? MarkdownUtil.WhitespaceChars : MarkdownUtil.WhitespaceCharsWithoutNewLine;
-		while (tokens.TryPeekBack(out var token))
+		while (items.TryPeekBack(out var item))
 		{
-			StringView text = token.Text;
+			StringView text = item.Text;
 			int textLen = text.Length;
 			text = text.TrimEnd(chars);
 			textLen -= text.Length;
@@ -224,14 +226,13 @@ internal sealed class BlockText
 			diff += textLen;
 			if (text.IsEmpty)
 			{
-				tokens.PopBack();
+				items.PopBack();
 			}
 			else
 			{
-				token.Text = text;
-				token.Span = token.Span with
+				items[^1] = item with
 				{
-					End = token.Span.Start + text.Length,
+					Text = text,
 				};
 				break;
 			}
@@ -245,110 +246,12 @@ internal sealed class BlockText
 	}
 
 	/// <summary>
-	/// 将当前文本添加到指定字符串。
+	/// 返回末尾处的下一词法文本项，但不将其消费。
 	/// </summary>
-	/// <param name="builder">字符串构造器。</param>
-	public void AppendTo(StringBuilder builder)
+	/// <returns>末尾处的文本项。</returns>
+	public BlockTextItem PeekBack()
 	{
-		int count = tokens.Count;
-		for (int i = 0; i < count; i++)
-		{
-			builder.Append(tokens[i].Text.AsSpan());
-		}
-	}
-
-	/// <summary>
-	/// 添加新的词法单元。
-	/// </summary>
-	/// <param name="token">要添加的词法单元。</param>
-	/// <param name="canConcat">是否可以连接字符串视图。</param>
-	public void Add(Token<BlockKind> token, bool canConcat = false)
-	{
-		if (length == 0)
-		{
-			canConcat = false;
-		}
-		length += token.Text.Length;
-		if (canConcat)
-		{
-			var lastToken = tokens.PeekBack();
-			if (lastToken.Text.TryConcat(token.Text, out var concated))
-			{
-				lastToken.Text = concated;
-				lastToken.Span = lastToken.Span with
-				{
-					End = token.Span.End,
-				};
-				return;
-			}
-		}
-		tokens.PushBack(token);
-	}
-
-	/// <summary>
-	/// 添加新的词法单元的一部分。
-	/// </summary>
-	/// <param name="token">要添加的词法单元。</param>
-	/// <param name="start">要添加的起始索引。</param>
-	/// <param name="length">要添加的长度。</param>
-	public void Add(Token<BlockKind> token, int start, int length)
-	{
-		if (length <= 0)
-		{
-			return;
-		}
-		StringView text = token.Text;
-		if (length == text.Length)
-		{
-			Add(token);
-		}
-		else
-		{
-			int spanStart = token.Span.Start + start;
-			int spanEnd = spanStart + length;
-			tokens.PushBack(new Token<BlockKind>(token.Kind, text.Slice(start, length), new TextSpan(spanStart, spanEnd)));
-			this.length += length;
-		}
-	}
-
-	/// <summary>
-	/// 返回开始处的下一词法单元，但不将其消费。
-	/// </summary>
-	/// <returns>开始处的下一词法单元。</returns>
-	public Token<BlockKind> PeekFront()
-	{
-		return tokens.PeekFront();
-	}
-
-	/// <summary>
-	/// 读取并返回开始处的下一词法单元。
-	/// </summary>
-	/// <returns>开始处的下一词法单元。</returns>
-	public Token<BlockKind> PopFront()
-	{
-		Token<BlockKind> token = tokens.PopFront();
-		length -= token.Text.Length;
-		return token;
-	}
-
-	/// <summary>
-	/// 返回末尾处的下一词法单元，但不将其消费。
-	/// </summary>
-	/// <returns>末尾处的下一词法单元。</returns>
-	public Token<BlockKind> PeekBack()
-	{
-		return tokens.PeekBack();
-	}
-
-	/// <summary>
-	/// 读取并返回末尾处的下一词法单元。
-	/// </summary>
-	/// <returns>末尾处的下一词法单元。</returns>
-	public Token<BlockKind> PopBack()
-	{
-		Token<BlockKind> token = tokens.PopBack();
-		length -= token.Text.Length;
-		return token;
+		return items.PeekBack();
 	}
 
 	/// <summary>
@@ -356,21 +259,8 @@ internal sealed class BlockText
 	/// </summary>
 	public void Clear()
 	{
-		tokens.Clear();
+		items.Clear();
 		length = 0;
-	}
-
-	/// <summary>
-	/// 将当前文本的内容添加到指定块文本。
-	/// </summary>
-	/// <param name="text">要添加到的块文本。</param>
-	public void AppendTo(BlockText text)
-	{
-		int count = tokens.Count;
-		for (int i = 0; i < count; i++)
-		{
-			text.Add(tokens[i], true);
-		}
 	}
 
 	/// <summary>
@@ -379,31 +269,14 @@ internal sealed class BlockText
 	/// <param name="locMap">要写入的位置映射表。</param>
 	public void GetLocationMap(LocationMap locMap)
 	{
-		int count = tokens.Count;
+		int count = items.Count;
 		int index = 0;
 		for (int i = 0; i < count; i++)
 		{
-			var token = tokens[i];
-			locMap.Add(index, token.Span.Start);
-			index += token.Text.Length;
+			var item = items[i];
+			locMap.Add(index, item.StartIndex);
+			index += item.Text.Length;
 		}
-	}
-
-	/// <summary>
-	/// 创建当前文本的副本。
-	/// </summary>
-	/// <returns>当前文本的副本。</returns>
-	public BlockText Clone()
-	{
-		BlockText result = new();
-		int count = tokens.Count;
-		result.tokens.EnsureCapacity(count);
-		result.length = length;
-		for (int i = 0; i < count; i++)
-		{
-			result.tokens.PushBack(tokens[i]);
-		}
-		return result;
 	}
 
 	/// <summary>
@@ -412,19 +285,19 @@ internal sealed class BlockText
 	/// <returns>当前对象的字符串视图表示形式。</returns>
 	public StringView ToStringView()
 	{
-		int count = tokens.Count;
+		int count = items.Count;
 		if (count == 0)
 		{
 			return StringView.Empty;
 		}
 		else if (count == 1)
 		{
-			return tokens[0].Text;
+			return items.PeekFront().Text;
 		}
 		// 优先连接字符串视图。
-		StringView view = tokens[0].Text;
+		StringView view = items.PeekFront().Text;
 		int i = 1;
-		for (; i < count && view.TryConcat(tokens[i].Text, out var newView); i++)
+		for (; i < count && view.TryConcat(items[i].Text, out var newView); i++)
 		{
 			view = newView;
 		}
@@ -437,7 +310,7 @@ internal sealed class BlockText
 		text.Append(view.AsSpan());
 		for (; i < count; i++)
 		{
-			text.Append(tokens[i].Text.AsSpan());
+			text.Append(items[i].Text.AsSpan());
 		}
 		return StringBuilderPool.GetStringAndReturn(text);
 	}
@@ -449,21 +322,21 @@ internal sealed class BlockText
 	/// <returns>当前对象的字符串视图表示形式。</returns>
 	public StringView ToStringView(int start)
 	{
-		int count = tokens.Count;
+		int count = items.Count;
 		if (count == 0)
 		{
 			return StringView.Empty;
 		}
 		else if (count == 1)
 		{
-			return tokens[0].Text.Substring(start);
+			return items[0].Text.Substring(start);
 		}
 		// 优先连接字符串视图。
 		StringView view = StringView.Empty;
 		int i = 0;
 		for (; i < count; i++)
 		{
-			StringView curView = tokens[i].Text;
+			StringView curView = items[i].Text;
 			if (curView.Length <= start)
 			{
 				start -= curView.Length;
@@ -488,7 +361,7 @@ internal sealed class BlockText
 		text.Append(view.AsSpan());
 		for (; i < count; i++)
 		{
-			text.Append(tokens[i].Text.AsSpan());
+			text.Append(items[i].Text.AsSpan());
 		}
 		return StringBuilderPool.GetStringAndReturn(text);
 	}

@@ -1,4 +1,3 @@
-using Cyjb.Collections;
 using Cyjb.Markdown.ParseInline;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
@@ -119,7 +118,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 		}
 
 		/// <summary>
-		/// 尝试从行中解析属性。
+		/// 尝试从文本中解析属性。
 		/// </summary>
 		/// <param name="text">要检查的文本。</param>
 		/// <returns>解析得到的属性列表，或者 <c>null</c> 表示解析失败。</returns>

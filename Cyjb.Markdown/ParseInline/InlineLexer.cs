@@ -19,7 +19,7 @@ namespace Cyjb.Markdown.ParseInline;
 [LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
 [LexerRegex("AttrValue", @"[^ \t\r\n""'=<>`']+|'[^']*'|\""[^""]*\""", RegexOptions.IgnoreCase)]
 [LexerRegex("ExtAttr", @"\{([^""'<>`'{}]*|'[^'\r\n]*'|\""[^""\r\n]*\"")*\}")]
-internal partial class InlineLexer : LexerController<InlineKind>
+internal partial class InlineLexer : LexerController<int>
 {
 	/// <summary>
 	/// 识别链接闭合上下文的名称。
@@ -50,11 +50,32 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// 字面量缓冲区。
 	/// </summary>
 	private readonly PooledList<char> literalBuffer = new(0x1000);
+	/// <summary>
+	/// 当前字面量文本的起始位置。
+	/// </summary>
+	private int literalStart;
+	/// <summary>
+	/// 要添加到的行级节点列表。
+	/// </summary>
+	private NodeList<InlineNode> children;
+
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
+	public InlineLexer()
+	{
+	}
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
 
 	/// <summary>
 	/// 获取当前词法单元的文本范围。
 	/// </summary>
-	public override TextSpan Span => ((InlineParser)SharedContext!).MapSpan(base.Span);
+	public override TextSpan Span
+	{
+		get
+		{
+			TextSpan span = base.Span;
+			return new TextSpan(MapLocation(span.Start), MapLocation(span.End));
+		}
+	}
 
 	/// <summary>
 	/// 返回并清空当前字面量文本。
@@ -73,21 +94,30 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 文件结束的动作。
+	/// </summary>
+	[LexerSymbol("<*><<EOF>>")]
+	private void EndOfFileAction()
+	{
+		AddLiteral(Span.Start);
+	}
+
+	/// <summary>
 	/// 硬换行的动作。
 	/// </summary>
-	[LexerSymbol(@"( {2,}|\\)\r?\n[ \t]*", Kind = InlineKind.Node)]
+	[LexerSymbol(@"( {2,}|\\)\r?\n[ \t]*")]
 	private void HardBreakAction()
 	{
-		Accept(new Break(true, Span));
+		Add(new Break(true, Span));
 	}
 
 	/// <summary>
 	/// 软换行的动作。
 	/// </summary>
-	[LexerSymbol(@" ?\r?\n[ \t]*", Kind = InlineKind.Node)]
+	[LexerSymbol(@" ?\r?\n[ \t]*")]
 	private void SoftBreakAction()
 	{
-		Accept(new Break(false, Span));
+		Add(new Break(false, Span));
 	}
 
 	/// <summary>
@@ -115,7 +145,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			string content = MarkdownUtil.ProcessCodeSpan(Source.GetReadedText());
 			// 跳过结束标志。
 			Source.Index += backtickCount;
-			Accept(InlineKind.Node, new CodeSpan(content, Span));
+			Add(new CodeSpan(content, Span));
 		}
 		else
 		{
@@ -127,18 +157,19 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 自动链接的动作。
 	/// </summary>
-	[LexerSymbol(@"[<][a-z][a-z0-9+.-]+:[^\0-\x20\x7F<>]*>{ExtAttr}?", RegexOptions.IgnoreCase, Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<][a-z][a-z0-9+.-]+:[^\0-\x20\x7F<>]*>{ExtAttr}?", RegexOptions.IgnoreCase)]
 	private void AutolinkAction()
 	{
 		string url = ParseAutolink(out HtmlAttributeList? attrs);
-		Link link = new(false, url, null, Span);
+		TextSpan span = Span;
+		Link link = new(false, url, null, span);
 		if (attrs != null)
 		{
 			link.Attributes.AddRange(attrs);
 		}
-		int start = Start + 1;
-		link.Children.Add(new Literal(url, new TextSpan(start, start + url.Length)));
-		Accept(link);
+		int literalStart = span.Start + 1;
+		link.Children.Add(new Literal(url, new TextSpan(literalStart, literalStart + url.Length)));
+		Add(link);
 	}
 
 	/// <summary>
@@ -146,18 +177,19 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// </summary>
 	[LexerRegex("MailName", "[a-z0-9.!#$%&'*+/=?^_`{|}~-]+", RegexOptions.IgnoreCase)]
 	[LexerRegex("MailDomain", "[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?", RegexOptions.IgnoreCase)]
-	[LexerSymbol(@"[<]{MailName}@{MailDomain}(\.{MailDomain})*>{ExtAttr}?", Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]{MailName}@{MailDomain}(\.{MailDomain})*>{ExtAttr}?")]
 	private void EmailAutolinkAction()
 	{
 		string url = ParseAutolink(out HtmlAttributeList? attrs);
-		Link link = new(false, "mailto:" + url, null, Span);
+		TextSpan span = Span;
+		Link link = new(false, "mailto:" + url, null, span);
 		if (attrs != null)
 		{
 			link.Attributes.AddRange(attrs);
 		}
-		int start = Start + 1;
-		link.Children.Add(new Literal(url, new TextSpan(start, start + url.Length)));
-		Accept(link);
+		int literalStart = span.Start + 1;
+		link.Children.Add(new Literal(url, new TextSpan(literalStart, literalStart + url.Length)));
+		Add(link);
 	}
 
 	/// <summary>
@@ -197,8 +229,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 扩展自动链接的动作。
 	/// </summary>
-	[LexerSymbol(@"(https?:\/\/|www\.).+/<|\s|{EOF}", RegexOptions.IgnoreCase,
-		Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"(https?:\/\/|www\.).+/<|\s|{EOF}", RegexOptions.IgnoreCase, UseShortest = true)]
 	private void ExtAutolinkAction()
 	{
 		// 在链接体里，不识别扩展自动链接。
@@ -211,9 +242,10 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			if (MarkdownUtil.IsValidDomain(url))
 			{
 				Source.Index -= cnt;
-				Link link = new(false, url, null, Span);
-				link.Children.Add(new Literal(Text.ToString(), Span));
-				Accept(link);
+				TextSpan span = Span;
+				Link link = new(false, url, null, span);
+				link.Children.Add(new Literal(Text.ToString(), span));
+				Add(link);
 				return;
 			}
 		}
@@ -233,9 +265,10 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		{
 			string text = Text.ToString();
 			string url = text.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase) ? text : "mailto:" + text;
-			Link link = new(false, url, null, Span);
-			link.Children.Add(new Literal(text, Span));
-			Accept(InlineKind.Node, link);
+			TextSpan span = Span;
+			Link link = new(false, url, null, span);
+			link.Children.Add(new Literal(text, span));
+			Add(link);
 			return;
 		}
 		Reject(RejectOptions.State);
@@ -244,66 +277,65 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// HTML 起始标签的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>", Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>")]
 	private void HtmlStartTagAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlStartTag, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlStartTag, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// HTML 结束标签的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]\/{TagName}{WS}>", Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]\/{TagName}{WS}>")]
 	private void HtmlEndTagAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlEndTag, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlEndTag, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// HTML 注释的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]!-->", Kind = InlineKind.Node, UseShortest = true)]
-	[LexerSymbol(@"[<]!--->", Kind = InlineKind.Node, UseShortest = true)]
-	[LexerSymbol(@"[<]!---->", Kind = InlineKind.Node, UseShortest = true)]
-	[LexerSymbol(@"[<]!--.*-->", RegexOptions.Singleline, Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"[<]!-->", UseShortest = true)]
+	[LexerSymbol(@"[<]!--->", UseShortest = true)]
+	[LexerSymbol(@"[<]!---->", UseShortest = true)]
+	[LexerSymbol(@"[<]!--.*-->", RegexOptions.Singleline, UseShortest = true)]
 	private void HtmlCommentAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlComment, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlComment, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// HTML 处理结构的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]\?.*\?>", RegexOptions.Singleline, Kind = InlineKind.Node, UseShortest = true)]
+	[LexerSymbol(@"[<]\?.*\?>", RegexOptions.Singleline, UseShortest = true)]
 	private void HtmlProcessingAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlProcessing, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlProcessing, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// HTML 声明的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]![a-z][^>]*>", RegexOptions.IgnoreCase | RegexOptions.Singleline, Kind = InlineKind.Node)]
+	[LexerSymbol(@"[<]![a-z][^>]*>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
 	private void HtmlDeclarationAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlDeclaration, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlDeclaration, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// HTML CDATA 的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]!\[CDATA\[.*\]\]>", RegexOptions.IgnoreCase | RegexOptions.Singleline, Kind = InlineKind.Node,
-		UseShortest = true)]
+	[LexerSymbol(@"[<]!\[CDATA\[.*\]\]>", RegexOptions.IgnoreCase | RegexOptions.Singleline, UseShortest = true)]
 	private void HtmlCDataAction()
 	{
-		Accept(new Html(MarkdownKind.HtmlCData, Text.ToString(), Span));
+		Add(new Html(MarkdownKind.HtmlCData, Text.ToString(), Span));
 	}
 
 	/// <summary>
 	/// 链接标签的动作。
 	/// </summary>
 	[LexerRegex("LinkLabel", @"\[([^\\\[\]]|\\.)*\]")]
-	[LexerSymbol(@"<LinkClose>]{LinkLabel}", Kind = InlineKind.LinkClose)]
+	[LexerSymbol(@"<LinkClose>]{LinkLabel}")]
 	private void LinkLabelAction()
 	{
 		InlineParser parser = (InlineParser)SharedContext!;
@@ -322,7 +354,18 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		}
 		if (!label.IsEmpty && parser.TryGetLinkDefine(LinkUtil.NormalizeLabel(label), out LinkDefinition? define))
 		{
-			Accept(define);
+			TextSpan span = Span;
+			AddLiteral(span.Start);
+			if (parser.ParseLinkDefinition(define, span))
+			{
+				// 调整字面量起始位置。
+				literalStart = span.End;
+			}
+			else
+			{
+				// 链接匹配失败，作为字面量字符添加。
+				AppendLiteralText(Text);
+			}
 		}
 		else
 		{
@@ -334,7 +377,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// </summary>
 	[LexerRegex("LinkDestination", @"<([^<>\r\n\\]|\\.)*>|[^<\x00-\x1F\x7F ][^\x00-\x1F\x7F ]*")]
 	[LexerRegex("LinkTitle", @"\""([^""\\]|\\.)*\""|\'([^'\\]|\\.)*'|\(([^()\\]|\\.)*\)")]
-	[LexerSymbol(@"<LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?", Kind = InlineKind.LinkClose)]
+	[LexerSymbol(@"<LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?")]
 	private void LinkBodyAction()
 	{
 		ReadOnlySpan<char> text = Text.AsSpan(2);
@@ -383,14 +426,26 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		{
 			Source.Index -= attrLen;
 		}
-		Accept(body);
+		InlineParser parser = (InlineParser)SharedContext!;
+		TextSpan span = Span;
+		AddLiteral(span.Start);
+		if (parser.ParseLinkBody(body, span))
+		{
+			// 调整字面量起始位置。
+			literalStart = span.End;
+		}
+		else
+		{
+			// 链接匹配失败，作为字面量字符添加。
+			AppendLiteralText(Text);
+		}
 	}
 
 	/// <summary>
 	/// 表情符号的动作。
 	/// </summary>
 	/// <remarks>目前最长的 emoji 名称长度为 36。</remarks>
-	[LexerSymbol(@":.{1,36}:", UseShortest = true, Kind = InlineKind.Node)]
+	[LexerSymbol(@":.{1,36}:", UseShortest = true)]
 	private void EmojiAction()
 	{
 		if (options.UseEmoji)
@@ -399,7 +454,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			Emoji? emoji = Emoji.GetEmoji(Text[1..^1], Span);
 			if (emoji != null)
 			{
-				Accept(emoji);
+				Add(emoji);
 				return;
 			}
 		}
@@ -470,7 +525,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			}
 			// 跳过结束标志。
 			Source.Index += dollarCount;
-			Accept(InlineKind.Node, new MathSpan(content, Span));
+			Add(new MathSpan(content, Span));
 		}
 		else
 		{
@@ -482,22 +537,37 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	/// <summary>
 	/// 链接起始的动作。
 	/// </summary>
-	[LexerSymbol(@"\[", Kind = InlineKind.LinkStart)]
-	[LexerSymbol(@"!\[", Kind = InlineKind.LinkStart)]
+	[LexerSymbol(@"\[")]
+	[LexerSymbol(@"!\[")]
 	private void LinkStartAction()
 	{
-		Accept(Text.Length > 1);
+		bool isImage = Text.Length > 1;
+		Literal node = new(Text.ToString(), Span);
+		Add(node);
+		(SharedContext as InlineParser)!.AddBracket(node, isImage);
+		// 允许识别链接闭合。
+		EnterContext(LinkCloseContext);
 	}
 
 	/// <summary>
 	/// 链接结束的动作。
 	/// </summary>
 	/// <remarks>这里需要负责闭合非活动状态的左中括号，因此不能限定在 LinkClose 上下文。</remarks>
-	[LexerSymbol(@"]", Kind = InlineKind.LinkClose)]
+	[LexerSymbol(@"]")]
 	private void LinkCloseAction()
 	{
-		// value 为 null，与之前的 LinkBody、LinkLabel 区分。
-		Accept();
+		TextSpan span = Span;
+		AddLiteral(span.Start);
+		if ((SharedContext as InlineParser)!.ParseCloseBracket(span))
+		{
+			// 链接匹配成功，调整字面量起始位置。
+			literalStart = span.End;
+		}
+		else
+		{
+			// 链接匹配失败，作为字面量字符添加。
+			AppendLiteralText(Text);
+		}
 	}
 
 	/// <summary>
@@ -521,7 +591,8 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		DelimiterInfo? info = ScanDelimiters(ch, processor);
 		if (info != null)
 		{
-			Accept(InlineKind.Delimiter, info);
+			Add(info.Node);
+			(SharedContext as InlineParser)!.AddDelimiter(info);
 			return;
 		}
 		// 在 ScanDelimiters 可能会将后续的分隔符一起消费掉。
@@ -540,7 +611,8 @@ internal partial class InlineLexer : LexerController<InlineKind>
 			DelimiterInfo? info = ScanDelimiters(Text[0], StrikethroughProcessor);
 			if (info != null)
 			{
-				Accept(InlineKind.Delimiter, info);
+				Add(info.Node);
+				(SharedContext as InlineParser)!.AddDelimiter(info);
 				return;
 			}
 		}
@@ -606,7 +678,7 @@ internal partial class InlineLexer : LexerController<InlineKind>
 		if (canOpen || canClose)
 		{
 			return new DelimiterInfo(delimiter, length, canOpen, canClose,
-				new Literal(new string(delimiter, length)), processor);
+				new Literal(new string(delimiter, length), Span), processor);
 		}
 		else
 		{
@@ -671,6 +743,20 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	}
 
 	/// <summary>
+	/// 添加字面量节点。
+	/// </summary>
+	/// <param name="end">字面量节点的结束位置。</param>
+	private void AddLiteral(int end)
+	{
+		string text = GetLiteralText();
+		if (text.Length > 0)
+		{
+			children.Add(new Literal(text, new TextSpan(literalStart, end)));
+		}
+		literalStart = end;
+	}
+
+	/// <summary>
 	/// 获取或设置共享的上下文对象。
 	/// </summary>
 	public override object? SharedContext
@@ -692,19 +778,33 @@ internal partial class InlineLexer : LexerController<InlineKind>
 	{
 		base.SourceLoaded();
 		lastChar = '\n';
+		literalStart = MapLocation(0);
+		children = (SharedContext as InlineParser)!.children;
 	}
 
 	/// <summary>
-	/// 根据当前词法分析接受结果创建 <see cref="Token{InlineKind}"/> 的新实例。
+	/// 映射指定的位置。
 	/// </summary>
-	/// <returns><see cref="Token{InlineKind}"/> 的新实例。</returns>
-	protected override Token<InlineKind> CreateToken()
+	/// <param name="location">要映射的位置。</param>
+	/// <returns>映射后的位置。</returns>
+	private int MapLocation(int location)
 	{
+		return ((InlineParser)SharedContext!).MapLocation(location);
+	}
+
+	/// <summary>
+	/// 添加指定的内联节点。
+	/// </summary>
+	/// <param name="node">要添加的内联节点。</param>
+	private void Add(InlineNode node)
+	{
+		AddLiteral(node.Span.Start);
+		children.Add(node);
+		literalStart = node.Span.End;
 		if (Text.Length > 0)
 		{
 			lastChar = Text[^1];
 		}
-		return base.CreateToken();
 	}
 
 	protected override void Dispose(bool disposing)

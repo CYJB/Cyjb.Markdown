@@ -19,75 +19,75 @@ internal partial class InlineLexer
 	/// <summary>
 	/// 词法分析器的工厂。
 	/// </summary>
-	public static readonly ILexerFactory<InlineKind> Factory = CreateLexerFactory();
+	public static readonly ILexerFactory<int> Factory = CreateLexerFactory();
 
 	/// <summary>
 	/// 创建词法分析器的工厂。
 	/// </summary>
 	[CompilerGeneratedAttribute]
-	private static ILexerFactory<InlineKind> CreateLexerFactory()
+	private static ILexerFactory<int> CreateLexerFactory()
 	{
 		// 上下文数据
 		Dictionary<string, ContextData> contexts = new()
 		{
-			 { ContextData.Initial, new ContextData(0, ContextData.Initial) },
-			 { "LinkClose", new ContextData(1, "LinkClose") }
+			 { ContextData.Initial, new ContextData(0, ContextData.Initial, (InlineLexer c) => c.EndOfFileAction()) },
+			 { "LinkClose", new ContextData(1, "LinkClose", (InlineLexer c) => c.EndOfFileAction()) }
 		};
 		// 终结符数据
-		TerminalData<InlineKind>[] terminals = new[]
+		TerminalData<int>[] terminals = new[]
 		{
-			// 0: ( {2,}|\\)\r?\n[ \t]*
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HardBreakAction()),
-			// 1:  ?\r?\n[ \t]*
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.SoftBreakAction()),
-			// 2: \\[!"#$%&'()*+,-./:;<=>?@\[\\\]^_`{|}~]
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.EscapedAction()),
-			// 3: `+
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.CodeSpanAction()),
-			// 4: [<][a-z][a-z0-9+.-]+:[^\0-\x20\x7F<>]*>{ExtAttr}?
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.AutolinkAction()),
-			// 5: [<]{MailName}@{MailDomain}(\.{MailDomain})*>{ExtAttr}?
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.EmailAutolinkAction()),
-			// 6: (https?:\/\/|www\.).+/<|\s|{EOF}
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.ExtAutolinkAction(), trailing: 0, useShortest: true),
-			// 7: (mailto:)?[a-z0-9.+_-]+@{MailDomain}(\.{MailDomain})+
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.ExtEmailAutolinkAction()),
-			// 8: [<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlStartTagAction()),
-			// 9: [<]\/{TagName}{WS}>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlEndTagAction()),
-			// 10: [<]!-->
+			// 0: <*><<EOF>>
+			new TerminalData<int>(action: (InlineLexer c) => c.HardBreakAction()),
+			// 1: ( {2,}|\\)\r?\n[ \t]*
+			new TerminalData<int>(action: (InlineLexer c) => c.SoftBreakAction()),
+			// 2:  ?\r?\n[ \t]*
+			new TerminalData<int>(action: (InlineLexer c) => c.EscapedAction()),
+			// 3: \\[!"#$%&'()*+,-./:;<=>?@\[\\\]^_`{|}~]
+			new TerminalData<int>(action: (InlineLexer c) => c.CodeSpanAction()),
+			// 4: `+
+			new TerminalData<int>(action: (InlineLexer c) => c.AutolinkAction()),
+			// 5: [<][a-z][a-z0-9+.-]+:[^\0-\x20\x7F<>]*>{ExtAttr}?
+			new TerminalData<int>(action: (InlineLexer c) => c.EmailAutolinkAction()),
+			// 6: [<]{MailName}@{MailDomain}(\.{MailDomain})*>{ExtAttr}?
+			new TerminalData<int>(action: (InlineLexer c) => c.ExtAutolinkAction(), trailing: 0, useShortest: true),
+			// 7: (https?:\/\/|www\.).+/<|\s|{EOF}
+			new TerminalData<int>(action: (InlineLexer c) => c.ExtEmailAutolinkAction()),
+			// 8: (mailto:)?[a-z0-9.+_-]+@{MailDomain}(\.{MailDomain})+
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlStartTagAction()),
+			// 9: [<]{TagName}({WS_1}{AttrName}({WS}={WS}{AttrValue})?)*{WS}\/?>
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlEndTagAction()),
+			// 10: [<]\/{TagName}{WS}>
+			//     [<]!-->
 			//     [<]!--->
 			//     [<]!---->
-			//     [<]!--.*-->
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlCommentAction(), useShortest: true),
-			// 11: [<]\?.*\?>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlProcessingAction(), useShortest: true),
-			// 12: [<]![a-z][^>]*>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlDeclarationAction()),
-			// 13: [<]!\[CDATA\[.*\]\]>
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.HtmlCDataAction(), useShortest: true),
-			// 14: <LinkClose>]{LinkLabel}
-			new TerminalData<InlineKind>(InlineKind.LinkClose, action: (InlineLexer c) => c.LinkLabelAction()),
-			// 15: <LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?
-			new TerminalData<InlineKind>(InlineKind.LinkClose, action: (InlineLexer c) => c.LinkBodyAction()),
-			// 16: :.{1,36}:
-			new TerminalData<InlineKind>(InlineKind.Node, action: (InlineLexer c) => c.EmojiAction(), useShortest: true),
-			// 17: $+
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.MathSpanAction()),
-			// 18: \[
-			//     !\[
-			new TerminalData<InlineKind>(InlineKind.LinkStart, action: (InlineLexer c) => c.LinkStartAction()),
-			// 19: ]
-			new TerminalData<InlineKind>(InlineKind.LinkClose, action: (InlineLexer c) => c.LinkCloseAction()),
-			// 20: [^hmw \\\r\n<\[\]":$!*_~`]+
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.MultiCharAction()),
-			// 21: \*|_
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.EmphasisAction()),
-			// 22: ~
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.StrikethroughAction()),
-			// 23: .
-			new TerminalData<InlineKind>(action: (InlineLexer c) => c.CharAction())
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlCommentAction(), useShortest: true),
+			// 11: [<]!--.*-->
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlProcessingAction(), useShortest: true),
+			// 12: [<]\?.*\?>
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlDeclarationAction()),
+			// 13: [<]![a-z][^>]*>
+			new TerminalData<int>(action: (InlineLexer c) => c.HtmlCDataAction(), useShortest: true),
+			// 14: [<]!\[CDATA\[.*\]\]>
+			new TerminalData<int>(action: (InlineLexer c) => c.LinkLabelAction()),
+			// 15: <LinkClose>]{LinkLabel}
+			new TerminalData<int>(action: (InlineLexer c) => c.LinkBodyAction()),
+			// 16: <LinkClose>]\({WS}{LinkDestination}?({WS_1}{LinkTitle})?{WS}\){ExtAttr}?
+			new TerminalData<int>(action: (InlineLexer c) => c.EmojiAction(), useShortest: true),
+			// 17: :.{1,36}:
+			new TerminalData<int>(action: (InlineLexer c) => c.MathSpanAction()),
+			// 18: $+
+			//     \[
+			new TerminalData<int>(action: (InlineLexer c) => c.LinkStartAction()),
+			// 19: !\[
+			new TerminalData<int>(action: (InlineLexer c) => c.LinkCloseAction()),
+			// 20: ]
+			new TerminalData<int>(action: (InlineLexer c) => c.MultiCharAction()),
+			// 21: [^hmw \\\r\n<\[\]":$!*_~`]+
+			new TerminalData<int>(action: (InlineLexer c) => c.EmphasisAction()),
+			// 22: \*|_
+			new TerminalData<int>(action: (InlineLexer c) => c.StrikethroughAction()),
+			// 23: ~
+			new TerminalData<int>(action: (InlineLexer c) => c.CharAction())
 		};
 		// 字符类信息
 		//  0: [\uFFFF]
@@ -10096,7 +10096,7 @@ internal partial class InlineLexer
 			2161, 2161, 2161, 2161, 2161, 2161, 2161, 2161
 		};
 		// 词法分析器的数据
-		LexerData<InlineKind> lexerData = new(contexts,
+		LexerData<int> lexerData = new(contexts,
 			terminals,
 			new CharClassMap(indexes, classes, categories),
 			states,
@@ -10105,7 +10105,7 @@ internal partial class InlineLexer
 			false,
 			true,
 			typeof(InlineLexer));
-		return new LexerFactory<InlineKind, InlineLexer>(lexerData);
+		return new LexerFactory<int, InlineLexer>(lexerData);
 	}
 }
 

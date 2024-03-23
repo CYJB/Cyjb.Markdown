@@ -97,7 +97,9 @@ internal sealed class TableProcessor : BlockProcessor
 	/// <param name="line">新添加的行。</param>
 	public override void AddLine(BlockLine line)
 	{
-		table.Children.Add(ParseRow(line.Span, line.BlockText));
+		BlockText text = new();
+		line.AppendTo(text, false);
+		table.Children.Add(ParseRow(line.Span, text));
 	}
 
 	/// <summary>
@@ -140,12 +142,12 @@ internal sealed class TableProcessor : BlockProcessor
 		int cellStart = text.Start;
 		int cellEnd = text.End;
 		bool escaped = false;
-		int count = text.Tokens.Count;
+		int count = text.Items.Count;
 		for (int i = 0; i < count; i++)
 		{
 			int startIdx = 0;
-			var token = text.Tokens[i];
-			ReadOnlySpan<char> textSpan = token.Text;
+			var item = text.Items[i];
+			ReadOnlySpan<char> textSpan = item.Text;
 			int j = 0;
 			if (i == 0 && textSpan[0] == '|')
 			{
@@ -170,7 +172,7 @@ internal sealed class TableProcessor : BlockProcessor
 						// 所以在拼接字符串时，将 \ 忽略掉。
 						if (startIdx < j - 1)
 						{
-							cellText.Add(token, startIdx, j - 1 - startIdx);
+							cellText.Add(item, startIdx, j - 1 - startIdx);
 						}
 						startIdx = j;
 						escaped = false;
@@ -179,10 +181,10 @@ internal sealed class TableProcessor : BlockProcessor
 					{
 						if (j > startIdx)
 						{
-							cellText.Add(token, startIdx, j - startIdx);
+							cellText.Add(item, startIdx, j - startIdx);
 						}
 						// 单元格总是包含结束 | 的。
-						int curEnd = token.Span.Start + j + 1;
+						int curEnd = item.StartIndex + j + 1;
 						TextSpan span = new(cellStart, curEnd);
 						CellInfo info = new(span, cellText);
 						cells.Add(info.Cell);
@@ -200,7 +202,7 @@ internal sealed class TableProcessor : BlockProcessor
 			// 添加当前 Token 的剩余文本。
 			if (startIdx < textSpan.Length)
 			{
-				cellText.Add(token, startIdx, textSpan.Length - startIdx);
+				cellText.Add(item, startIdx, textSpan.Length - startIdx);
 			}
 		}
 		// 添加可能的最后一个单元格。
@@ -304,10 +306,10 @@ internal sealed class TableProcessor : BlockProcessor
 			int cellCount = 0;
 			bool escaped = false;
 			bool hasContent = false;
-			int end = text.Tokens.Count - 1;
+			int end = text.Items.Count - 1;
 			for (int i = 0; i <= end; i++)
 			{
-				ReadOnlySpan<char> textSpan = text.Tokens[i].Text;
+				ReadOnlySpan<char> textSpan = text.Items[i].Text;
 				textSpan = textSpan.TrimEnd(MarkdownUtil.Whitespace);
 				int j = 0;
 				if (i == 0 && textSpan[0] == '|')

@@ -37,11 +37,12 @@ internal static class LinkUtil
 	public static string NormalizeLabel(BlockText label)
 	{
 		StringBuilder text = StringBuilderPool.Rent(label.Length);
-		int count = label.Tokens.Count;
+		var items = label.Items;
+		int count = items.Count;
 		bool isWhitespace = true;
 		for (int i = 0; i < count; i++)
 		{
-			ReadOnlySpan<char> span = label.Tokens[i].Text;
+			ReadOnlySpan<char> span = items[i].Text;
 			for (int j = 0; j < span.Length; j++)
 			{
 				char ch = span[j];

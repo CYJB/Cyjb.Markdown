@@ -100,22 +100,21 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 				yield break;
 			}
 			line.SkipIndent();
-			BlockText text = line.BlockText;
-			int start = text.Start;
-			var token = text.PeekFront();
+			int start = line.Start;
+			var token = line.PeekFront();
 			HtmlAttributeList? attrs = token.Value as HtmlAttributeList;
 			// 计算标题的深度，标题一定在同一个 Token 内。
 			int depth = GetHeadingDepth(token.Text);
-			text.RemoteStart(depth);
+			line.RemoveStart(depth);
 			// 忽略内容前后的空白
-			text.TrimStart();
-			text.TrimEnd();
+			line.TrimStart();
+			line.TrimEnd();
 			// 检查闭合 #
-			if (text.Tokens.Count > 0)
+			if (line.Tokens.Count > 0)
 			{
-				TrimEndingSharp(text);
+				TrimEndingSharp(line);
 			}
-			yield return new ATXHeadingProcessor(start, depth, text.Clone(), attrs);
+			yield return new ATXHeadingProcessor(start, depth, line.ToBlockText(), attrs);
 		}
 
 		/// <summary>
@@ -133,11 +132,11 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 		/// <summary>
 		/// 移除标题的结束 # 符号。
 		/// </summary>
-		/// <param name="text">标题的文本。</param>
+		/// <param name="line">标题的文本。</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static void TrimEndingSharp(BlockText text)
+		private static void TrimEndingSharp(BlockLine line)
 		{
-			ReadOnlySpan<char> span = text.PeekBack().Text;
+			ReadOnlySpan<char> span = line.PeekBack().Text;
 			int sharpCount = span.Length - span.TrimEnd('#').Length;
 			if (sharpCount == 0)
 			{
@@ -146,14 +145,14 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 			if (sharpCount == span.Length)
 			{
 				// 最后一个 Token 被全部消费。
-				text.PopBack();
-				text.TrimEnd();
+				line.PopBack();
+				line.TrimEnd();
 			}
 			else if (MarkdownUtil.IsWhitespace(span[span.Length - sharpCount - 1]))
 			{
 				// 要求闭合 # 前包含空格或 Tab。
-				text.RemoteEnd(sharpCount);
-				text.TrimEnd();
+				line.RemoveEnd(sharpCount);
+				line.TrimEnd();
 			}
 		}
 	}

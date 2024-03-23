@@ -14,7 +14,7 @@ internal sealed class ParagraphProcessor : BlockProcessor
 	/// </summary>
 	private readonly Paragraph paragraph = new();
 	/// <summary>
-	/// 段落包含的行。
+	/// 段落包含的文本。
 	/// </summary>
 	private readonly BlockText text = new();
 	/// <summary>

@@ -54,12 +54,13 @@ internal static partial class MarkdownUtil
 	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
 	public static int FindAttributeStart(BlockText text)
 	{
+		var items = text.Items;
 		char stringDelimiter = '\0';
 		bool inString = false;
 		int idx;
-		for (int i = text.Tokens.Count - 1; i >= 0; i--)
+		for (int i = items.Count - 1; i >= 0; i--)
 		{
-			ReadOnlySpan<char> span = text.Tokens[i].Text;
+			ReadOnlySpan<char> span = items[i].Text;
 			if (inString)
 			{
 				// 跳过字符串。
@@ -86,7 +87,7 @@ internal static partial class MarkdownUtil
 					{
 						for (i--; i >= 0; i--)
 						{
-							idx += text.Tokens[i].Text.Length;
+							idx += items[i].Text.Length;
 						}
 						return idx;
 					}
