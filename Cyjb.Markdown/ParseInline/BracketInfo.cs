@@ -11,7 +11,7 @@ internal sealed class BracketInfo
 	/// <summary>
 	/// 括号对应的节点。
 	/// </summary>
-	public readonly Literal Node;
+	public readonly TempLiteral Node;
 	/// <summary>
 	/// 是否表示图片。
 	/// </summary>
@@ -39,7 +39,7 @@ internal sealed class BracketInfo
 	/// <param name="node">括号对应的节点。</param>
 	/// <param name="isImage">是否表示图片。</param>
 	/// <param name="startMark">源文件的起始标记。</param>
-	public BracketInfo(Literal node, bool isImage, SourceMark startMark)
+	public BracketInfo(TempLiteral node, bool isImage, SourceMark startMark)
 	{
 		Node = node;
 		IsImage = isImage;

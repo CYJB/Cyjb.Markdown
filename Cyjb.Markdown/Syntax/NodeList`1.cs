@@ -56,6 +56,19 @@ public sealed class NodeList<T> : ListBase<T>
 	/// <param name="item">要插入的对象。</param>
 	protected override void InsertItem(int index, T item)
 	{
+		NodeList<T>? oldContainer = (item.Parent as INodeContainer<T>)?.Children;
+		if (oldContainer != null)
+		{
+			int oldIdx = oldContainer.IndexOf(item);
+			if (oldContainer == this)
+			{
+				if (oldIdx <= index)
+				{
+					index--;
+				}
+			}
+			oldContainer!.nodes.RemoveAt(oldIdx);
+		}
 		item.Unlink();
 		item.Parent = owner;
 		if (index > 0)
@@ -103,12 +116,31 @@ public sealed class NodeList<T> : ListBase<T>
 	/// <param name="item">位于指定索引处的元素的新值。</param>
 	protected override void SetItemAt(int index, T item)
 	{
+		NodeList<T>? oldContainer = (item.Parent as INodeContainer<T>)?.Children;
+		if (oldContainer != null)
+		{
+			int oldIdx = oldContainer.IndexOf(item);
+			if (oldContainer == this)
+			{
+				if (oldIdx == index)
+				{
+					return;
+				}
+				else if (oldIdx < index)
+				{
+					index--;
+				}
+			}
+			oldContainer!.nodes.RemoveAt(oldIdx);
+		}
 		item.Unlink();
+		nodes[index].Unlink(false);
 		item.Parent = owner;
 		if (index > 0)
 		{
-			item.SetPrev(nodes[index]);
-			nodes[index].SetNext(item);
+			T prev = nodes[index - 1];
+			item.SetPrev(prev);
+			prev.SetNext(item);
 		}
 		if (index + 1 < nodes.Count)
 		{
@@ -159,10 +191,9 @@ public sealed class NodeList<T> : ListBase<T>
 	/// </summary>
 	/// <param name="start">要添加的起始节点（包含）。</param>
 	/// <param name="end">要添加的结束节点（不含）。</param>
-	/// <remarks>如果 <paramref name="start"/> 为 <c>null</c>，那么什么都不做。如果
-	/// <paramref name="end"/> 为 <c>null</c>，那么将从 <paramref name="start"/>
+	/// <remarks>如果 <paramref name="end"/> 为 <c>null</c>，那么将从 <paramref name="start"/>
 	/// 开始的所有节点都添加到当前列表。</remarks>
-	public void AddRange(T? start, T? end)
+	public void AddRange(T start, T? end)
 	{
 		if (start == null)
 		{
@@ -172,12 +203,15 @@ public sealed class NodeList<T> : ListBase<T>
 		NodeList<T>? oldContainer = (start.Parent as INodeContainer<T>)?.Children;
 		if (oldContainer == null)
 		{
+			start.Prev?.SetNext(null);
+			end?.SetPrev(null);
+			Node? currentNode = start;
 			Node? nextNode;
-			while (start != null && start != end)
+			while (currentNode != null && currentNode != end)
 			{
-				nextNode = start.Next;
-				nodes.Add(start);
-				start = (T?)nextNode;
+				nextNode = currentNode.Next;
+				nodes.Add((T)currentNode);
+				currentNode = nextNode;
 			}
 		}
 		else
@@ -201,8 +235,21 @@ public sealed class NodeList<T> : ListBase<T>
 					throw CommonExceptions.Unreachable();
 				}
 			}
-			nodes.AddRange(oldContainer.Skip(startIdx).Take(endIdx - startIdx));
 			oldContainer.RemoveRangeUnchecked(startIdx, endIdx - startIdx);
+			if (nodes.Count > 0)
+			{
+				Node lastNode = nodes[^1];
+				lastNode.SetNext(start);
+				start.SetPrev(lastNode);
+			}
+			Node? currentNode = start;
+			Node? nextNode;
+			while (currentNode != null && currentNode != end)
+			{
+				nextNode = currentNode.Next;
+				nodes.Add((T)currentNode);
+				currentNode = nextNode;
+			}
 		}
 		// 修复关联关系
 		FixLink(index);
@@ -281,6 +328,32 @@ public sealed class NodeList<T> : ListBase<T>
 	}
 
 	/// <summary>
+	/// 将指定元素移动到指定位置。
+	/// </summary>
+	/// <param name="item">待移动的元素。</param>
+	/// <param name="index">要移动到的新位置。</param>
+	/// <param name="updateNext">是否需要修改 Next。</param>
+	internal void MoveItemTo(T item, int index, bool updateNext)
+	{
+		if (index > 0)
+		{
+			T prev = nodes[index - 1];
+			item.SetPrev(prev);
+			prev.SetNext(item);
+		}
+		if (updateNext && index + 1 < nodes.Count)
+		{
+			T next = nodes[index + 1];
+			if (next != item)
+			{
+				item.SetNext(next);
+				next.SetPrev(item);
+			}
+		}
+		nodes[index] = item;
+	}
+
+	/// <summary>
 	/// 将当前列表的子节点复制到指定列表。
 	/// </summary>
 	/// <param name="list">要复制到的列表。</param>
@@ -298,10 +371,13 @@ public sealed class NodeList<T> : ListBase<T>
 	/// </summary>
 	/// <param name="index">要移除的节点起始索引。</param>
 	/// <param name="count">要移除的节点个数。</param>
-	private void RemoveRangeUnchecked(int index, int count)
+	internal void RemoveRangeUnchecked(int index, int count)
 	{
-		nodes.RemoveRange(index, count);
-		FixLink(index);
+		if (count > 0)
+		{
+			nodes.RemoveRange(index, count);
+			FixLink(index);
+		}
 	}
 
 	/// <summary>

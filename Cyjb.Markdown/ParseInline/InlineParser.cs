@@ -32,7 +32,7 @@ internal sealed class InlineParser
 	/// <summary>
 	/// 源文件读取器。
 	/// </summary>
-	private SourceReader reader;
+	private SourceReader source;
 	/// <summary>
 	/// 要添加到的行级节点列表。
 	/// </summary>
@@ -91,7 +91,7 @@ internal sealed class InlineParser
 	public void Parse(BlockText text, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
-		reader = new SourceReader(text.ToStringView());
+		source = new SourceReader(text.ToStringView());
 		// 将词法单元重新映射成源码位置。
 		locationMap.Clear();
 		text.GetLocationMap(locationMap);
@@ -100,7 +100,7 @@ internal sealed class InlineParser
 		delimiterInfo = null;
 		brackets.Clear();
 
-		runner.Parse(reader);
+		runner.Parse(source);
 
 		ProcessDelimiter(null);
 		MergeText(children);
@@ -121,13 +121,13 @@ internal sealed class InlineParser
 	/// </summary>
 	/// <param name="node">括号对应的节点。</param>
 	/// <param name="isImage">是否表示图片。</param>
-	internal void AddBracket(Literal node, bool isImage)
+	internal void AddBracket(TempLiteral node, bool isImage)
 	{
 		if (brackets.Count > 0)
 		{
 			brackets.Peek().BracketAfter = true;
 		}
-		brackets.Push(new BracketInfo(node, isImage, reader.Mark())
+		brackets.Push(new BracketInfo(node, isImage, source.Mark())
 		{
 			Delimiter = delimiterInfo,
 		});
@@ -166,13 +166,14 @@ internal sealed class InlineParser
 		{
 			FootnoteRef footnoteRef = new(footnote, fullSpan);
 			// 移除起始括号以及之后的所有内容。
+			Controller!.AddLiteral(span.Start);
 			children.RemoveRange(opener.Node, null);
 			children.Add(footnoteRef);
 			PopBracket();
 			return true;
 		}
-		else if (!opener.BracketAfter && reader.Peek() != '[' &&
-			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(reader.Index - 1)), out LinkDefinition? linkDefine2))
+		else if (!opener.BracketAfter && source.Peek() != '[' &&
+			linkDefines.TryGetValue(LinkUtil.NormalizeLabel(GetCurrentLinkText(source.Index - 1)), out LinkDefinition? linkDefine2))
 		{
 			// 是 ]，后面没有 URL 或标签。
 			// 如果没有更多待匹配的括号，缺失第二个 label 时会将当前文本当作标签解析。
@@ -184,28 +185,35 @@ internal sealed class InlineParser
 			PopBracket();
 			return false;
 		}
+		Controller!.AddLiteral(span.Start);
 		AddLinkChildren(opener, link);
 		return true;
 	}
 
 	/// <summary>
-	/// 尝试匹配链接声明。
+	/// 尝试解析为链接定义。
 	/// </summary>
-	/// <param name="linkDefine">要匹配的链接声明。</param>
+	/// <param name="label">要查找的链接标签。</param>
 	/// <param name="span">文本范围。</param>
-	/// <returns>如果匹配成功，返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	internal bool ParseLinkDefinition(LinkDefinition linkDefine, TextSpan span)
+	/// <returns>如果找到了链接定义，则为 <c>true</c>；否则为 <c>false</c>。</returns>
+	internal bool ParseLinkDefinition(StringView label, TextSpan span)
 	{
 		BracketInfo? opener = FindOpenedBracket();
 		if (opener == null)
 		{
+			// 未找到起始括号，不解析为链接定义。
 			return false;
 		}
-
+		// 尝试寻找链接定义。
+		if (!linkDefines.TryGetValue(LinkUtil.NormalizeLabel(label), out var linkDefine))
+		{
+			return false;
+		}
 		// 进入链接状态，尝试匹配链接体或标签。
 		TextSpan fullSpan = TextSpan.Combine(opener.Node.Span, span);
 		// 包含链接标签。
 		Link link = new(opener.IsImage, linkDefine, fullSpan);
+		Controller!.AddLiteral(span.Start);
 		AddLinkChildren(opener, link);
 		return true;
 	}
@@ -236,6 +244,7 @@ internal sealed class InlineParser
 		{
 			link.Attributes.AddPrefix(options.AttributesPrefix);
 		}
+		Controller!.AddLiteral(span.Start);
 		AddLinkChildren(opener, link);
 		return true;
 	}
@@ -272,7 +281,10 @@ internal sealed class InlineParser
 		// 先处理分隔符。
 		ProcessDelimiter(opener.Delimiter);
 		// 再转移子节点。
-		link.Children.AddRange(opener.Node.Next, null);
+		if (opener.Node.Next != null)
+		{
+			link.Children.AddRange(opener.Node.Next, null);
+		}
 		MergeText(link.Children);
 		children.Remove(opener.Node);
 		children.Add(link);
@@ -304,7 +316,7 @@ internal sealed class InlineParser
 		{
 			return false;
 		}
-		ReadOnlySpan<char> label = GetCurrentLinkText(reader.Index - 1);
+		ReadOnlySpan<char> label = GetCurrentLinkText(source.Index - 1);
 		if (!MarkdownUtil.IsFootnotesLabel(label))
 		{
 			return false;
@@ -318,7 +330,7 @@ internal sealed class InlineParser
 	private void PopBracket()
 	{
 		BracketInfo opener = brackets.Pop();
-		reader.Release(opener.StartMark);
+		source.Release(opener.StartMark);
 		// 根据是否包含有效的起始中括号，决定后续是否要识别链接 URL 或标签。
 		if (brackets.Count > 0 && brackets.Peek().Active)
 		{
@@ -387,7 +399,10 @@ internal sealed class InlineParser
 			else
 			{
 				// 找到了相应节点，转移子节点，并将新节点插入到 closer 之前。
-				node.Children.AddRange(opener!.Node.Next, closer.Node);
+				if (opener!.Node.Next != null)
+				{
+					node.Children.AddRange(opener.Node.Next, closer.Node);
+				}
 				MergeText(node.Children);
 				RemoveDelimiters(opener, closer);
 				int idx = children.IndexOf(closer.Node);
@@ -416,7 +431,8 @@ internal sealed class InlineParser
 	/// <param name="info">要检查的分隔符信息。</param>
 	private void CheckDelimiter(DelimiterInfo info, bool isOpen)
 	{
-		if (info.Length == 0)
+		int length = info.Length;
+		if (length == 0)
 		{
 			children.Remove(info.Node);
 			RemoveDelimiter(info);
@@ -424,16 +440,17 @@ internal sealed class InlineParser
 		else
 		{
 			// 调整符号个数。
-			info.Node.Content = info.Node.Content[..info.Length];
 			if (isOpen)
 			{
 				int start = info.Node.Span.Start;
-				info.Node.Span = new TextSpan(start, start + info.Length);
+				info.Node.Content = info.Node.Content[..length];
+				info.Node.Span = new TextSpan(start, start + length);
 			}
 			else
 			{
 				int end = info.Node.Span.End;
-				info.Node.Span = new TextSpan(end - info.Length, end);
+				info.Node.Content = info.Node.Content.Substring(info.Node.Content.Length - length);
+				info.Node.Span = new TextSpan(end - length, end);
 			}
 		}
 	}
@@ -474,17 +491,6 @@ internal sealed class InlineParser
 	}
 
 	/// <summary>
-	/// 尝试寻找指定链接定义。
-	/// </summary>
-	/// <param name="label">要查找的链接标签。</param>
-	/// <param name="define">查找到的链接定义。</param>
-	/// <returns>如果找到了链接定义，则为 <c>true</c>；否则为 <c>false</c>。</returns>
-	internal bool TryGetLinkDefine(string label, [MaybeNullWhen(false)] out LinkDefinition define)
-	{
-		return linkDefines.TryGetValue(label, out define);
-	}
-
-	/// <summary>
 	/// 返回当前的链接文本。
 	/// </summary>
 	/// <param name="endIndex">链接文本的结束索引（不含）。</param>
@@ -496,24 +502,39 @@ internal sealed class InlineParser
 			return StringView.Empty;
 		}
 		BracketInfo info = brackets.Peek();
-		return reader.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
+		return source.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
 	}
 
 	/// <summary>
 	/// 合并指定列表内的文本节点。
 	/// </summary>
 	/// <param name="children">要合并的节点列表。</param>
-	private static void MergeText(IList<InlineNode> children)
+	private static void MergeText(NodeList<InlineNode> children)
 	{
-		for (int i = 1; i < children.Count; i++)
+		int count = children.Count;
+		int idx = 0;
+		bool updateNext = true;
+		for (int i = 0; i < count; idx++, i++)
 		{
-			if (children[i - 1] is Literal prev && children[i] is Literal next)
+			if (children[i] is TempLiteral literal)
 			{
-				prev.Content += next.Content;
-				prev.Span = TextSpan.Combine(prev.Span, next.Span);
-				children.RemoveAt(i);
-				i--;
+				for (; i + 1 < count && children[i + 1] is TempLiteral nextLiteral; i++)
+				{
+					literal.Concat(nextLiteral);
+				}
+				children.MoveItemTo(literal.GetLiteral(), idx, updateNext);
+				// 后续节点都不需要再更新 Next，因为会在后续节点前移的时候设置。
+				if (i != idx)
+				{
+					updateNext = false;
+				}
+			}
+			else if (i != idx)
+			{
+				// 迁移的场景不需要更新 Next，会在后续节点前移的时候设置。
+				children.MoveItemTo(children[i], idx, updateNext);
 			}
 		}
+		children.RemoveRangeUnchecked(idx, count - idx);
 	}
 }

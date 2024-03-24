@@ -26,7 +26,7 @@ internal sealed class DelimiterInfo
 	/// <summary>
 	/// 分隔符对应的节点。
 	/// </summary>
-	public readonly Literal Node;
+	public readonly TempLiteral Node;
 	/// <summary>
 	/// 分隔符的处理器。
 	/// </summary>
@@ -53,7 +53,7 @@ internal sealed class DelimiterInfo
 	/// <param name="canClose">是否可以用作结束分隔符。</param>
 	/// <param name="node">分隔符对应的节点。</param>
 	/// <param name="processor">分隔符的处理器。</param>
-	public DelimiterInfo(char delimiter, int length, bool canOpen, bool canClose, Literal node,
+	public DelimiterInfo(char delimiter, int length, bool canOpen, bool canClose, TempLiteral node,
 		DelimiterProcessor processor)
 	{
 		Delimiter = delimiter;

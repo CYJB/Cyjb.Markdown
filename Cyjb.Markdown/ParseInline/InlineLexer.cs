@@ -39,6 +39,10 @@ internal partial class InlineLexer : LexerController<int>
 	private static readonly StrikethroughProcessor StrikethroughProcessor = new();
 
 	/// <summary>
+	/// 关联到的行级语法分析器。
+	/// </summary>
+	private InlineParser parser;
+	/// <summary>
 	/// 解析选项。
 	/// </summary>
 	private ParseOptions options;
@@ -47,9 +51,9 @@ internal partial class InlineLexer : LexerController<int>
 	/// </summary>
 	private char lastChar = '\n';
 	/// <summary>
-	/// 字面量缓冲区。
+	/// 当前字面量。
 	/// </summary>
-	private readonly PooledList<char> literalBuffer = new(0x1000);
+	private StringView literal;
 	/// <summary>
 	/// 当前字面量文本的起始位置。
 	/// </summary>
@@ -75,22 +79,6 @@ internal partial class InlineLexer : LexerController<int>
 			TextSpan span = base.Span;
 			return new TextSpan(MapLocation(span.Start), MapLocation(span.End));
 		}
-	}
-
-	/// <summary>
-	/// 返回并清空当前字面量文本。
-	/// </summary>
-	/// <returns>当前字面量文本。</returns>
-	public string GetLiteralText()
-	{
-		if (literalBuffer.Length == 0)
-		{
-			return string.Empty;
-		}
-		Span<char> span = literalBuffer.AsSpan();
-		string result = span.Unescape();
-		literalBuffer.Clear();
-		return result;
 	}
 
 	/// <summary>
@@ -338,34 +326,24 @@ internal partial class InlineLexer : LexerController<int>
 	[LexerSymbol(@"<LinkClose>]{LinkLabel}")]
 	private void LinkLabelAction()
 	{
-		InlineParser parser = (InlineParser)SharedContext!;
-		// 标签不为空，使用标签本身。
-		ReadOnlySpan<char> text = Text.AsSpan(2);
-		ReadOnlySpan<char> label = ReadOnlySpan<char>.Empty;
-		if (!MarkdownUtil.TryParseLinkLabel(ref text, ref label))
+		int idx = Text.AsSpan(2).IndexOfUnescaped(']');
+		if (idx > 1000)
 		{
+			// [ 和 ] 之间最多允许 999 个字符。
 			Reject();
 			return;
 		}
+		StringView label = Text.Substring(2, idx);
 		if (label.Length == 0)
 		{
-			// 标签为空，将前面的文本作为标签使用。
+			// 如果标签为空，将前面的文本作为标签使用。
 			label = parser.GetCurrentLinkText(Start);
 		}
-		if (!label.IsEmpty && parser.TryGetLinkDefine(LinkUtil.NormalizeLabel(label), out LinkDefinition? define))
+		TextSpan span = Span;
+		if (!label.IsEmpty && parser.ParseLinkDefinition(label, span))
 		{
-			TextSpan span = Span;
-			AddLiteral(span.Start);
-			if (parser.ParseLinkDefinition(define, span))
-			{
-				// 调整字面量起始位置。
-				literalStart = span.End;
-			}
-			else
-			{
-				// 链接匹配失败，作为字面量字符添加。
-				AppendLiteralText(Text);
-			}
+			// 调整字面量起始位置。
+			literalStart = span.End;
 		}
 		else
 		{
@@ -426,9 +404,7 @@ internal partial class InlineLexer : LexerController<int>
 		{
 			Source.Index -= attrLen;
 		}
-		InlineParser parser = (InlineParser)SharedContext!;
 		TextSpan span = Span;
-		AddLiteral(span.Start);
 		if (parser.ParseLinkBody(body, span))
 		{
 			// 调整字面量起始位置。
@@ -498,7 +474,7 @@ internal partial class InlineLexer : LexerController<int>
 		{
 			Source.Drop();
 			Source.Index = idx;
-			string content = Source.GetReadedText().ToString();
+			StringView content = Source.GetReadedText();
 			// 如果内容两边都有一个空格（或换行），那么可以移除前后各一的空格（或换行）。
 			// 不要移除多个空格，也不要修改只由空格组成的代码。
 			if (content.Length >= 2 && content.Any(ch => !MarkdownUtil.IsWhitespace(ch)))
@@ -525,7 +501,7 @@ internal partial class InlineLexer : LexerController<int>
 			}
 			// 跳过结束标志。
 			Source.Index += dollarCount;
-			Add(new MathSpan(content, Span));
+			Add(new MathSpan(content.ToString(), Span));
 		}
 		else
 		{
@@ -542,9 +518,9 @@ internal partial class InlineLexer : LexerController<int>
 	private void LinkStartAction()
 	{
 		bool isImage = Text.Length > 1;
-		Literal node = new(Text.ToString(), Span);
+		TempLiteral node = new(Text, Span);
 		Add(node);
-		(SharedContext as InlineParser)!.AddBracket(node, isImage);
+		parser.AddBracket(node, isImage);
 		// 允许识别链接闭合。
 		EnterContext(LinkCloseContext);
 	}
@@ -557,8 +533,7 @@ internal partial class InlineLexer : LexerController<int>
 	private void LinkCloseAction()
 	{
 		TextSpan span = Span;
-		AddLiteral(span.Start);
-		if ((SharedContext as InlineParser)!.ParseCloseBracket(span))
+		if (parser.ParseCloseBracket(span))
 		{
 			// 链接匹配成功，调整字面量起始位置。
 			literalStart = span.End;
@@ -592,7 +567,7 @@ internal partial class InlineLexer : LexerController<int>
 		if (info != null)
 		{
 			Add(info.Node);
-			(SharedContext as InlineParser)!.AddDelimiter(info);
+			parser.AddDelimiter(info);
 			return;
 		}
 		// 在 ScanDelimiters 可能会将后续的分隔符一起消费掉。
@@ -612,7 +587,7 @@ internal partial class InlineLexer : LexerController<int>
 			if (info != null)
 			{
 				Add(info.Node);
-				(SharedContext as InlineParser)!.AddDelimiter(info);
+				parser.AddDelimiter(info);
 				return;
 			}
 		}
@@ -678,7 +653,7 @@ internal partial class InlineLexer : LexerController<int>
 		if (canOpen || canClose)
 		{
 			return new DelimiterInfo(delimiter, length, canOpen, canClose,
-				new Literal(new string(delimiter, length), Span), processor);
+				new TempLiteral(Source.GetReadedText(), Span), processor);
 		}
 		else
 		{
@@ -738,7 +713,7 @@ internal partial class InlineLexer : LexerController<int>
 		if (text.Length > 0)
 		{
 			lastChar = text[^1];
-			literalBuffer.Add(text);
+			literal.TryConcat(text, out literal);
 		}
 	}
 
@@ -746,12 +721,12 @@ internal partial class InlineLexer : LexerController<int>
 	/// 添加字面量节点。
 	/// </summary>
 	/// <param name="end">字面量节点的结束位置。</param>
-	private void AddLiteral(int end)
+	public void AddLiteral(int end)
 	{
-		string text = GetLiteralText();
-		if (text.Length > 0)
+		if (literal.Length > 0)
 		{
-			children.Add(new Literal(text, new TextSpan(literalStart, end)));
+			children.Add(new TempLiteral(literal, new TextSpan(literalStart, end)));
+			literal = StringView.Empty;
 		}
 		literalStart = end;
 	}
@@ -765,7 +740,7 @@ internal partial class InlineLexer : LexerController<int>
 		set
 		{
 			base.SharedContext = value;
-			InlineParser parser = (InlineParser)value!;
+			parser = (value as InlineParser)!;
 			options = parser.Options;
 			parser.Controller = this;
 		}
@@ -779,7 +754,7 @@ internal partial class InlineLexer : LexerController<int>
 		base.SourceLoaded();
 		lastChar = '\n';
 		literalStart = MapLocation(0);
-		children = (SharedContext as InlineParser)!.children;
+		children = parser.children;
 	}
 
 	/// <summary>
@@ -789,7 +764,7 @@ internal partial class InlineLexer : LexerController<int>
 	/// <returns>映射后的位置。</returns>
 	private int MapLocation(int location)
 	{
-		return ((InlineParser)SharedContext!).MapLocation(location);
+		return parser.MapLocation(location);
 	}
 
 	/// <summary>
@@ -809,10 +784,6 @@ internal partial class InlineLexer : LexerController<int>
 
 	protected override void Dispose(bool disposing)
 	{
-		if (disposing)
-		{
-			literalBuffer.Dispose();
-		}
 		base.Dispose(disposing);
 	}
 }

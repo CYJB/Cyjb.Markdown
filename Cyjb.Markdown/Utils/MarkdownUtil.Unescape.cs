@@ -174,6 +174,79 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
+	/// 反转义指定字符串视图，并返回其结果。
+	/// </summary>
+	/// <param name="text">要反转义的字符串视图。</param>
+	/// <return>反转义后的字符串。</return>
+	public static string Unescape(this StringView text)
+	{
+		ReadOnlySpan<char> span = text;
+		int idx = span.IndexOfAny("\\&\0");
+		if (idx < 0)
+		{
+			return text.ToString();
+		}
+		using ValueList<char> chars = span.Length <= ValueList.StackallocCharSizeLimit
+			? new ValueList<char>(stackalloc char[span.Length])
+			: new ValueList<char>(span.Length);
+		chars.Add(span.Slice(0, idx));
+		// 注意这要保证 idx 之后至少有一个有效字符。
+		int end = span.Length - 1;
+		for (; idx < end; idx++)
+		{
+			char ch = text[idx];
+			if (ch == '\0')
+			{
+				// \0 要被转换成 \uFFFD
+				chars.Add('\uFFFD');
+				continue;
+			}
+			else if (ch == '\\')
+			{
+				// 反斜杠转义。
+				if (Escapable.Contains(text[idx + 1]))
+				{
+					chars.Add(text[idx + 1]);
+					idx++;
+					continue;
+				}
+			}
+			else if (ch == '&')
+			{
+				if (text[idx + 1] == '#')
+				{
+					// 查找 HTML 数字转义。
+					string? value = ParseNumericCharacter(span.Slice(idx + 2), ref idx);
+					if (value != null)
+					{
+						// 跳过 # 字符。
+						idx++;
+						chars.Add(value);
+						continue;
+					}
+				}
+				else
+				{
+					// 查找 HTML 实体转义。
+					if (HtmlEntity.Entities.TryMatchShortest(span.Slice(idx + 1), out var pair))
+					{
+						idx += pair.Key.Length;
+						chars.Add(pair.Value);
+						continue;
+					}
+				}
+			}
+			chars.Add(ch);
+		}
+		if (idx < span.Length)
+		{
+			chars.Add(text[idx]);
+
+		}
+		return chars.ToString();
+	}
+
+	/// <summary>
 	/// 反转义指定字符串，并返回其结果。
 	/// </summary>
 	/// <param name="text">要反转义的字符串。</param>

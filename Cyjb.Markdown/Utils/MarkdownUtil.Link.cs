@@ -11,26 +11,6 @@ internal static partial class MarkdownUtil
 	private static readonly ReadOnlyCharSet LinkWhitespace = ReadOnlyCharSet.FromRange("\x00\x20\x7F\x7F");
 
 	/// <summary>
-	/// 解析链接标签。
-	/// </summary>
-	/// <param name="text">要解析的字符串。</param>
-	/// <param name="label">解析得到的链接标签。</param>
-	/// <returns>如果解析成功，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	/// <remarks>认为已经读入了 <c>[</c> 字符，会在 <c>]</c> 字符之前结束。</remarks>
-	public static bool TryParseLinkLabel(ref ReadOnlySpan<char> text, ref ReadOnlySpan<char> label)
-	{
-		int idx = text.IndexOfUnescaped(']');
-		if (idx > 1000)
-		{
-			// [ 和 ] 之间最多允许 999 个字符。
-			return false;
-		}
-		label = text[0..idx];
-		text = text.Slice(idx + 1);
-		return true;
-	}
-
-	/// <summary>
 	/// 尝试解析链接目标。
 	/// </summary>
 	/// <param name="text">要解析的字符串。</param>
