@@ -270,15 +270,15 @@ internal sealed class TableProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			// 要求分割行之前是段落，而且包含且只包含一行。
 			BlockText? text;
 			if (line.IsCodeIndent || (text = matchedProcessor.ParagraphText) == null ||
 				!text.IsSingleLine())
 			{
-				yield break;
+				return;
 			}
 			// 语法分析时已确保分割行的内容是有效的，这里直接 split 即可。
 			// 忽略前后空白，忽略空的子字符串来忽略最外侧的竖划线。
@@ -287,13 +287,13 @@ internal sealed class TableProcessor : BlockProcessor
 			// 标题行与分割行必须具有相同的单元格数。
 			if (delimiters.Length != CountCell(text))
 			{
-				yield break;
+				return;
 			}
 			// 需要将之前的段落关闭。
 			matchedProcessor.NeedReplace();
 			// 跳过当前行。
 			line.Skip();
-			yield return new TableProcessor(delimiters, text);
+			processors.Add(new TableProcessor(delimiters, text));
 		}
 
 		/// <summary>

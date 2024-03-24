@@ -108,12 +108,12 @@ internal class FootnoteProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			if (line.IsCodeIndent)
 			{
-				yield break;
+				return;
 			}
 			// 提前保存结束位置，避免行内文本被清空后无法找到正确的结束位置。
 			int end = line.End;
@@ -129,7 +129,7 @@ internal class FootnoteProcessor : BlockProcessor
 			{
 				end = line.Start;
 			}
-			yield return new FootnoteProcessor(token.Span.Start, end, ((StringView)token.Value!).ToString());
+			processors.Add(new FootnoteProcessor(token.Span.Start, end, ((StringView)token.Value!).ToString()));
 		}
 	}
 }

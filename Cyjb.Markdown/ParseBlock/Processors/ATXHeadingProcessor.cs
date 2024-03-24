@@ -92,12 +92,12 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			if (line.IsCodeIndent)
 			{
-				yield break;
+				return;
 			}
 			line.SkipIndent();
 			int start = line.Start;
@@ -114,7 +114,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 			{
 				TrimEndingSharp(line);
 			}
-			yield return new ATXHeadingProcessor(start, depth, line.ToBlockText(), attrs);
+			processors.Add(new ATXHeadingProcessor(start, depth, line.ToBlockText(), attrs));
 		}
 
 		/// <summary>

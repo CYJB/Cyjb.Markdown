@@ -182,12 +182,12 @@ internal sealed class ListProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			if (line.IsCodeIndent)
 			{
-				yield break;
+				return;
 			}
 			Token<BlockKind> token = line.PeekFront();
 			ListStyleType styleType = (ListStyleType)token.Value!;
@@ -197,12 +197,12 @@ internal sealed class ListProcessor : BlockProcessor
 				// 空列表不能中断段落。
 				if (!hasContent)
 				{
-					yield break;
+					return;
 				}
 				// 如果是有序列表，只有起始数字为 1 时才能中断段落。
 				if (styleType != ListStyleType.Unordered && ParseMarkerNumber(ref styleType, token.Text) != 1)
 				{
-					yield break;
+					return;
 				}
 			}
 			int itemStart = token.Span.Start;
@@ -236,7 +236,7 @@ internal sealed class ListProcessor : BlockProcessor
 					Start = start
 				};
 				listProcessor = new ListProcessor(parser, token.Text[^1], list);
-				yield return listProcessor;
+				processors.Add(listProcessor);
 			}
 			ListItemProcessor itemProcessor = new(listProcessor, itemStart, contentIndent);
 			// 检查任务列表项。
@@ -244,7 +244,7 @@ internal sealed class ListProcessor : BlockProcessor
 			{
 				itemProcessor.Checked = CheckTaskListItem(line);
 			}
-			yield return itemProcessor;
+			processors.Add(itemProcessor);
 		}
 
 		/// <summary>

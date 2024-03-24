@@ -91,15 +91,15 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			// 要求 Setext 标签之前是段落，而且包含有效内容。
 			BlockText? text;
 			if (line.IsCodeIndent || (text = matchedProcessor.ParagraphText) == null ||
 				text.Length == 0)
 			{
-				yield break;
+				return;
 			}
 			// 需要将之前的段落关闭。
 			matchedProcessor.NeedReplace();
@@ -114,7 +114,7 @@ internal sealed class SetextHeadingProcessor : BlockProcessor
 				// 移除尾行后的空白，注意不要移除换行本身。
 				text.TrimEnd(false);
 			}
-			yield return new SetextHeadingProcessor(text.Start, depth, text, attrs);
+			processors.Add(new SetextHeadingProcessor(text.Start, depth, text, attrs));
 		}
 
 		/// <summary>

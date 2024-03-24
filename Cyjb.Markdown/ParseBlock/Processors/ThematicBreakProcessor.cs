@@ -59,12 +59,12 @@ internal sealed class ThematicBreakProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回处理器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
 			if (line.IsCodeIndent)
 			{
-				yield break;
+				return;
 			}
 			Token<BlockKind> token = line.PeekFront();
 			if (token.Kind == BlockKind.DashLine)
@@ -81,7 +81,7 @@ internal sealed class ThematicBreakProcessor : BlockProcessor
 				}
 				if (len < 3)
 				{
-					yield break;
+					return;
 				}
 			}
 			else if (token.Kind == BlockKind.UnorderedListMarker)
@@ -89,11 +89,11 @@ internal sealed class ThematicBreakProcessor : BlockProcessor
 				// 分割线优先级高于列表项。
 				if (!IsListMarkerThematicBreak(line.Tokens))
 				{
-					yield break;
+					return;
 				}
 			}
 			line.SkipIndent();
-			yield return new ThematicBreakProcessor(line.Start);
+			processors.Add(new ThematicBreakProcessor(line.Start));
 		}
 
 		/// <summary>

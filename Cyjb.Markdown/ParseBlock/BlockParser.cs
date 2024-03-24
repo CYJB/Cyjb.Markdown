@@ -228,7 +228,7 @@ internal sealed class BlockParser
 			{
 				foreach (IBlockFactory factory in factories)
 				{
-					currentInlineProcessors.AddRange(factory.TryStart(this, line, processor));
+					factory.TryStart(this, line, processor, currentInlineProcessors);
 					if (currentInlineProcessors.Count > 0)
 					{
 						break;

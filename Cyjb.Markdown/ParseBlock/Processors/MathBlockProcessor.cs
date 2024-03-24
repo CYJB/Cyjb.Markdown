@@ -110,16 +110,15 @@ internal class MathBlockProcessor : BlockProcessor
 		/// <param name="parser">块级语法分析器。</param>
 		/// <param name="line">要检查的行。</param>
 		/// <param name="matchedProcessor">当前匹配到的块处理器。</param>
-		/// <returns>如果能够开始当前块的解析，则返回解析器序列。否则返回空序列。</returns>
-		public IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor)
+		/// <param name="processors">要添加到的处理器列表。</param>
+		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
-			if (line.IsCodeIndent)
+			if (!line.IsCodeIndent)
 			{
-				yield break;
+				MarkdownUtil.ParseFenceStart(parser, line, out int start, out int indent,
+					out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
+				processors.Add(new MathBlockProcessor(start, fenceLength, indent, info, attrs));
 			}
-			MarkdownUtil.ParseFenceStart(parser, line, out int start, out int indent,
-				out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
-			yield return new MathBlockProcessor(start, fenceLength, indent, info, attrs);
 		}
 	}
 }
