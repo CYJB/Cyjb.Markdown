@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Cyjb.Markdown.Utils;
 
 /// <summary>
@@ -127,13 +129,17 @@ internal static class UnicodeCaseFolding
 	/// 返回指定字符的 Case Folding 结果。
 	/// </summary>
 	/// <param name="ch">要检查的字符。</param>
+	/// <param name="text">Case Folding 结果要添加到的字符串。</param>
 	/// <returns>指定字符的 Case Folding 结果。</returns>
-	public static string GetCaseFolding(char ch)
+	public static void GetCaseFolding(char ch, StringBuilder text)
 	{
 		if (FullCaseFolding.TryGetValue(ch, out string? result))
 		{
-			return result;
+			text.Append(result);
 		}
-		return char.ToUpperInvariant(ch).ToString();
+		else
+		{
+			text.Append(char.ToUpperInvariant(ch));
+		}
 	}
 }

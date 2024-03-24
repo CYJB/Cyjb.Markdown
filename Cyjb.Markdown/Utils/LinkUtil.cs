@@ -58,7 +58,7 @@ internal static class LinkUtil
 				else
 				{
 					isWhitespace = false;
-					text.Append(UnicodeCaseFolding.GetCaseFolding(ch));
+					UnicodeCaseFolding.GetCaseFolding(ch, text);
 				}
 			}
 		}
@@ -93,7 +93,7 @@ internal static class LinkUtil
 			else
 			{
 				isWhitespace = false;
-				text.Append(UnicodeCaseFolding.GetCaseFolding(ch));
+				UnicodeCaseFolding.GetCaseFolding(ch, text);
 			}
 		}
 		return StringBuilderPool.GetStringAndReturn(text);

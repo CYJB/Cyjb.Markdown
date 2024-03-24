@@ -238,7 +238,11 @@ internal sealed class BlockParser
 			// 尝试检查缩进代码块
 			if (currentInlineProcessors.Count == 0)
 			{
-				currentInlineProcessors.AddRange(IndentedCodeBlockProcessor.TryStart(this, line));
+				BlockProcessor? codeBlockProcessor = IndentedCodeBlockProcessor.TryStart(this, line);
+				if (codeBlockProcessor != null)
+				{
+					currentInlineProcessors.Add(codeBlockProcessor);
+				}
 			}
 			if (currentInlineProcessors.Count == 0)
 			{

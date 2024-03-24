@@ -15,8 +15,8 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 	/// </summary>
 	/// <param name="parser">块级语法分析器。</param>
 	/// <param name="line">要检查的行。</param>
-	/// <returns>新的块处理器数组，若未能成功解析，则返回空数组。</returns>
-	public static IEnumerable<BlockProcessor> TryStart(BlockParser parser, BlockLine line)
+	/// <returns>新的块处理器，若未能成功解析，则返回 <c>null</c>。</returns>
+	public static BlockProcessor? TryStart(BlockParser parser, BlockLine line)
 	{
 		// 缩进代码块不会中断段落。
 		if (line.IsCodeIndent && !line.IsBlank() &&
@@ -26,8 +26,9 @@ internal class IndentedCodeBlockProcessor : BlockProcessor
 			int start = line.Start;
 			// 跳过空白部分。
 			line.SkipIndent(BlockLine.CodeIndent);
-			yield return new IndentedCodeBlockProcessor(start, line.End);
+			return new IndentedCodeBlockProcessor(start, line.End);
 		}
+		return null;
 	}
 
 	/// <summary>
