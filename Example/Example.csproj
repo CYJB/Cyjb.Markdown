@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cyjb.Markdown\Cyjb.Markdown.csproj" />
+	<ProjectReference Include="..\Markdown\Cyjb.Markdown.csproj" />
   </ItemGroup>
 
 </Project>

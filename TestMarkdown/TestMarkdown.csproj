@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cyjb.Markdown\Cyjb.Markdown.csproj" />
+    <ProjectReference Include="..\Markdown\Cyjb.Markdown.csproj" />
   </ItemGroup>
 
   <ItemGroup>

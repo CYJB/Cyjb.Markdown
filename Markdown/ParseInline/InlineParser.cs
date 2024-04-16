@@ -91,7 +91,7 @@ internal sealed class InlineParser
 	public void Parse(BlockText text, NodeList<InlineNode> children)
 	{
 		// 将文本拼接成源码流。
-		source = new SourceReader(text.ToStringView());
+		source = SourceReader.Create(text.ToStringView());
 		// 将词法单元重新映射成源码位置。
 		locationMap.Clear();
 		text.GetLocationMap(locationMap);

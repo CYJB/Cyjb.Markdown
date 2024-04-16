@@ -90,7 +90,7 @@ internal sealed class BlockParser
 	public BlockParser(TextReader text, ParseOptions? options)
 	{
 		// 为了正确处理 Tab 的位置，解析块时需要对列定位。
-		source = new SourceReader(text);
+		source = SourceReader.Create(text);
 		source.UseLineLocator();
 		locator = source.Locator!;
 		this.options = options ?? ParseOptions.Default;
