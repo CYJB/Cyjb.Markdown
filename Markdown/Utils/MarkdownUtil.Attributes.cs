@@ -1,6 +1,7 @@
 using Cyjb.Collections;
 using Cyjb.Markdown.ParseBlock;
 using Cyjb.Markdown.Syntax;
+using Cyjb.Text;
 
 namespace Cyjb.Markdown.Utils;
 
@@ -10,6 +11,14 @@ internal static partial class MarkdownUtil
 	/// 空白字符或者 <c>}</c>。
 	/// </summary>
 	private static readonly string WhitespaceOrRightBrace = Whitespace + "}";
+	/// <summary>
+	/// 空白字符或者 <c>}</c>。
+	/// </summary>
+	private static readonly char[] WhitespaceOrRightBraceChars = new char[] { ' ', '\t', '\r', '\n', '}' };
+	/// <summary>
+	/// 属性的起始搜索字符。
+	/// </summary>
+	private static readonly string AttributeStartSearchChars = "{\"'";
 	/// <summary>
 	/// 属性的分割字符。
 	/// </summary>
@@ -23,25 +32,30 @@ internal static partial class MarkdownUtil
 	/// 如果找到了 <c>{</c> 字符但不能用作属性起始，则返回 <c>-2</c>。</returns>
 	public static int FindAttributeStart(ReadOnlySpan<char> text)
 	{
-		for (int i = text.Length - 1; i >= 0; i--)
+		int idx = text.LastIndexOfAny(AttributeStartSearchChars);
+		while (idx >= 0)
 		{
-			char ch = text[i];
+			char ch = text[idx];
 			if (ch == '{')
 			{
 				// 要求 { 是未转义的。
-				if (text.IsEscaped(i))
+				if (text.IsEscaped(idx))
 				{
 					return -2;
 				}
 				else
 				{
-					return i;
+					return idx;
 				}
 			}
-			else if (ch == '"' || ch == '\'')
+			text = text[0..idx];
+			idx = text.LastIndexOf(ch);
+			if (idx < 0)
 			{
-				for (i--; i >= 0 && text[i] != ch; i--) ;
+				break;
 			}
+			text = text[0..idx];
+			idx = text.LastIndexOfAny(AttributeStartSearchChars);
 		}
 		return -1;
 	}
@@ -109,6 +123,68 @@ internal static partial class MarkdownUtil
 			}
 		}
 		return -1;
+	}
+
+	/// <summary>
+	/// 从源码读取器中读取属性。
+	/// </summary>
+	/// <param name="source">要读取的源码读取器。</param>
+	/// <param name="attrs">解析后的特性列表。</param>
+	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	public static bool ReadAttributes(SourceReader source, HtmlAttributeList attrs)
+	{
+		var tokenizer = AttributeLexer.Factory.CreateTokenizer();
+		tokenizer.Load(source);
+		bool hasSeperator = true;
+		while (true)
+		{
+			var token = tokenizer.Read();
+			switch (token.Kind)
+			{
+				case AttributeKind.Seperator:
+					// 检查分隔符是否合法。
+					if (!IsValidAttributeSeperator(token.Text))
+					{
+						goto ParseFailed;
+					}
+					hasSeperator = true;
+					break;
+				case AttributeKind.Identifier:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.Id = token.Text.ToString();
+					break;
+				case AttributeKind.ClassName:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.AddClass(token.Text.ToString());
+					break;
+				case AttributeKind.Common:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.Add(token.Text.ToString(), (token.Value as string)!);
+					break;
+				case AttributeKind.End:
+					// 解析成功。
+					return true;
+				default:
+					// 解析失败。
+					goto ParseFailed;
+			}
+		}
+	ParseFailed:
+		// 清除之前可能部分成功的属性。
+		attrs.Clear();
+		return false;
 	}
 
 	/// <summary>
@@ -310,6 +386,46 @@ internal static partial class MarkdownUtil
 		}
 		text = text[i..];
 		return lineCount <= 1;
+	}
+
+	/// <summary>
+	/// 检查是否是有效的属性分隔符。
+	/// </summary>
+	/// <param name="text">要检查的文本。</param>
+	/// <returns>如果是有效的属性分隔符，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	private static bool IsValidAttributeSeperator(ReadOnlySpan<char> text)
+	{
+		int lineCount = 0;
+		bool isLastReturn = false;
+		foreach (char ch in text)
+		{
+			if (ch == '\r')
+			{
+				lineCount++;
+				if (lineCount > 1)
+				{
+					return false;
+				}
+				isLastReturn = true;
+			}
+			else if (ch == '\n')
+			{
+				if (!isLastReturn)
+				{
+					lineCount++;
+					if (lineCount > 1)
+					{
+						return false;
+					}
+				}
+				isLastReturn = false;
+			}
+			else
+			{
+				isLastReturn = false;
+			}
+		}
+		return true;
 	}
 
 	/// <summary>

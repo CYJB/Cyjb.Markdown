@@ -27,20 +27,14 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 	private readonly BlockText text;
 
 	/// <summary>
-	/// 使用ATX 标题的起始位置和文本初始化 <see cref="ATXHeadingProcessor"/> 类的新实例。
+	/// 使用 ATX 标题和文本初始化 <see cref="ATXHeadingProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">ATX 标题的起始位置。</param>
-	/// <param name="depth">ATX 标题的深度。</param>
+	/// <param name="heading">ATX 标题。</param>
 	/// <param name="text">ATX 标题的文本。</param>
-	/// <param name="attrs">ATX 标题的属性。</param>
-	private ATXHeadingProcessor(int start, int depth, BlockText text, HtmlAttributeList? attrs)
+	private ATXHeadingProcessor(Heading heading, BlockText text)
 		: base(MarkdownKind.Heading)
 	{
-		heading = new Heading(depth, new TextSpan(start, start));
-		if (attrs != null && attrs.Count > 0)
-		{
-			heading.Attributes.AddRange(attrs);
-		}
+		this.heading = heading;
 		this.text = text;
 	}
 
@@ -100,12 +94,10 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 				return;
 			}
 			line.SkipIndent();
-			int start = line.Start;
 			var token = line.PeekFront();
-			HtmlAttributeList? attrs = token.Value as HtmlAttributeList;
-			// 计算标题的深度，标题一定在同一个 Token 内。
-			int depth = GetHeadingDepth(token.Text);
-			line.RemoveStart(depth);
+			Heading heading = (token.Value as Heading)!;
+			// 跳过标题的 # 符号。
+			line.RemoveStart(heading.Depth);
 			// 忽略内容前后的空白
 			line.TrimStart();
 			line.TrimEnd();
@@ -114,19 +106,7 @@ internal sealed class ATXHeadingProcessor : BlockProcessor
 			{
 				TrimEndingSharp(line);
 			}
-			processors.Add(new ATXHeadingProcessor(start, depth, line.ToBlockText(), attrs));
-		}
-
-		/// <summary>
-		/// 计算标题的深度。
-		/// </summary>
-		/// <param name="text">标题的文本。</param>
-		/// <returns>标题的深度。</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static int GetHeadingDepth(StringView text)
-		{
-			ReadOnlySpan<char> span = text;
-			return span.Length - span.TrimStart('#').Length;
+			processors.Add(new ATXHeadingProcessor(heading, line.ToBlockText()));
 		}
 
 		/// <summary>

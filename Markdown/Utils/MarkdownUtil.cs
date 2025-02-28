@@ -13,6 +13,11 @@ internal static partial class MarkdownUtil
 	public const string Whitespace = " \t\r\n";
 
 	/// <summary>
+	/// Markdown 的换行字符。
+	/// </summary>
+	public static readonly char[] NewLineCharsX = new char[] { '\r', '\n' };
+
+	/// <summary>
 	/// Markdown 的空白字符。
 	/// </summary>
 	public static readonly char[] WhitespaceChars = new char[] { ' ', '\t', '\r', '\n' };

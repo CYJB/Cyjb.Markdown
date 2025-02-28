@@ -31,11 +31,12 @@ public sealed class TempLiteral : InlineNode
 	/// <param name="literal">要连接的临时文本。</param>
 	public void Concat(TempLiteral literal)
 	{
-		if (!Content.TryConcat(literal.Content, out Content))
+		if (!Content.TryConcat(literal.Content, out StringView temp))
 		{
-			// 应该时一定要保证当前节点与 literal 是可以拼接起来的。
+			// 应该是一定会保证当前节点与 literal 是可以拼接起来的。
 			throw CommonExceptions.Unreachable();
 		}
+		Content = temp;
 		Span = Span with
 		{
 			End = literal.Span.End,

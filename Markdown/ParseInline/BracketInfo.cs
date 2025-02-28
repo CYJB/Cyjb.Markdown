@@ -1,5 +1,4 @@
 using Cyjb.Markdown.Syntax;
-using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseInline;
 
@@ -17,9 +16,9 @@ internal sealed class BracketInfo
 	/// </summary>
 	public readonly bool IsImage;
 	/// <summary>
-	/// 源文件的起始标记。
+	/// 源文件的起始索引。
 	/// </summary>
-	public readonly SourceMark StartMark;
+	public readonly int StartIndex;
 	/// <summary>
 	/// 当前括号是否是活动状态。
 	/// </summary>
@@ -38,11 +37,11 @@ internal sealed class BracketInfo
 	/// </summary>
 	/// <param name="node">括号对应的节点。</param>
 	/// <param name="isImage">是否表示图片。</param>
-	/// <param name="startMark">源文件的起始标记。</param>
-	public BracketInfo(TempLiteral node, bool isImage, SourceMark startMark)
+	/// <param name="startIndex">源文件的起始索引。</param>
+	public BracketInfo(TempLiteral node, bool isImage, int startIndex)
 	{
 		Node = node;
 		IsImage = isImage;
-		StartMark = startMark;
+		StartIndex = startIndex;
 	}
 }

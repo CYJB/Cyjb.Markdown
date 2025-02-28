@@ -669,39 +669,35 @@ internal partial class InlineLexer : LexerController<int>
 	/// <returns>段结束标志的位置，使用 <c>-1</c> 表示不存在。</returns>
 	private int GetSpansEnd(char delim, int len)
 	{
-		char ch;
-		int closeStart = -1;
-		int closeEnd = -1;
-		for (int i = 0; ; i++)
+		int index = Source.IndexOf(delim, 0);
+		while (index >= 0)
 		{
-			ch = Source.Peek(i);
-			if (ch == delim)
+			bool match = true;
+			for (int i = 1; i < len; i++)
 			{
-				if (closeStart == -1)
+				if (Source.Peek(index + i) != delim)
 				{
-					closeStart = i;
-					closeEnd = i + 1;
+					match = false;
+					index += i;
+					break;
+				}
+			}
+			if (match)
+			{
+				// 要求结束标识符长度与起始长度相同
+				if (Source.Peek(index + len) != delim)
+				{
+					return Source.Index + index;
 				}
 				else
 				{
-					closeEnd++;
+					// 跳过所有连续的分隔符。
+					for (index += len + 1; Source.Peek(index) == delim; index++) ;
 				}
 			}
-			else if (closeEnd - closeStart == len && Source.Peek(closeStart - 1) != '/')
-			{
-				// 要求结束标识符长度与起始长度相同，且前面不是被转义的 `
-				return Source.Index + closeStart;
-			}
-			else if (ch == SourceReader.InvalidCharacter)
-			{
-				return -1;
-			}
-			else
-			{
-				closeStart = -1;
-				closeEnd = -1;
-			}
+			index = Source.IndexOf(delim, index);
 		}
+		return -1;
 	}
 
 	/// <summary>

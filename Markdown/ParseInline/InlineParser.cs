@@ -127,7 +127,7 @@ internal sealed class InlineParser
 		{
 			brackets.Peek().BracketAfter = true;
 		}
-		brackets.Push(new BracketInfo(node, isImage, source.Mark())
+		brackets.Push(new BracketInfo(node, isImage, source.Index)
 		{
 			Delimiter = delimiterInfo,
 		});
@@ -329,8 +329,7 @@ internal sealed class InlineParser
 	/// </summary>
 	private void PopBracket()
 	{
-		BracketInfo opener = brackets.Pop();
-		source.Release(opener.StartMark);
+		brackets.Pop();
 		// 根据是否包含有效的起始中括号，决定后续是否要识别链接 URL 或标签。
 		if (brackets.Count > 0 && brackets.Peek().Active)
 		{
@@ -502,7 +501,7 @@ internal sealed class InlineParser
 			return StringView.Empty;
 		}
 		BracketInfo info = brackets.Peek();
-		return source.ReadBlock(info.StartMark.Index, endIndex - info.StartMark.Index);
+		return source.GetText(info.StartIndex, endIndex - info.StartIndex);
 	}
 
 	/// <summary>

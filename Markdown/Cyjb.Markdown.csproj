@@ -31,19 +31,29 @@
 	<None Include="LICENSE.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+	  <_Parameter1>TestMarkdown</_Parameter1>
+	</AssemblyAttribute>
+  </ItemGroup>
+
   <ItemGroup>
 	<PackageReference Include="Cyjb" Version="1.0.23">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.20">
+	<PackageReference Include="Cyjb.Compilers.Design" Version="1.0.23">
 	  <GeneratePathProperty>True</GeneratePathProperty>
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.20" />
+	<PackageReference Include="Cyjb.Compilers.Runtime" Version="1.0.23" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ParseBlock\AttributeLexer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AttributeLexer.designed.cs</LastGenOutput>
+    </None>
     <None Update="ParseBlock\BlockLexer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BlockLexer.designed.cs</LastGenOutput>
@@ -75,6 +85,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="ParseBlock\AttributeLexer.designed.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AttributeLexer.tt</DependentUpon>
+    </Compile>
     <Compile Update="ParseBlock\BlockLexer.designed.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

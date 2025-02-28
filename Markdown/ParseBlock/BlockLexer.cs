@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Cyjb.Compilers.Lexers;
 using Cyjb.Markdown.Syntax;
 using Cyjb.Markdown.Utils;
+using Cyjb.Text;
 
 namespace Cyjb.Markdown.ParseBlock;
 
@@ -80,30 +81,50 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	}
 
 	/// <summary>
-	/// 带有额外属性的 ATX 标题。
+	/// ATX 标题。
 	/// </summary>
-	[LexerSymbol(@"#{1,6}({WS_P}.*)?{ExtAttr}$", Kind = BlockKind.ATXHeading)]
-	private void ATXHeadingWithAttributesAction()
-	{
-		if (Options.UseHeaderAttributes)
-		{
-			StringView text = Text;
-			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
-			if (attrs != null)
-			{
-				AcceptToken(text, attrs);
-				return;
-			}
-		}
-		Reject(RejectOptions.State);
-	}
-	/// <summary>
-	/// 普通 ATX 标题。
-	/// </summary>
-	[LexerSymbol(@"#{1,6}({WS_P}.*)?$", Kind = BlockKind.ATXHeading)]
+	[LexerSymbol(@"#{1,6}", Kind = BlockKind.ATXHeading)]
 	private void ATXHeadingAction()
 	{
-		AcceptToken();
+		char nextChar = Source.Peek();
+		// ATX 标题需要后跟空白字符或者换行。
+		if (nextChar != SourceReader.InvalidCharacter && !MarkdownUtil.IsWhitespace(nextChar))
+		{
+			// 不是 ATX 标题，取消。
+			Reject(RejectOptions.State);
+			return;
+		}
+		Heading heading = new(Text.Length, Span);
+		if (!Text.TryConcat(Source.ReadLine(false), out StringView text))
+		{
+			// 应该是一定会保证 Text 与行后续内容是可以拼接起来的。
+			throw CommonExceptions.Unreachable();
+		}
+		if (Options.UseHeaderAttributes)
+		{
+			// 解析额外属性。
+			int idx = MarkdownUtil.FindAttributeStart(text);
+			if (idx > 0)
+			{
+				int oldIndex = Source.Index;
+				StringView headingText = text[0..idx];
+				// 将索引调整到起始位置之后。
+				Source.Index = Start + idx + 1;
+				Source.StartIndex = Source.Index;
+				if (MarkdownUtil.ReadAttributes(Source, heading.Attributes))
+				{
+					AcceptToken(headingText, heading);
+					ReadNewLine();
+					return;
+				}
+				// 读取失败，恢复索引。
+				Source.StartIndex = Start;
+				Source.Index = oldIndex;
+			}
+		}
+		// 作为普通 ATX 标题解析。
+		AcceptToken(text, heading);
+		ReadNewLine();
 	}
 	/// <summary>
 	/// 带有额外属性的代码分隔符起始。
@@ -119,6 +140,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			if (attrs != null)
 			{
 				AcceptToken(text, attrs);
+				ReadNewLine();
 				return;
 			}
 		}
@@ -132,6 +154,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void CodeFenceStartAction()
 	{
 		AcceptToken();
+		ReadNewLine();
 	}
 	/// <summary>
 	/// 缩进的动作。
@@ -258,6 +281,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void ThematicBreakAction()
 	{
 		AcceptToken();
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -267,6 +291,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlPairAction()
 	{
 		AcceptToken(HtmlInfo.HtmlPair);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -276,6 +301,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlCommendAction()
 	{
 		AcceptToken(HtmlInfo.HtmlComment);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -285,6 +311,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlProcessingAction()
 	{
 		AcceptToken(HtmlInfo.HtmlProcessing);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -294,6 +321,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlDeclarationAction()
 	{
 		AcceptToken(HtmlInfo.HtmlDeclaration);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -303,6 +331,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlCDataAction()
 	{
 		AcceptToken(HtmlInfo.HtmlCData);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -328,6 +357,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlSingleAction()
 	{
 		AcceptToken(HtmlInfo.HtmlSingle);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -340,6 +370,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void HtmlOtherAction()
 	{
 		AcceptToken(HtmlInfo.HtmlOther);
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -353,6 +384,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		if (Options.UseTable && Text.Contains('|'))
 		{
 			AcceptToken();
+			ReadNewLine();
 		}
 		else
 		{
@@ -370,6 +402,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		if (Options.UseMath)
 		{
 			AcceptToken();
+			ReadNewLine();
 		}
 		else
 		{
@@ -390,6 +423,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			if (attrs != null)
 			{
 				AcceptToken(text, attrs);
+				ReadNewLine();
 				return;
 			}
 		}
@@ -422,6 +456,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		if (Options.UseCustomContainers)
 		{
 			AcceptToken();
+			ReadNewLine();
 		}
 		else
 		{
@@ -442,6 +477,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			if (attrs != null)
 			{
 				AcceptToken(text, attrs);
+				ReadNewLine();
 				return;
 			}
 		}
@@ -451,10 +487,12 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// 文本行。
 	/// </summary>
-	[LexerSymbol(@".+$", Kind = BlockKind.TextLine)]
+	[LexerSymbol(@".", Kind = BlockKind.TextLine)]
 	private void TextAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken();
+		ReadNewLine();
 	}
 
 	/// <summary>
@@ -474,5 +512,32 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	private void AcceptToken(StringView text, object? value = null)
 	{
 		line.Add(Kind!.Value, text, Span, value);
+	}
+
+	/// <summary>
+	/// 读取换行。
+	/// </summary>
+	private void ReadNewLine()
+	{
+		Source.Drop();
+		int spanStart = Source.Index;
+		int spanEnd = spanStart + 1;
+		char ch = Source.Read();
+		if (ch == '\r')
+		{
+			if (Source.Peek() == '\n')
+			{
+				Source.Read();
+				spanEnd++;
+			}
+		}
+		else if (ch != '\n')
+		{
+			Source.Unget();
+			return;
+		}
+		line.Add(BlockKind.NewLine, Source.GetReadedText(), new TextSpan(spanStart, spanEnd));
+		(SharedContext as BlockParser)?.ParseLine(line);
+		line.Clear();
 	}
 }
