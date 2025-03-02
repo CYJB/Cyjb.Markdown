@@ -35,24 +35,14 @@ internal class MathBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 初始化 <see cref="MathBlockProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">数学公式块的起始索引。</param>
-	/// <param name="fenceLength">数学公式块的分隔符长度。</param>
-	/// <param name="indent">数学公式块的缩进。</param>
-	/// <param name="info">数学公式块的信息。</param>
-	/// <param name="attrs">数学公式块的属性。</param>
-	private MathBlockProcessor(int start, int fenceLength, int indent, string? info, HtmlAttributeList? attrs)
-		: base(MarkdownKind.MathBlock)
+	/// <param name="info">公式块的信息。</param>
+	/// <param name="indent">公式块的缩进。</param>
+	private MathBlockProcessor(BlockFenceInfo<MathBlock> info, int indent)
+		: base(MarkdownKind.CodeBlock)
 	{
-		this.fenceLength = fenceLength;
+		fenceLength = info.FenceLength;
 		this.indent = indent;
-		math = new MathBlock(string.Empty, new TextSpan(start, start))
-		{
-			Info = info
-		};
-		if (attrs != null)
-		{
-			math.Attributes.AddRange(attrs);
-		}
+		math = info.Node;
 	}
 
 	/// <summary>
@@ -113,12 +103,26 @@ internal class MathBlockProcessor : BlockProcessor
 		/// <param name="processors">要添加到的处理器列表。</param>
 		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
-			if (!line.IsCodeIndent)
+			if (line.IsCodeIndent)
 			{
-				MarkdownUtil.ParseFenceStart(parser, line, out int start, out int indent,
-					out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
-				processors.Add(new MathBlockProcessor(start, fenceLength, indent, info, attrs));
+				return;
 			}
+			// 跳过空白部分。
+			int indent = line.Indent;
+			line.SkipIndent();
+			// 解析自定义容器的信息。
+			Token<BlockKind> token = line.PeekFront();
+			var mathFenceInfo = (token.Value as BlockFenceInfo<MathBlock>)!;
+			string? info = token.Text.AsSpan(mathFenceInfo.FenceLength).Trim(MarkdownUtil.Whitespace).Unescape();
+			if (info.Length > 0)
+			{
+				mathFenceInfo.Node.Info = info;
+			}
+			mathFenceInfo.Node.Attributes.AddPrefix(parser.Options.AttributesPrefix);
+
+			// 标记当前行已处理完毕。
+			line.Skip();
+			processors.Add(new MathBlockProcessor(mathFenceInfo, indent));
 		}
 	}
 }

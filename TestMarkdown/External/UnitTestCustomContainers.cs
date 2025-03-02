@@ -198,7 +198,7 @@ public class UnitTestCustomContainers : BaseTest
 	{
 		AssertMarkdown("   :::\r\n    code\r\n:::\r\n", () =>
 		{
-			CustomContainer(0..23, null, () =>
+			CustomContainer(3..23, null, () =>
 			{
 				CodeBlock(8..18, "code\r\n");
 			});
@@ -232,7 +232,7 @@ public class UnitTestCustomContainers : BaseTest
 	{
 		AssertMarkdown(" :::\r\nfoo\r\n  :::\r\n", () =>
 		{
-			CustomContainer(0..18, null, () =>
+			CustomContainer(1..18, null, () =>
 			{
 				Paragraph(6..11, () =>
 				{

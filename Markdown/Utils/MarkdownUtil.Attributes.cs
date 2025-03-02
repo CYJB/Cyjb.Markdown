@@ -126,84 +126,6 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
-	/// 从源码读取器中读取属性。
-	/// </summary>
-	/// <param name="source">要读取的源码读取器。</param>
-	/// <param name="attrs">解析后的特性列表。</param>
-	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	public static bool ReadAttributes(SourceReader source, HtmlAttributeList attrs)
-	{
-		var tokenizer = AttributeLexer.Factory.CreateTokenizer();
-		tokenizer.Load(source);
-		bool hasSeperator = true;
-		while (true)
-		{
-			var token = tokenizer.Read();
-			switch (token.Kind)
-			{
-				case AttributeKind.Seperator:
-					// 检查分隔符是否合法。
-					if (!IsValidAttributeSeperator(token.Text))
-					{
-						goto ParseFailed;
-					}
-					hasSeperator = true;
-					break;
-				case AttributeKind.Identifier:
-					if (!hasSeperator)
-					{
-						// 缺少分隔符。
-						goto ParseFailed;
-					}
-					attrs.Id = token.Text.ToString();
-					break;
-				case AttributeKind.ClassName:
-					if (!hasSeperator)
-					{
-						// 缺少分隔符。
-						goto ParseFailed;
-					}
-					attrs.AddClass(token.Text.ToString());
-					break;
-				case AttributeKind.Common:
-					if (!hasSeperator)
-					{
-						// 缺少分隔符。
-						goto ParseFailed;
-					}
-					attrs.Add(token.Text.ToString(), (token.Value as string)!);
-					break;
-				case AttributeKind.End:
-					// 解析成功。
-					return true;
-				default:
-					// 解析失败。
-					goto ParseFailed;
-			}
-		}
-	ParseFailed:
-		// 清除之前可能部分成功的属性。
-		attrs.Clear();
-		return false;
-	}
-
-	/// <summary>
-	/// 从文本中解析属性。
-	/// </summary>
-	/// <param name="text">要检查的字符串视图。</param>
-	/// <returns>如果成功解析属性，则返回属性列表；否则返回 <c>null</c>。</returns>
-	public static HtmlAttributeList? ParseAttributes(ref StringView text)
-	{
-		ReadOnlySpan<char> span = text;
-		HtmlAttributeList? attrs = ParseAttributes(ref span);
-		if (attrs != null)
-		{
-			text = text[0..span.Length];
-		}
-		return attrs;
-	}
-
-	/// <summary>
 	/// 从文本中解析属性。
 	/// </summary>
 	/// <param name="text">要检查的文本。</param>
@@ -393,7 +315,7 @@ internal static partial class MarkdownUtil
 	/// </summary>
 	/// <param name="text">要检查的文本。</param>
 	/// <returns>如果是有效的属性分隔符，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
-	private static bool IsValidAttributeSeperator(ReadOnlySpan<char> text)
+	public static bool IsValidAttributeSeperator(ReadOnlySpan<char> text)
 	{
 		int lineCount = 0;
 		bool isLastReturn = false;

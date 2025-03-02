@@ -39,27 +39,15 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 	/// <summary>
 	/// 初始化 <see cref="FencedCodeBlockProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">代码块的起始索引。</param>
-	/// <param name="fence">代码块的分割字符。</param>
-	/// <param name="fenceLength">代码块的分隔符长度。</param>
-	/// <param name="indent">代码块的缩进。</param>
 	/// <param name="info">代码块的信息。</param>
-	/// <param name="attrs">代码块的属性。</param>
-	private FencedCodeBlockProcessor(int start,
-		char fence, int fenceLength, int indent, string? info, HtmlAttributeList? attrs)
+	/// <param name="indent">代码块的缩进。</param>
+	private FencedCodeBlockProcessor(BlockFenceInfo<CodeBlock> info, int indent)
 		: base(MarkdownKind.CodeBlock)
 	{
-		this.fence = fence;
-		this.fenceLength = fenceLength;
+		fence = info.Fence;
+		fenceLength = info.FenceLength;
 		this.indent = indent;
-		code = new CodeBlock(string.Empty, new TextSpan(start, start))
-		{
-			Info = info,
-		};
-		if (attrs != null)
-		{
-			code.Attributes.AddRange(attrs);
-		}
+		code = info.Node;
 	}
 
 	/// <summary>
@@ -120,12 +108,26 @@ internal class FencedCodeBlockProcessor : BlockProcessor
 		/// <param name="processors">要添加到的处理器列表。</param>
 		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
-			if (!line.IsCodeIndent)
+			if (line.IsCodeIndent)
 			{
-			MarkdownUtil.ParseFenceStart(parser, line, out int start, out int indent,
-				out char fenceChar, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
-			processors.Add(new FencedCodeBlockProcessor(start, fenceChar, fenceLength, indent, info, attrs));
+				return;
 			}
+			// 跳过空白部分。
+			int indent = line.Indent;
+			line.SkipIndent();
+			// 解析自定义容器的信息。
+			Token<BlockKind> token = line.PeekFront();
+			var codeFenceInfo = (token.Value as BlockFenceInfo<CodeBlock>)!;
+			string? info = token.Text.AsSpan(codeFenceInfo.FenceLength).Trim(MarkdownUtil.Whitespace).Unescape();
+			if (info.Length > 0)
+			{
+				codeFenceInfo.Node.Info = info;
+			}
+			codeFenceInfo.Node.Attributes.AddPrefix(parser.Options.AttributesPrefix);
+
+			// 标记当前行已处理完毕。
+			line.Skip();
+			processors.Add(new FencedCodeBlockProcessor(codeFenceInfo, indent));
 		}
 	}
 }

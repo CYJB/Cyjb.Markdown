@@ -10,13 +10,9 @@ namespace Cyjb.Markdown.ParseBlock;
 /// 表示 Markdown 的块级元素词法分析器。
 /// </summary>
 /// <see href="https://spec.commonmark.org/0.31.2/"/>
-[LexerRejectable]
 [LexerRegex("WS", "[ \t]")]
-[LexerRegex("WS_1", @"[ \t]+|[ \t]*\r?\n[ \t]*")]
 [LexerRegex("WS_O", "{WS}*")]
 [LexerRegex("WS_P", "{WS}+")]
-[LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
-[LexerRegex("ExtAttr", @"\{([^""'<>`'{}]*|'[^'\r\n]*'|\""[^""\r\n]*\"")*\}{WS_O}")]
 internal partial class BlockLexer : LexerController<BlockKind>
 {
 	/// <summary>
@@ -27,6 +23,10 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 当前行。
 	/// </summary>
 	private BlockLine line;
+	/// <summary>
+	/// 属性的词法分析器。
+	/// </summary>
+	private LexerTokenizer<AttributeKind>? attributeTokenizer;
 
 #pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
 	public BlockLexer()
@@ -71,9 +71,6 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// 通用操作。
 	/// </summary>
 	[LexerSymbol(@">", Kind = BlockKind.QuoteStart, UseShortest = true)]
-	[LexerSymbol(@"`{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
-	[LexerSymbol(@"~{3,}{WS_O}$", Kind = BlockKind.CodeFence)]
-	[LexerSymbol(@"=+{WS_O}$", Kind = BlockKind.SetextUnderline)]
 	[LexerSymbol(@"\[[ \txX]\]", Kind = BlockKind.TaskListItemMarker, UseShortest = true)]
 	private void CommonAction()
 	{
@@ -91,27 +88,25 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		if (nextChar != SourceReader.InvalidCharacter && !MarkdownUtil.IsWhitespace(nextChar))
 		{
 			// 不是 ATX 标题，取消。
-			Reject(RejectOptions.State);
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 			return;
 		}
 		Heading heading = new(Text.Length, Span);
-		if (!Text.TryConcat(Source.ReadLine(false), out StringView text))
-		{
-			// 应该是一定会保证 Text 与行后续内容是可以拼接起来的。
-			throw CommonExceptions.Unreachable();
-		}
+		Source.ReadLine(false);
 		if (Options.UseHeaderAttributes)
 		{
 			// 解析额外属性。
-			int idx = MarkdownUtil.FindAttributeStart(text);
+			int idx = MarkdownUtil.FindAttributeStart(Text);
 			if (idx > 0)
 			{
 				int oldIndex = Source.Index;
-				StringView headingText = text[0..idx];
+				StringView headingText = Text[0..idx];
 				// 将索引调整到起始位置之后。
 				Source.Index = Start + idx + 1;
 				Source.StartIndex = Source.Index;
-				if (MarkdownUtil.ReadAttributes(Source, heading.Attributes))
+				if (ReadAttributes(heading.Attributes))
 				{
 					AcceptToken(headingText, heading);
 					ReadNewLine();
@@ -123,37 +118,74 @@ internal partial class BlockLexer : LexerController<BlockKind>
 			}
 		}
 		// 作为普通 ATX 标题解析。
-		AcceptToken(text, heading);
+		AcceptToken(heading);
 		ReadNewLine();
 	}
+
 	/// <summary>
-	/// 带有额外属性的代码分隔符起始。
+	/// 文本标题。
 	/// </summary>
-	[LexerSymbol(@"`{3,}[^`\r\n]+{ExtAttr}$", Kind = BlockKind.CodeFenceStart)]
-	[LexerSymbol(@"~{3,}.+{ExtAttr}$", Kind = BlockKind.CodeFenceStart)]
-	private void CodeFenceStartWithAttributesAction()
+	[LexerSymbol(@"=+")]
+	private void SetextHeadingAction()
 	{
-		if (Options.UseCodeAttributes)
+		StringView restChars = Source.ReadLine(false);
+		if (MarkdownUtil.IsWhitespace(restChars))
 		{
-			StringView text = Text;
-			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
-			if (attrs != null)
-			{
-				AcceptToken(text, attrs);
-				ReadNewLine();
-				return;
-			}
+			line.Add(BlockKind.SetextUnderline, Text, Span);
 		}
-		Reject(RejectOptions.State);
+		else
+		{
+			// 包含其它字符，认为是普通文本行。
+			line.Add(BlockKind.TextLine, Text, Span);
+		}
+		ReadNewLine();
 	}
+
 	/// <summary>
-	/// 普通代码分隔符起始。
+	/// 代码分隔符起始。
 	/// </summary>
-	[LexerSymbol(@"`{3,}[^`\r\n]+$", Kind = BlockKind.CodeFenceStart)]
-	[LexerSymbol(@"~{3,}.+$", Kind = BlockKind.CodeFenceStart)]
+	[LexerSymbol(@"~{3,}", Kind = BlockKind.CodeFenceStart)]
+	[LexerSymbol(@"`{3,}", Kind = BlockKind.CodeFenceStart)]
 	private void CodeFenceStartAction()
 	{
-		AcceptToken();
+		BlockFenceInfo<CodeBlock> info = new(Text[0], Text.Length, new CodeBlock(string.Empty, Span));
+		StringView infoText = Source.ReadLine(false);
+		if (Text[0] == '`' && infoText.Contains('`'))
+		{
+			// '`' 分隔符的代码块，要求后面不能包含 '`' 符号，避免与行内代码混淆。
+			// 作为普通文本行。
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
+			return;
+		}
+		if (Options.UseCodeAttributes)
+		{
+			// 解析额外属性。
+			int idx = MarkdownUtil.FindAttributeStart(Text);
+			if (idx > 0)
+			{
+				int oldIndex = Source.Index;
+				StringView codeText = Text[0..idx];
+				// 将索引调整到起始位置之后。
+				Source.Index = Start + idx + 1;
+				Source.StartIndex = Source.Index;
+				if (ReadAttributes(info.Node.Attributes))
+				{
+					AcceptToken(codeText, info);
+					ReadNewLine();
+					return;
+				}
+				// 读取失败，恢复索引。
+				Source.StartIndex = Start;
+				Source.Index = oldIndex;
+			}
+		}
+		BlockKind kind = Kind!.Value;
+		if (MarkdownUtil.IsWhitespace(infoText))
+		{
+			kind = BlockKind.CodeFence;
+		}
+		line.Add(kind, Text, Span, info);
 		ReadNewLine();
 	}
 	/// <summary>
@@ -198,7 +230,9 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
@@ -215,7 +249,9 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
@@ -233,7 +269,9 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
@@ -251,7 +289,9 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
@@ -268,7 +308,9 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
@@ -287,9 +329,11 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 成对标签的动作。
 	/// </summary>
-	[LexerSymbol("[<](script|pre|style|textarea)([ \t>].*)?$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
+	[LexerSymbol("[<](script|pre|style|textarea)/[ \\t>]", RegexOptions.IgnoreCase, UseShortest = true, Kind = BlockKind.HtmlStart)]
+	[LexerSymbol("[<](script|pre|style|textarea)$", RegexOptions.IgnoreCase, UseShortest = true, Kind = BlockKind.HtmlStart)]
 	private void HtmlPairAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlPair);
 		ReadNewLine();
 	}
@@ -297,9 +341,10 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 注释的动作。
 	/// </summary>
-	[LexerSymbol("[<]!--.*$", Kind = BlockKind.HtmlStart)]
+	[LexerSymbol("[<]!--", Kind = BlockKind.HtmlStart)]
 	private void HtmlCommendAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlComment);
 		ReadNewLine();
 	}
@@ -307,9 +352,10 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 处理结构的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]\?.*$", Kind = BlockKind.HtmlStart)]
+	[LexerSymbol(@"[<]\?", Kind = BlockKind.HtmlStart)]
 	private void HtmlProcessingAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlProcessing);
 		ReadNewLine();
 	}
@@ -317,9 +363,10 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 声明的动作。
 	/// </summary>
-	[LexerSymbol("[<]![a-z].*$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
+	[LexerSymbol("[<]![a-z]", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlDeclarationAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlDeclaration);
 		ReadNewLine();
 	}
@@ -327,9 +374,10 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML CDATA 段的动作。
 	/// </summary>
-	[LexerSymbol(@"[<]!\[CDATA\[.*$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
+	[LexerSymbol(@"[<]!\[CDATA\[", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlCDataAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlCData);
 		ReadNewLine();
 	}
@@ -337,8 +385,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// <summary>
 	/// HTML 单独标签的动作。
 	/// </summary>
-	[LexerSymbol("[<]\\/?(" +
-		"address|article|aside|" +
+	[LexerRegex("HtmlSingleTags", "address|article|aside|" +
 		"base|basefont|blockquote|body|" +
 		"caption|center|col|colgroup|" +
 		"dd|details|dialog|dir|div|dl|dt|" +
@@ -352,10 +399,12 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		"p|param|" +
 		"search|section|summary|" +
 		"table|tbody|td|tfoot|th|thead|title|tr|track|" +
-		"ul" +
-		")(( |\t|\\/?>).*)?$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
+		"ul", RegexOptions.IgnoreCase)]
+	[LexerSymbol("[<]\\/?{HtmlSingleTags}/( |\t|\\/?>)", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
+	[LexerSymbol("[<]\\/?{HtmlSingleTags}>$", RegexOptions.IgnoreCase, Kind = BlockKind.HtmlStart)]
 	private void HtmlSingleAction()
 	{
+		Source.ReadLine(false);
 		AcceptToken(HtmlInfo.HtmlSingle);
 		ReadNewLine();
 	}
@@ -364,6 +413,7 @@ internal partial class BlockLexer : LexerController<BlockKind>
 	/// HTML 其它标签的动作。
 	/// </summary>
 	[LexerRegex("TagName", @"[a-z][a-z0-9-]*", RegexOptions.IgnoreCase)]
+	[LexerRegex("AttrName", @"[a-z_:][a-z0-9_.:-]*", RegexOptions.IgnoreCase)]
 	[LexerRegex("AttrValue", @"[^ \t\r\n""'=<>`']+|'[^'\r\n]*'|\""[^""\r\n]*\""", RegexOptions.IgnoreCase)]
 	[LexerSymbol(@"[<]{TagName}({WS_P}{AttrName}({WS_O}={WS_O}{AttrValue})?)*{WS_O}\/?>{WS_O}$", Kind = BlockKind.HtmlStart)]
 	[LexerSymbol(@"[<]\/{TagName}{WS_O}>{WS_O}$", Kind = BlockKind.HtmlStart)]
@@ -388,46 +438,65 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject();
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
 	/// <summary>
 	/// 数学公式分隔符的动作。
 	/// </summary>
-	[LexerSymbol(@"\${2,}{WS_O}$", Kind = BlockKind.MathFence)]
-	[LexerSymbol(@"\${2,}[^$\r\n]+$", Kind = BlockKind.MathFenceStart)]
+	[LexerSymbol(@"\${2,}", Kind = BlockKind.MathFenceStart)]
 	private void MathFenceAction()
 	{
 		if (Options.UseMath)
 		{
-			AcceptToken();
+			BlockFenceInfo<MathBlock> info = new(Text[0], Text.Length, new MathBlock(string.Empty, Span));
+			StringView infoText = Source.ReadLine(false);
+			if (infoText.Contains('$'))
+			{
+				// 数学公式块中，要求后面不能包含 '$' 符号，避免与行内公式混淆。
+				// 作为普通文本行。
+				line.Add(BlockKind.TextLine, Text, Span);
+				ReadNewLine();
+				return;
+			}
+			if (Options.UseMathAttributes)
+			{
+				// 解析额外属性。
+				int idx = MarkdownUtil.FindAttributeStart(Text);
+				if (idx > 0)
+				{
+					int oldIndex = Source.Index;
+					StringView codeText = Text[0..idx];
+					// 将索引调整到起始位置之后。
+					Source.Index = Start + idx + 1;
+					Source.StartIndex = Source.Index;
+					if (ReadAttributes(info.Node.Attributes))
+					{
+						AcceptToken(codeText, info);
+						ReadNewLine();
+						return;
+					}
+					// 读取失败，恢复索引。
+					Source.StartIndex = Start;
+					Source.Index = oldIndex;
+				}
+			}
+			BlockKind kind = Kind!.Value;
+			if (MarkdownUtil.IsWhitespace(infoText))
+			{
+				kind = BlockKind.MathFence;
+			}
+			line.Add(kind, Text, Span, info);
 			ReadNewLine();
 		}
 		else
 		{
-			Reject(RejectOptions.State);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
-	}
-
-	/// <summary>
-	/// 带有额外属性的数学公式分隔符起始。
-	/// </summary>
-	[LexerSymbol(@"\${2,}[^$\r\n]+{ExtAttr}$", Kind = BlockKind.MathFenceStart)]
-	private void MathFenceStartWithAttributesAction()
-	{
-		if (Options.UseMath && Options.UseMathAttributes)
-		{
-			StringView text = Text;
-			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
-			if (attrs != null)
-			{
-				AcceptToken(text, attrs);
-				ReadNewLine();
-				return;
-			}
-		}
-		Reject(RejectOptions.State);
 	}
 
 	/// <summary>
@@ -442,46 +511,57 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		}
 		else
 		{
-			Reject(RejectOptions.State);
+			Source.ReadLine(false);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
 	}
 
 	/// <summary>
 	/// 自定义容器分隔符的动作。
 	/// </summary>
-	[LexerSymbol(@"\:{3,}{WS_O}$", Kind = BlockKind.CustomContainerFence)]
-	[LexerSymbol(@"\:{3,}.+$", Kind = BlockKind.CustomContainerFenceStart)]
+	[LexerSymbol(@"\:{3,}", Kind = BlockKind.CustomContainerFenceStart)]
 	private void CustomContainerFenceAction()
 	{
 		if (Options.UseCustomContainers)
 		{
-			AcceptToken();
+			BlockFenceInfo<CustomContainer> info = new(Text[0], Text.Length, new CustomContainer(Span));
+			StringView infoText = Source.ReadLine(false);
+			if (Options.UseCustomContainerAttributes)
+			{
+				// 解析额外属性。
+				int idx = MarkdownUtil.FindAttributeStart(Text);
+				if (idx > 0)
+				{
+					int oldIndex = Source.Index;
+					StringView codeText = Text[0..idx];
+					// 将索引调整到起始位置之后。
+					Source.Index = Start + idx + 1;
+					Source.StartIndex = Source.Index;
+					if (ReadAttributes(info.Node.Attributes))
+					{
+						AcceptToken(codeText, info);
+						ReadNewLine();
+						return;
+					}
+					// 读取失败，恢复索引。
+					Source.StartIndex = Start;
+					Source.Index = oldIndex;
+				}
+			}
+			BlockKind kind = Kind!.Value;
+			if (MarkdownUtil.IsWhitespace(infoText))
+			{
+				kind = BlockKind.CustomContainerFence;
+			}
+			line.Add(kind, Text, Span, info);
 			ReadNewLine();
 		}
 		else
 		{
-			Reject(RejectOptions.State);
+			line.Add(BlockKind.TextLine, Text, Span);
+			ReadNewLine();
 		}
-	}
-
-	/// <summary>
-	/// 带有额外属性的自定义容器分隔符起始。
-	/// </summary>
-	[LexerSymbol(@":{3,}.+{ExtAttr}$", Kind = BlockKind.CustomContainerFenceStart)]
-	private void CustomContainerFenceStartWithAttributesAction()
-	{
-		if (Options.UseCustomContainers && Options.UseCustomContainerAttributes)
-		{
-			StringView text = Text;
-			HtmlAttributeList? attrs = MarkdownUtil.ParseAttributes(ref text);
-			if (attrs != null)
-			{
-				AcceptToken(text, attrs);
-				ReadNewLine();
-				return;
-			}
-		}
-		Reject(RejectOptions.State);
 	}
 
 	/// <summary>
@@ -493,6 +573,70 @@ internal partial class BlockLexer : LexerController<BlockKind>
 		Source.ReadLine(false);
 		AcceptToken();
 		ReadNewLine();
+	}
+
+	/// <summary>
+	/// 从源码读取器中读取属性。
+	/// </summary>
+	/// <param name="attrs">解析后的特性列表。</param>
+	/// <returns>如果成功解析属性，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+	private bool ReadAttributes(HtmlAttributeList attrs)
+	{
+		if (attributeTokenizer == null)
+		{
+			attributeTokenizer = AttributeLexer.Factory.CreateTokenizer();
+			attributeTokenizer.Load(Source);
+		}
+		bool hasSeperator = true;
+		while (true)
+		{
+			var token = attributeTokenizer.Read();
+			switch (token.Kind)
+			{
+				case AttributeKind.Seperator:
+					// 检查分隔符是否合法。
+					if (!MarkdownUtil.IsValidAttributeSeperator(token.Text))
+					{
+						goto ParseFailed;
+					}
+					hasSeperator = true;
+					break;
+				case AttributeKind.Identifier:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.Id = token.Text.ToString();
+					break;
+				case AttributeKind.ClassName:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.AddClass(token.Text.ToString());
+					break;
+				case AttributeKind.Common:
+					if (!hasSeperator)
+					{
+						// 缺少分隔符。
+						goto ParseFailed;
+					}
+					attrs.Add(token.Text.ToString(), (token.Value as string)!);
+					break;
+				case AttributeKind.End:
+					// 解析成功。
+					return true;
+				default:
+					// 解析失败。
+					goto ParseFailed;
+			}
+		}
+	ParseFailed:
+		// 清除之前可能部分成功的属性。
+		attrs.Clear();
+		return false;
 	}
 
 	/// <summary>

@@ -26,24 +26,13 @@ internal class CustomContainerProcessor : BlockProcessor
 	/// <summary>
 	/// 初始化 <see cref="CustomContainerProcessor"/> 类的新实例。
 	/// </summary>
-	/// <param name="start">代码块的起始索引。</param>
-	/// <param name="fenceLength">代码块的分隔符长度。</param>
-	/// <param name="info">代码块的信息。</param>
-	/// <param name="attrs">代码块的属性。</param>
-	private CustomContainerProcessor(int start, int fenceLength, string? info, HtmlAttributeList? attrs)
+	/// <param name="info">自定义容器块的信息。</param>
+	private CustomContainerProcessor(BlockFenceInfo<CustomContainer> info)
 		: base(MarkdownKind.CodeBlock)
 	{
-		this.fenceLength = fenceLength;
-		container = new CustomContainer(new TextSpan(start, start))
-		{
-			Info = info
-		};
-		if (attrs != null)
-		{
-			container.Attributes.AddRange(attrs);
-		}
+		fenceLength = info.FenceLength;
+		container = info.Node;
 	}
-
 
 	/// <summary>
 	/// 获取是否是容器节点。
@@ -114,12 +103,25 @@ internal class CustomContainerProcessor : BlockProcessor
 		/// <param name="processors">要添加到的处理器列表。</param>
 		public void TryStart(BlockParser parser, BlockLine line, BlockProcessor matchedProcessor, List<BlockProcessor> processors)
 		{
-			if (!line.IsCodeIndent)
+			if (line.IsCodeIndent)
 			{
-				MarkdownUtil.ParseFenceStart(parser, line, out int start, out int _,
-					out char _, out int fenceLength, out string? info, out HtmlAttributeList? attrs);
-				processors.Add(new CustomContainerProcessor(start, fenceLength, info, attrs));
+				return;
 			}
+			// 跳过空白部分。
+			line.SkipIndent();
+			// 解析自定义容器的信息。
+			Token<BlockKind> token = line.PeekFront();
+			var containerFenceInfo = (token.Value as BlockFenceInfo<CustomContainer>)!;
+			string? info = token.Text.AsSpan(containerFenceInfo.FenceLength).Trim(MarkdownUtil.Whitespace).Unescape();
+			if (info.Length > 0)
+			{
+				containerFenceInfo.Node.Info = info;
+			}
+			containerFenceInfo.Node.Attributes.AddPrefix(parser.Options.AttributesPrefix);
+
+			// 标记当前行已处理完毕。
+			line.Skip();
+			processors.Add(new CustomContainerProcessor(containerFenceInfo));
 		}
 	}
 }

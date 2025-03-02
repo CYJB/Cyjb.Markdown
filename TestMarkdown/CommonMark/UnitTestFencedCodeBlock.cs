@@ -193,7 +193,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	{
 		AssertMarkdown(" ```\r\n aaa\r\naaa\r\n```\r\n", () =>
 		{
-			CodeBlock(0..22, "aaa\r\naaa\r\n");
+			CodeBlock(1..22, "aaa\r\naaa\r\n");
 		});
 	}
 	/// <see href="https://spec.commonmark.org/0.31.2/#example-132"/>
@@ -202,7 +202,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	{
 		AssertMarkdown("  ```\r\naaa\r\n  aaa\r\naaa\r\n  ```\r\n", () =>
 		{
-			CodeBlock(0..31, "aaa\r\naaa\r\naaa\r\n");
+			CodeBlock(2..31, "aaa\r\naaa\r\naaa\r\n");
 		});
 	}
 	/// <see href="https://spec.commonmark.org/0.31.2/#example-133"/>
@@ -211,7 +211,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	{
 		AssertMarkdown("   ```\r\n   aaa\r\n    aaa\r\n  aaa\r\n   ```\r\n", () =>
 		{
-			CodeBlock(0..40, "aaa\r\n aaa\r\naaa\r\n");
+			CodeBlock(3..40, "aaa\r\n aaa\r\naaa\r\n");
 		});
 	}
 	/// <summary>
@@ -244,7 +244,7 @@ public class UnitTestFencedCodeBlock : BaseTest
 	{
 		AssertMarkdown("   ```\r\naaa\r\n  ```\r\n", () =>
 		{
-			CodeBlock(0..20, "aaa\r\n");
+			CodeBlock(3..20, "aaa\r\n");
 		});
 	}
 	/// <summary>

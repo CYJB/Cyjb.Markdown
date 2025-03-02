@@ -44,6 +44,24 @@ internal static partial class MarkdownUtil
 	}
 
 	/// <summary>
+	/// 返回指定字符串是否表示 Markdown 空白。
+	/// </summary>
+	/// <param name="str">要检查的字符串。</param>
+	/// <returns><paramref name="str"/> 是否为空或全部由 Markdown 空白组成。</returns>
+	/// <remarks>Markdown 的空白只包含空格、Tab、\r 和 \n。</remarks>
+	public static bool IsWhitespace(ReadOnlySpan<char> str)
+	{
+		foreach (char ch in str)
+		{
+			if (!IsWhitespace(ch))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// <summary>
 	/// 返回指定字符是否是 Markdown 的标点符号。
 	/// </summary>
 	/// <param name="ch">要检查的字符。</param>

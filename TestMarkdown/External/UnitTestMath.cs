@@ -498,7 +498,7 @@ public partial class UnitTestMath : BaseTest
 	{
 		AssertMarkdown(" $$\r\n aaa\r\naaa\r\n$$\r\n", () =>
 		{
-			MathBlock(0..20, "aaa\r\naaa\r\n");
+			MathBlock(1..20, "aaa\r\naaa\r\n");
 		});
 	}
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md#example-31"/>
@@ -507,7 +507,7 @@ public partial class UnitTestMath : BaseTest
 	{
 		AssertMarkdown("  $$\r\naaa\r\n  aaa\r\naaa\r\n  $$\r\n", () =>
 		{
-			MathBlock(0..29, "aaa\r\naaa\r\naaa\r\n");
+			MathBlock(2..29, "aaa\r\naaa\r\naaa\r\n");
 		});
 	}
 	/// <see href="https://github.com/CYJB/Cyjb.Markdown/blob/main/doc/mathematics.md#example-32"/>
@@ -516,7 +516,7 @@ public partial class UnitTestMath : BaseTest
 	{
 		AssertMarkdown("   $$\r\n   aaa\r\n    aaa\r\n  aaa\r\n   $$\r\n", () =>
 		{
-			MathBlock(0..38, "aaa\r\n aaa\r\naaa\r\n");
+			MathBlock(3..38, "aaa\r\n aaa\r\naaa\r\n");
 		});
 	}
 	/// <summary>
@@ -549,7 +549,7 @@ public partial class UnitTestMath : BaseTest
 	{
 		AssertMarkdown("   $$\r\naaa\r\n  $$\r\n", () =>
 		{
-			MathBlock(0..18, "aaa\r\n");
+			MathBlock(3..18, "aaa\r\n");
 		});
 	}
 	/// <summary>
